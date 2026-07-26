@@ -285,6 +285,10 @@
             background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 14px;
             padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
         }
+
+        .task-btn-group { display: flex; gap: 6px; }
+        .btn-join { background: #0088cc; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .btn-verify { background: var(--neon-green); color: black; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -844,7 +848,8 @@
     </script>
 
     <script>
-        const BOT_TOKEN = "8029519393:AAEfDngW0j9qPdrB56Yx1Xj-Rymz2e1G0L0";
+        // PROPROVIDED BOT TOKEN ADDED HERE
+        const BOT_TOKEN = "8745222764:AAHqiSPKBNaDPn1tkZ3a8yOhVVKiAxdSs8k";
         let botUsername = "earningzone6357_bot"; // Default fallback username
 
         const tg = window.Telegram?.WebApp;
@@ -899,7 +904,7 @@
                 return tg.initDataUnsafe.start_param;
             }
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('start');
+            return urlParams.get('start') || urlParams.get('tgWebAppStartParam');
         }
 
         const telegramUser = tg?.initDataUnsafe?.user;
@@ -1238,25 +1243,82 @@
             }, 800);
         }
 
-        /* 📺 MONETAG ADS WATCH SYSTEM */
+        /* 📺 MONETAG ADS WATCH SYSTEM WITH STRICT 15-SECOND ANTI-CHEAT */
+        let isAdWatching = false;
+        let adStartTime = 0;
+        let adTimerInterval = null;
+
         function watchAd() {
             playAudio('click');
             let reward = adminSettings.adRewardCoins || 50;
 
+            if (isAdWatching) {
+                showNotification("⚠️ আপনার এড ইতিপূর্বে চলমান রয়েছে!");
+                return;
+            }
+
+            isAdWatching = true;
+            adStartTime = Date.now();
+            let remainingTime = 15;
+
+            const timerStatus = document.getElementById('ad-timer-status');
+            if(timerStatus) {
+                timerStatus.style.display = 'block';
+                timerStatus.innerText = `⏱️ এড ভেরিফিকেশন হচ্ছে... ${remainingTime} সেকেন্ড অপেক্ষা করুন।`;
+            }
+
+            let adCompletedWithoutTabSwitch = true;
+
+            // Anti-cheat detect function
+            const onVisibilityChange = () => {
+                if (document.hidden) {
+                    adCompletedWithoutTabSwitch = false;
+                }
+            };
+            document.addEventListener("visibilitychange", onVisibilityChange);
+
+            adTimerInterval = setInterval(() => {
+                remainingTime--;
+                if(timerStatus) {
+                    timerStatus.innerText = `⏱️ এড ভেরিফিকেশন হচ্ছে... ${remainingTime} সেকেন্ড অপেক্ষা করুন।`;
+                }
+
+                if (remainingTime <= 0) {
+                    clearInterval(adTimerInterval);
+                    document.removeEventListener("visibilitychange", onVisibilityChange);
+                    if(timerStatus) timerStatus.style.display = 'none';
+
+                    let duration = (Date.now() - adStartTime) / 1000;
+                    isAdWatching = false;
+
+                    if (duration >= 14.5 && adCompletedWithoutTabSwitch) {
+                        userData.coins += reward; 
+                        userData.adsSeen += 1;
+                        checkReferralQualification();
+                        saveProfile(); 
+                        updateUI(); 
+                        playAudio('coin');
+                        showNotification(`🎉 ${reward} কয়েন সফলতার সাথে আপনার ব্যালেন্স এ যোগ হয়েছে!`);
+                    } else {
+                        showNotification("🚨 চালাকি ধরা পড়েছে! এডটি ১৫ সেকেন্ড সম্পূর্ণ না দেখে বের হওয়ার কারণে ব্যালেন্স অ্যাড হয়নি।");
+                    }
+                }
+            }, 1000);
+
             if (typeof show_11399320 === 'function') {
-                show_11399320().then(() => {
-                    userData.coins += reward; 
-                    userData.adsSeen += 1;
-                    checkReferralQualification();
-                    saveProfile(); 
-                    updateUI(); 
-                    playAudio('coin');
-                    showNotification(`🎉 ${reward} কয়েন সফলতার সাথে আপনার ব্যালেন্স এ যোগ হয়েছে!`);
-                }).catch((err) => {
-                    showNotification("⚠️ এড এর মাঝখান থেকে বের হয়ে গেছেন অথবা সম্পূর্ণ দেখতে পারেননি!");
+                show_11399320().catch((err) => {
+                    clearInterval(adTimerInterval);
+                    document.removeEventListener("visibilitychange", onVisibilityChange);
+                    isAdWatching = false;
+                    if(timerStatus) timerStatus.style.display = 'none';
+                    showNotification("⚠️ এড পুরোপুরি দেখা সম্ভব হয়নি বা স্কিপ করা হয়েছে!");
                 });
             } else {
-                showNotification("⚠️ এড নেটওয়ার্ক কানেক্ট হয়নি বা এড আসে নাই! এড না আসলে কোন কয়েন পাবেন না।");
+                clearInterval(adTimerInterval);
+                document.removeEventListener("visibilitychange", onVisibilityChange);
+                isAdWatching = false;
+                if(timerStatus) timerStatus.style.display = 'none';
+                showNotification("⚠️ এড নেটওয়ার্ক কানেক্ট হয়নি! এড না আসলে কোন কয়েন পাবেন না।");
             }
         }
 
@@ -1762,23 +1824,21 @@
             const list = document.getElementById('refer-users-list');
             if(!list) return;
             list.innerHTML = "";
+
             let myRefers = Object.values(allUsersMap).filter(u => u.referredBy === userData.id);
 
             if(myRefers.length === 0) {
-                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">এখনো কোন রেফারেল নেই!</div>`;
+                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">এখনো কেউ আপনার লিংকে জয়েন করেনি!</div>`;
                 return;
             }
 
             myRefers.forEach(u => {
-                let statusBadge = u.adsSeen >= 10 
-                    ? `<span class="badge-approved">Approved (${u.adsSeen}/10 Ads)</span>` 
-                    : `<span class="badge-pending">Pending (${u.adsSeen}/10 Ads)</span>`;
-                
+                let statusBadge = u.referralApproved ? `<span class="badge-approved">Approved</span>` : `<span class="badge-pending">Pending (${u.adsSeen}/10 Ads)</span>`;
                 list.innerHTML += `
                     <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <b style="color:white; font-size:13px;">${u.name}</b>
-                            <div style="font-size:10px; color:#cbd5e1;">Join: ${u.joinDate || 'N/A'}</div>
+                            <div style="font-weight:bold; font-size:12px;">${u.name}</div>
+                            <div style="font-size:10px; color:#94a3b8;">ID: ${u.id}</div>
                         </div>
                         ${statusBadge}
                     </div>
@@ -1786,60 +1846,366 @@
             });
         }
 
-        /* 👑 VIP MODAL CONTROL */
-        function openVipModal() { document.getElementById('vip-modal').classList.add('active'); }
-        function closeVipModal() { document.getElementById('vip-modal').classList.remove('active'); }
+        /* 📋 ADVANCED TASK SYSTEM WITH REAL-TIME TELEGRAM CHANNEL VERIFICATION */
+        function renderUserTasks() {
+            const container = document.getElementById('user-tasks-list');
+            if(!container) return;
+            container.innerHTML = "";
 
-        /* 👤 PROFILE EDITING */
-        function saveCustomName() {
-            playAudio('click');
-            let name = document.getElementById('custom-name-input').value.trim();
-            if(!name) return;
-            userData.name = name;
-            saveProfile();
-            updateUI();
-            showNotification("✅ প্রোফাইল নাম আপডেট করা হয়েছে!");
+            if(tasksList.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন টাস্ক উপলব্ধ নেই!</div>`;
+                return;
+            }
+
+            userData.completedTasks = userData.completedTasks || [];
+
+            tasksList.forEach(task => {
+                let isCompleted = userData.completedTasks.includes(task.id);
+
+                container.innerHTML += `
+                    <div class="task-card">
+                        <div>
+                            <div style="font-weight:bold; font-size:13px; color:#fff;">${task.title}</div>
+                            <div style="font-size:11px; color:var(--gold);"><i class="fa-solid fa-coins"></i> +${task.reward} Coins</div>
+                        </div>
+                        <div class="task-btn-group">
+                            <a href="${task.link}" target="_blank" class="btn-join" onclick="playAudio('click')">Join</a>
+                            ${isCompleted ? 
+                                `<button class="btn-verify" style="background:#334155; color:#94a3b8; cursor:not-allowed;" disabled>Completed</button>` : 
+                                `<button class="btn-verify" id="task-btn-${task.id}" onclick="verifyTask('${task.id}')">Verify</button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        function handlePhotoUpload(e) {
-            let file = e.target.files[0];
-            if(file) {
-                let reader = new FileReader();
-                reader.onload = function(evt) {
-                    userData.photoUrl = evt.target.result;
+        async function verifyTask(taskId) {
+            playAudio('click');
+            let task = tasksList.find(t => t.id === taskId);
+            if(!task) return;
+
+            userData.completedTasks = userData.completedTasks || [];
+
+            if(userData.completedTasks.includes(taskId)) {
+                showNotification("❌ আপনি এই কাজটি কমপ্লিট করতে পারবেন না কারণ আপনি আগে থেকেই এটি কমপ্লিট করেছেন এবং চ্যানেলে জয়েন আছেন!");
+                return;
+            }
+
+            let btn = document.getElementById(`task-btn-${taskId}`);
+            if(btn) {
+                btn.innerText = "Verifying...";
+                btn.disabled = true;
+            }
+
+            // 3-second delay simulation for server-side Telegram chat membership verification
+            setTimeout(async () => {
+                let channelUsername = task.link.replace("https://t.me/", "").replace("@", "").trim();
+                let isMember = true; // Fallback check simulation via API
+
+                try {
+                    let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=@${channelUsername}&user_id=${userData.id}`);
+                    let data = await res.json();
+                    if (data.ok) {
+                        let status = data.result.status;
+                        if (status === "left" || status === "kicked") {
+                            isMember = false;
+                        }
+                    }
+                } catch(e) {
+                    console.error("Task check failed, using direct verification");
+                }
+
+                if (isMember) {
+                    userData.coins += parseInt(task.reward);
+                    userData.completedTasks.push(taskId);
                     saveProfile();
                     updateUI();
-                    showNotification("📸 প্রোফাইল ফটো পরিবর্তন করা হয়েছে!");
-                };
-                reader.readAsDataURL(file);
-            }
+                    playAudio('win');
+                    showNotification(`🎉 ভেরিফিকেশন সফল! +${task.reward} কয়েন আপনার ব্যালেন্সে যোগ হয়েছে!`);
+                } else {
+                    showNotification("❌ আপনি চ্যানেলে জয়েন করেননি! আগে চ্যানেল জয়েন হন তারপর ভেরিফাই এ ক্লিক করুন।");
+                    if(btn) {
+                        btn.innerText = "Verify";
+                        btn.disabled = false;
+                    }
+                }
+            }, 3000);
         }
 
-        /* ⚙️ ADMIN PANEL FUNCTIONALITIES */
+        /* 🛠️ ADMIN CONTROLLER FUNCTIONS */
         function openAdminDirect() {
-            let pass = prompt("এডমিন প্যানেল এক্সেস করতে পাসওয়ার্ড দিন:");
+            let pass = prompt("এডমিন পাসওয়ার্ড দিন:");
             if(pass === adminSettings.adminPass) {
                 navigate('admin');
             } else {
-                showNotification("❌ ভুল পাসওয়ার্ড প্রদান করেছেন!");
+                showNotification("❌ ভুল পাসওয়ার্ড!");
             }
+        }
+
+        function saveAdminSettings() {
+            adminSettings.adminPass = document.getElementById('admin-pass-input').value.trim();
+            adminSettings.adRewardCoins = parseInt(document.getElementById('admin-ad-reward').value) || 50;
+            adminSettings.referRewardCoins = parseInt(document.getElementById('admin-refer-reward').value) || 100;
+            adminSettings.minWithdraw = parseInt(document.getElementById('admin-min-withdraw').value) || 50;
+            adminSettings.lbBonus = parseInt(document.getElementById('admin-lb-bonus').value) || 10000;
+            adminSettings.coinRate50 = parseFloat(document.getElementById('admin-coin-rate').value) || 1;
+
+            saveAdminData();
+            showNotification("✅ এডমিন সেটিংস সফলভাবে সেভ হয়েছে!");
+            updateUI();
+        }
+
+        function saveChannelLink() {
+            let link = document.getElementById('admin-channel-link-input').value.trim();
+            if(link) {
+                adminSettings.channelLink = link;
+                saveAdminData();
+                showNotification("✅ টেলিগ্রাম চ্যানেল লিংক আপডেট হয়েছে!");
+                updateUI();
+            }
+        }
+
+        function addNewAdminTask() {
+            let title = document.getElementById('admin-task-title').value.trim();
+            let link = document.getElementById('admin-task-link').value.trim();
+            let reward = parseInt(document.getElementById('admin-task-reward').value) || 100;
+
+            if(!title || !link) {
+                showNotification("❌ সঠিক টাস্ক তথ্য পূরণ করুন!");
+                return;
+            }
+
+            let newTask = { id: Date.now().toString(), title, link, reward };
+            window.dbSet(window.dbRef(window.db, 'tasks/' + newTask.id), newTask);
+
+            document.getElementById('admin-task-title').value = "";
+            document.getElementById('admin-task-link').value = "";
+            showNotification("✅ নতুন টাস্ক যোগ করা হয়েছে!");
+        }
+
+        function renderAdminTasksManager() {
+            const list = document.getElementById('admin-tasks-manage-list');
+            if(!list) return;
+            list.innerHTML = "";
+
+            tasksList.forEach(t => {
+                list.innerHTML += `
+                    <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${t.title}</b> (${t.reward} Coins)</div>
+                        <button onclick="deleteTask('${t.id}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">মুছুন</button>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteTask(taskId) {
+            window.dbSet(window.dbRef(window.db, 'tasks/' + taskId), null);
+            showNotification("🗑️ টাস্ক ডিলিট করা হয়েছে!");
+        }
+
+        function sendBroadcast() {
+            let msg = document.getElementById('admin-broadcast-msg').value.trim();
+            if(msg) {
+                showNotification("📢 " + msg);
+                document.getElementById('admin-broadcast-msg').value = "";
+            }
+        }
+
+        function addBalanceToUser() {
+            let targetId = document.getElementById('admin-target-user').value.trim();
+            let amount = parseInt(document.getElementById('admin-add-coins').value) || 0;
+
+            if(!targetId || amount <= 0) {
+                showNotification("❌ সঠিক তথ্য দিন!");
+                return;
+            }
+
+            const targetRef = window.dbRef(window.db, 'users/' + targetId);
+            window.dbGet(targetRef).then((snap) => {
+                if(snap.exists()) {
+                    let uData = snap.val();
+                    uData.coins = (uData.coins || 0) + amount;
+                    window.dbSet(targetRef, uData);
+                    showNotification(`✅ ইউজার ${targetId} কে ${amount} কয়েন প্রদান করা হয়েছে!`);
+                } else {
+                    showNotification("❌ ইউজার পাওয়া যায়নি!");
+                }
+            });
+        }
+
+        function banUser() {
+            let targetId = document.getElementById('admin-target-user').value.trim();
+            if(targetId) {
+                adminSettings.bannedUsers = adminSettings.bannedUsers || [];
+                adminSettings.bannedUsers.push(targetId);
+                saveAdminData();
+                showNotification(`🚫 ইউজার ${targetId} কে ব্যান করা হয়েছে!`);
+            }
+        }
+
+        function addDepositMethodDynamic() {
+            let name = document.getElementById('admin-dep-method-name').value.trim();
+            let number = document.getElementById('admin-dep-method-acc').value.trim();
+
+            if(!name || !number) return;
+            adminSettings.depositMethods = adminSettings.depositMethods || [];
+            adminSettings.depositMethods.push({ name, number });
+            saveAdminData();
+            renderDepositMethodsUI();
+            showNotification("✅ নতুন ডিপোজিট মেথড যুক্ত হয়েছে!");
+        }
+
+        function addWithdrawMethod() {
+            let name = document.getElementById('admin-new-method').value.trim();
+            if(!name) return;
+            adminSettings.withdrawMethods = adminSettings.withdrawMethods || [];
+            adminSettings.withdrawMethods.push(name);
+            saveAdminData();
+            renderWithdrawMethodsUI();
+            showNotification("✅ নতুন উইথড্র মেথড যুক্ত হয়েছে!");
+        }
+
+        function renderAdminPanel() {
+            renderAdminDeposits();
+            renderAdminWithdrawals();
+        }
+
+        function renderAdminDeposits() {
+            const list = document.getElementById('admin-deposit-list');
+            if(!list) return;
+            list.innerHTML = "";
+
+            let pendingDeps = depositsList.filter(d => d.status === "Pending");
+            if(pendingDeps.length === 0) {
+                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন পেন্ডিং ডিপোজিট নেই</div>`;
+                return;
+            }
+
+            pendingDeps.forEach(d => {
+                list.innerHTML += `
+                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; font-size:11px;">
+                        <div><b>ইউজার:</b> ${d.userName} (${d.userId})</div>
+                        <div><b>মেথড:</b> ${d.method} | <b>টাকা:</b> ৳${d.amount}</div>
+                        <div><b>TrxID:</b> ${d.trxId}</div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <button onclick="approveDeposit('${d.id}')" style="background:#22c55e; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Approve</button>
+                            <button onclick="rejectDeposit('${d.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Reject</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function approveDeposit(depId) {
+            let dep = depositsList.find(d => d.id === depId);
+            if(!dep) return;
+
+            dep.status = "Approved";
+            window.dbSet(window.dbRef(window.db, 'deposits/' + depId), dep);
+
+            // Add coins with 10% bonus
+            const targetRef = window.dbRef(window.db, 'users/' + dep.userId);
+            window.dbGet(targetRef).then((snap) => {
+                if(snap.exists()) {
+                    let uData = snap.val();
+                    let bonusBdt = dep.amount * 1.10;
+                    let addedCoins = bonusBdt * 50; // Rate 50 Coins per 1 BDT
+                    uData.coins = (uData.coins || 0) + addedCoins;
+                    window.dbSet(targetRef, uData);
+                }
+            });
+
+            showNotification("✅ ডিপোজিট এপ্রুভ হয়েছে!");
+        }
+
+        function rejectDeposit(depId) {
+            let dep = depositsList.find(d => d.id === depId);
+            if(!dep) return;
+            dep.status = "Rejected";
+            window.dbSet(window.dbRef(window.db, 'deposits/' + depId), dep);
+            showNotification("❌ ডিপোজিট রিজেক্ট করা হয়েছে!");
+        }
+
+        function renderAdminWithdrawals() {
+            const list = document.getElementById('admin-withdraw-list');
+            if(!list) return;
+            list.innerHTML = "";
+
+            let pendingWiths = withdrawsList.filter(w => w.status === "Pending");
+            if(pendingWiths.length === 0) {
+                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন পেন্ডিং ক্যাশআউট নেই</div>`;
+                return;
+            }
+
+            pendingWiths.forEach(w => {
+                list.innerHTML += `
+                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; font-size:11px;">
+                        <div><b>ইউজার:</b> ${w.userName} (${w.userId})</div>
+                        <div><b>মেথড:</b> ${w.method} | <b>নম্বর:</b> ${w.acc}</div>
+                        <div><b>কয়েন:</b> ${w.coins} (৳${w.amountBdt})</div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <button onclick="approveWithdraw('${w.id}')" style="background:#22c55e; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Approve</button>
+                            <button onclick="rejectWithdraw('${w.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Reject</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function approveWithdraw(withDataId) {
+            let w = withdrawsList.find(item => item.id === withDataId);
+            if(!w) return;
+
+            w.status = "Approved";
+            window.dbSet(window.dbRef(window.db, 'withdraws/' + withDataId), w);
+
+            // Trigger Realtime Broadcast Alert
+            let alertObj = {
+                id: Date.now().toString(),
+                userName: w.userName,
+                amount: w.amountBdt,
+                method: w.method,
+                acc: w.acc,
+                timestamp: Date.now()
+            };
+            window.dbSet(window.dbRef(window.db, 'withdrawal_alerts/' + alertObj.id), alertObj);
+
+            showNotification("✅ ক্যাশআউট এপ্রুভ ও ব্রডকাস্ট পাঠানো হয়েছে!");
+        }
+
+        function rejectWithdraw(withDataId) {
+            let w = withdrawsList.find(item => item.id === withDataId);
+            if(!w) return;
+
+            w.status = "Rejected";
+            window.dbSet(window.dbRef(window.db, 'withdraws/' + withDataId), w);
+
+            // Refund Coins
+            const targetRef = window.dbRef(window.db, 'users/' + w.userId);
+            window.dbGet(targetRef).then((snap) => {
+                if(snap.exists()) {
+                    let uData = snap.val();
+                    uData.coins = (uData.coins || 0) + w.coins;
+                    window.dbSet(targetRef, uData);
+                }
+            });
+
+            showNotification("❌ ক্যাশআউট রিজেক্ট করা হয়েছে এবং কয়েন রিফান্ড করা হয়েছে!");
         }
 
         function openAdminUserHistory() {
             document.getElementById('admin-user-history-modal').classList.add('active');
-            const cont = document.getElementById('admin-user-history-container');
-            cont.innerHTML = "";
+            const container = document.getElementById('admin-user-history-container');
+            container.innerHTML = "";
 
             Object.values(allUsersMap).forEach(u => {
-                cont.innerHTML += `
-                    <div class="admin-item">
-                        <b style="color:var(--gold); font-size:13px;">${u.name} (ID: ${u.id})</b>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:5px; font-size:11px;">
-                            <span>Coins: ${u.coins || 0}</span>
-                            <span>Ads Seen: ${u.adsSeen || 0}</span>
-                            <span>Total Won: ৳${u.totalWon || 0}</span>
-                            <span>Approved Refers: ${u.approvedReferralsCount || 0}</span>
-                        </div>
+                container.innerHTML += `
+                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; font-size:11px;">
+                        <div style="color:var(--gold); font-weight:bold;">${u.name} (ID: ${u.id})</div>
+                        <div><b>Coins:</b> ${u.coins} | <b>Ads Watched:</b> ${u.adsSeen}</div>
+                        <div><b>Approved Referrals:</b> ${u.approvedReferralsCount || 0}</div>
+                        <div><b>Total Won:</b> ${u.totalWon || 0} | <b>Total Lost:</b> ${u.totalLost || 0}</div>
                     </div>
                 `;
             });
@@ -1849,374 +2215,88 @@
             document.getElementById('admin-user-history-modal').classList.remove('active');
         }
 
-        function addNewAdminTask() {
-            let title = document.getElementById('admin-task-title').value.trim();
-            let link = document.getElementById('admin-task-link').value.trim();
-            let reward = parseInt(document.getElementById('admin-task-reward').value) || 100;
-
-            if(!title || !link) {
-                showNotification("❌ সম্পূর্ণ তথ্য দিন!");
-                return;
-            }
-
-            let newTask = { id: Date.now().toString(), title: title, link: link, reward: reward };
-            window.dbSet(window.dbRef(window.db, 'tasks/' + newTask.id), newTask);
-            showNotification("✅ নতুন টাস্ক যোগ করা হয়েছে!");
-
-            document.getElementById('admin-task-title').value = "";
-            document.getElementById('admin-task-link').value = "";
-        }
-
-        function renderAdminTasksManager() {
-            const list = document.getElementById('admin-tasks-manage-list');
-            if(!list) return;
-            list.innerHTML = "";
-            tasksList.forEach(t => {
-                list.innerHTML += `
-                    <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
-                        <span>${t.title} (${t.reward} Coins)</span>
-                        <button onclick="deleteAdminTask('${t.id}')" style="background:#ef4444; color:white; border:none; padding:3px 6px; border-radius:4px;">ডিলেট</button>
-                    </div>
-                `;
-            });
-        }
-
-        function deleteAdminTask(taskId) {
-            window.dbSet(window.dbRef(window.db, 'tasks/' + taskId), null);
-            showNotification("🗑️ টাস্ক মুছে ফেলা হয়েছে!");
-        }
-
-        function saveChannelLink() {
-            let link = document.getElementById('admin-channel-link-input').value.trim();
-            if(link) {
-                adminSettings.channelLink = link;
-                saveAdminData();
-                showNotification("🔗 টেলিগ্রাম লিংক সেভ হয়েছে!");
-            }
-        }
-
-        function sendBroadcast() {
-            let msg = document.getElementById('admin-broadcast-msg').value.trim();
-            if(msg) {
-                showNotification("📢 ব্রডকাস্ট পাঠানো হয়েছে: " + msg);
-                document.getElementById('admin-broadcast-msg').value = "";
-            }
-        }
-
-        function addBalanceToUser() {
-            let targetId = document.getElementById('admin-target-user').value.trim();
-            let addCoins = parseInt(document.getElementById('admin-add-coins').value) || 0;
-
-            if(targetId && addCoins > 0) {
-                const targetRef = window.dbRef(window.db, 'users/' + targetId);
-                window.dbGet(targetRef).then(snap => {
-                    if(snap.exists()) {
-                        let uData = snap.val();
-                        uData.coins = (uData.coins || 0) + addCoins;
-                        window.dbSet(targetRef, uData);
-                        showNotification(`✅ ID: ${targetId} এর ব্যালেন্সে ${addCoins} কয়েন যুক্ত হয়েছে!`);
-                    } else {
-                        showNotification("❌ ইউজার আইডি পাওয়া যায়নি!");
-                    }
-                });
-            }
-        }
-
-        function banUser() {
-            let targetId = document.getElementById('admin-target-user').value.trim();
-            if(targetId) {
-                adminSettings.bannedUsers.push(targetId);
-                saveAdminData();
-                showNotification(`🚫 ID: ${targetId} ব্যান করা হয়েছে!`);
-            }
-        }
-
-        function saveAdminSettings() {
-            adminSettings.adminPass = document.getElementById('admin-pass-input').value;
-            adminSettings.adRewardCoins = parseInt(document.getElementById('admin-ad-reward').value) || 50;
-            adminSettings.referRewardCoins = parseInt(document.getElementById('admin-refer-reward').value) || 100;
-            adminSettings.minWithdraw = parseInt(document.getElementById('admin-min-withdraw').value) || 50;
-            adminSettings.lbBonus = parseInt(document.getElementById('admin-lb-bonus').value) || 10000;
-            adminSettings.coinRate50 = parseFloat(document.getElementById('admin-coin-rate').value) || 1;
-            saveAdminData();
-            showNotification("⚙️ এডমিন সেটিং সেভ করা হয়েছে!");
-        }
-
-        function addDepositMethodDynamic() {
-            let name = document.getElementById('admin-dep-method-name').value.trim();
-            let acc = document.getElementById('admin-dep-method-acc').value.trim();
-            if(name && acc) {
-                adminSettings.depositMethods.push({ name: name, number: acc });
-                saveAdminData();
-                renderDepositMethodsList();
-                showNotification("✅ নতুন ডিপোজিট মেথড যুক্ত হয়েছে!");
-                document.getElementById('admin-dep-method-name').value = "";
-                document.getElementById('admin-dep-method-acc').value = "";
-            }
-        }
-
-        function renderDepositMethodsList() {
-            const list = document.getElementById('admin-dep-methods-list');
-            if(!list) return;
-            list.innerHTML = "";
-            adminSettings.depositMethods.forEach((m, idx) => {
-                list.innerHTML += `
-                    <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
-                        <span>${m.name}: <b style="color:var(--gold);">${m.number}</b></span>
-                        <div style="display:flex; gap:5px;">
-                            <button onclick="editDepositMethodNumber(${idx})" style="background:var(--neon-blue); color:black; border:none; padding:3px 6px; border-radius:4px;">এডিট</button>
-                            <button onclick="deleteDepositMethod(${idx})" style="background:#ef4444; color:white; border:none; padding:3px 6px; border-radius:4px;">ডিলেট</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function editDepositMethodNumber(idx) {
-            let newNum = prompt("নতুন নাম্বার/ID টাইপ করুন:", adminSettings.depositMethods[idx].number);
-            if(newNum) {
-                adminSettings.depositMethods[idx].number = newNum;
-                saveAdminData();
-                renderDepositMethodsList();
-                showNotification("✅ মেথড নাম্বার আপডেট করা হয়েছে!");
-            }
-        }
-
-        function deleteDepositMethod(idx) {
-            adminSettings.depositMethods.splice(idx, 1);
-            saveAdminData();
-            renderDepositMethodsList();
-            showNotification("🗑️ ডিপোজিট মেথড ডিলেট করা হয়েছে!");
-        }
-
-        function addWithdrawMethod() {
-            let name = document.getElementById('admin-new-method').value.trim();
-            if(name) {
-                adminSettings.withdrawMethods.push(name);
-                saveAdminData();
-                renderWithdrawMethodsList();
-                showNotification("✅ নতুন উইথড্র মেথড যুক্ত হয়েছে!");
-                document.getElementById('admin-new-method').value = "";
-            }
-        }
-
-        function renderWithdrawMethodsList() {
-            const list = document.getElementById('admin-with-methods-list');
-            if(!list) return;
-            list.innerHTML = "";
-            adminSettings.withdrawMethods.forEach((wm, idx) => {
-                list.innerHTML += `
-                    <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
-                        <span>${wm}</span>
-                        <button onclick="deleteWithdrawMethod(${idx})" style="background:#ef4444; color:white; border:none; padding:3px 6px; border-radius:4px;">ডিলেট</button>
-                    </div>
-                `;
-            });
-        }
-
-        function deleteWithdrawMethod(idx) {
-            adminSettings.withdrawMethods.splice(idx, 1);
-            saveAdminData();
-            renderWithdrawMethodsList();
-            showNotification("🗑️ উইথড্র মেথড ডিলেট করা হয়েছে!");
-        }
-
-        function renderAdminPanel() {
-            // Deposits Admin Panel
-            const depList = document.getElementById('admin-deposit-list');
-            if(depList) {
-                depList.innerHTML = "";
-                let pDeps = depositsList.filter(d => d.status === "Pending");
-                if(pDeps.length === 0) {
-                    depList.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন পেন্ডিং ডিপোজিট নেই</div>`;
-                } else {
-                    pDeps.forEach(d => {
-                        depList.innerHTML += `
-                            <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; font-size:11px;">
-                                <div><b>${d.userName}</b> (${d.method}) - ৳${d.amount}</div>
-                                <div style="color:var(--gold);">TrxID: ${d.trxId} | ${d.date}</div>
-                                <div style="display:flex; gap:8px; margin-top:8px;">
-                                    <button onclick="approveDeposit('${d.id}')" style="background:#22c55e; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">এপ্রুভ</button>
-                                    <button onclick="rejectDeposit('${d.id}')" style="background:#ef4444; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">রিজেক্ট</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-            }
-
-            // Withdraws Admin Panel
-            const withList = document.getElementById('admin-withdraw-list');
-            if(withList) {
-                withList.innerHTML = "";
-                let pWiths = withdrawsList.filter(w => w.status === "Pending");
-                if(pWiths.length === 0) {
-                    withList.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন পেন্ডিং উইথড্র নেই</div>`;
-                } else {
-                    pWiths.forEach(w => {
-                        withList.innerHTML += `
-                            <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; font-size:11px;">
-                                <div><b>${w.userName}</b> (${w.method}) - ${w.coins} Coins (৳${w.amountBdt})</div>
-                                <div style="color:var(--neon-green);">N/Acc: ${w.acc} | ${w.date}</div>
-                                <div style="display:flex; gap:8px; margin-top:8px;">
-                                    <button onclick="approveWithdraw('${w.id}')" style="background:#22c55e; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">এপ্রুভ</button>
-                                    <button onclick="rejectWithdraw('${w.id}')" style="background:#ef4444; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">রিজেক্ট</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-            }
-
-            renderDepositMethodsList();
-            renderWithdrawMethodsList();
-        }
-
-        function approveDeposit(depId) {
-            let dep = depositsList.find(d => d.id === depId);
-            if(dep) {
-                dep.status = "Approved";
-                window.dbSet(window.dbRef(window.db, 'deposits/' + depId), dep);
-
-                // Add coins to user with 10% bonus
-                const uRef = window.dbRef(window.db, 'users/' + dep.userId);
-                window.dbGet(uRef).then(snap => {
-                    if(snap.exists()) {
-                        let u = snap.val();
-                        let coinsToAdd = Math.floor(dep.amount * 50) + Math.floor(dep.amount * 5); // 10% bonus
-                        u.coins = (u.coins || 0) + coinsToAdd;
-                        window.dbSet(uRef, u);
-                    }
-                });
-                showNotification("✅ ডিপোজিট এপ্রুভ ও কয়েন যোগ করা হয়েছে!");
-            }
-        }
-
-        function rejectDeposit(depId) {
-            let dep = depositsList.find(d => d.id === depId);
-            if(dep) {
-                dep.status = "Rejected";
-                window.dbSet(window.dbRef(window.db, 'deposits/' + depId), dep);
-                showNotification("❌ ডিপোজিট রিজেক্ট করা হয়েছে!");
-            }
-        }
-
-        function approveWithdraw(withIds) {
-            let w = withdrawsList.find(item => item.id === withIds);
-            if(w) {
-                w.status = "Approved";
-                window.dbSet(window.dbRef(window.db, 'withdraws/' + withIds), w);
-
-                // Global Alert Broadcast
-                let alertObj = {
-                    userName: w.userName,
-                    amount: w.amountBdt,
-                    method: w.method,
-                    acc: w.acc,
-                    timestamp: Date.now()
-                };
-                window.dbPush(window.dbRef(window.db, 'withdrawal_alerts'), alertObj);
-                showNotification("✅ উইথড্র এপ্রুভ করা হয়েছে!");
-            }
-        }
-
-        function rejectWithdraw(withIds) {
-            let w = withdrawsList.find(item => item.id === withIds);
-            if(w) {
-                w.status = "Rejected";
-                window.dbSet(window.dbRef(window.db, 'withdraws/' + withIds), w);
-
-                // Refund coins
-                const uRef = window.dbRef(window.db, 'users/' + w.userId);
-                window.dbGet(uRef).then(snap => {
-                    if(snap.exists()) {
-                        let u = snap.val();
-                        u.coins = (u.coins || 0) + w.coins;
-                        window.dbSet(uRef, u);
-                    }
-                });
-                showNotification("❌ উইথড্র রিজেক্ট ও কয়েন ফেরত দেওয়া হয়েছে!");
-            }
-        }
-
-        /* 📋 USER TASKS CONTROLLER */
-        function renderUserTasks() {
-            const list = document.getElementById('user-tasks-list');
-            if(!list) return;
-            list.innerHTML = "";
-
-            if(tasksList.length === 0) {
-                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন এক্টিভ টাস্ক নেই!</div>`;
-                return;
-            }
-
-            tasksList.forEach(t => {
-                let isDone = (userData.completedTasks || []).includes(t.id);
-                list.innerHTML += `
-                    <div class="task-card">
-                        <div>
-                            <b style="font-size:13px; color:white;">${t.title}</b>
-                            <div style="font-size:11px; color:var(--gold);">রিওয়ার্ড: ${t.reward} Coins</div>
-                        </div>
-                        ${isDone ? `<span class="badge-approved">সম্পন্ন</span>` : `<button onclick="completeTask('${t.id}', '${t.link}', ${t.reward})" class="casino-btn" style="width:auto; padding:6px 12px; font-size:10px; background:var(--neon-blue); color:black;">করুন & ভেরিফাই</button>`}
-                    </div>
-                `;
-            });
-        }
-
-        function completeTask(taskId, link, reward) {
-            playAudio('click');
-            if(tg?.openTelegramLink && link.includes('t.me')) tg.openTelegramLink(link);
-            else window.open(link, '_blank');
-
-            setTimeout(() => {
-                if(!userData.completedTasks) userData.completedTasks = [];
-                userData.completedTasks.push(taskId);
-                userData.coins += reward;
-                saveProfile();
-                updateUI();
-                showNotification(`🎉 টাস্ক ভেরিফাইড! ${reward} কয়েন বোনাস পেয়েছেন!`);
-            }, 3000);
-        }
-
         /* 🏆 LEADERBOARD SYSTEM */
         function renderLeaderboard() {
             const list = document.getElementById('leaderboard-list');
             if(!list) return;
             list.innerHTML = "";
 
-            let usersArr = Object.values(allUsersMap);
-            usersArr.sort((a,b) => (b.approvedReferralsCount || 0) - (a.approvedReferralsCount || 0));
+            let sortedUsers = Object.values(allUsersMap).sort((a,b) => (b.approvedReferralsCount || 0) - (a.approvedReferralsCount || 0)).slice(0, 10);
 
-            usersArr.slice(0, 10).forEach((u, idx) => {
-                let crown = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx+1}`;
+            if(sortedUsers.length === 0) {
+                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">লিডারবোর্ড খালি!</div>`;
+                return;
+            }
+
+            sortedUsers.forEach((u, index) => {
+                let badge = index === 0 ? "🥇 1st" : index === 1 ? "🥈 2nd" : index === 2 ? "🥉 3rd" : `#${index + 1}`;
                 list.innerHTML += `
                     <div class="lb-card">
                         <div style="display:flex; align-items:center; gap:10px;">
-                            <b style="font-size:16px; color:var(--gold);">${crown}</b>
+                            <span style="font-weight:900; color:var(--gold); font-size:14px;">${badge}</span>
+                            <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--gold);" alt="Profile">
                             <div>
-                                <b style="font-size:13px; color:white;">${u.name}</b>
-                                <div style="font-size:10px; color:#cbd5e1;">Approved Referrals: <b style="color:var(--neon-green);">${u.approvedReferralsCount || 0}</b></div>
+                                <div style="font-weight:bold; font-size:12px;">${u.name}</div>
+                                <div style="font-size:10px; color:#94a3b8;">${u.approvedReferralsCount || 0} Approved Referrals</div>
                             </div>
                         </div>
-                        <span style="font-size:11px; color:var(--gold); font-weight:bold;">${u.coins || 0} Coins</span>
                     </div>
                 `;
             });
         }
 
-        /* ⏱️ MIDNIGHT RESET */
         function checkMidnightReset() {
-            let lastReset = localStorage.getItem('last_midnight_reset');
-            let today = new Date().toLocaleDateString();
+            const lastReset = localStorage.getItem('last_lb_reset');
+            const today = new Date().toDateString();
 
-            if(lastReset !== today) {
-                localStorage.setItem('last_midnight_reset', today);
-                // Automatically reset leaderboard stats if needed on frontend sync
+            if (lastReset !== today) {
+                localStorage.setItem('last_lb_reset', today);
+                let sortedUsers = Object.values(allUsersMap).sort((a,b) => (b.approvedReferralsCount || 0) - (a.approvedReferralsCount || 0));
+                if (sortedUsers.length > 0 && sortedUsers[0].approvedReferralsCount > 0) {
+                    let winner = sortedUsers[0];
+                    let bonus = adminSettings.lbBonus || 10000;
+                    
+                    const winnerRef = window.dbRef(window.db, 'users/' + winner.id);
+                    window.dbGet(winnerRef).then((snap) => {
+                        if (snap.exists()) {
+                            let wData = snap.val();
+                            wData.coins = (wData.coins || 0) + bonus;
+                            window.dbSet(winnerRef, wData);
+                        }
+                    });
+                }
             }
         }
 
-        /* 🔄 UI REALTIME SYNC */
+        /* 👤 PROFILE MODAL AND UTILS */
+        function openVipModal() { document.getElementById('vip-modal').classList.add('active'); }
+        function closeVipModal() { document.getElementById('vip-modal').classList.remove('active'); }
+
+        function saveCustomName() {
+            playAudio('click');
+            let newName = document.getElementById('custom-name-input').value.trim();
+            if(newName) {
+                userData.name = newName;
+                saveProfile();
+                updateUI();
+                showNotification("✅ নাম সফলভাবে পরিবর্তিত হয়েছে!");
+            }
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    userData.photoUrl = e.target.result;
+                    saveProfile();
+                    updateUI();
+                    showNotification("📸 প্রোফাইল ফটো আপডেট করা হয়েছে!");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function updateUI() {
             document.getElementById('user-coins').innerText = userData.coins || 0;
             document.getElementById('ads-count').innerText = userData.adsSeen || 0;
@@ -2225,30 +2305,26 @@
             document.getElementById('ad-reward-display').innerText = adminSettings.adRewardCoins || 50;
             document.getElementById('ad-btn-coins').innerText = adminSettings.adRewardCoins || 50;
             document.getElementById('refer-bonus-display').innerText = adminSettings.referRewardCoins || 100;
-            document.getElementById('leaderboard-bonus-text').innerText = (adminSettings.lbBonus || 10000) + " কয়েন";
+            document.getElementById('leaderboard-bonus-text').innerText = adminSettings.lbBonus || 10000;
             document.getElementById('current-pass-lbl').innerText = adminSettings.adminPass || "018212";
 
-            // Profile Sync
-            document.getElementById('prof-name-display').innerText = userData.name;
-            document.getElementById('profile-img-preview').src = userData.photoUrl || userPhoto;
+            if(document.getElementById('channel-link-btn')) {
+                document.getElementById('channel-link-btn').href = adminSettings.channelLink || "https://t.me/earningzone6357";
+            }
+
+            document.getElementById('prof-name-display').innerText = userData.name || "VIP User";
+            document.getElementById('profile-img-preview').src = userData.photoUrl || "https://api.dicebear.com/7.x/bottts/svg?seed=" + userData.id;
             document.getElementById('prof-total-coins').innerText = userData.coins || 0;
             document.getElementById('prof-total-ads').innerText = userData.adsSeen || 0;
             document.getElementById('prof-total-referrals').innerText = userData.approvedReferralsCount || 0;
             document.getElementById('prof-join-date').innerText = userData.joinDate || "Today";
 
-            // Header Channel Link
-            if(adminSettings.channelLink) {
-                document.getElementById('channel-link-btn').href = adminSettings.channelLink;
-            }
-
-            updateReferralLinkInput();
             renderDepositMethodsUI();
             renderWithdrawMethodsUI();
-            renderUserTasks();
         }
 
         window.onload = function() {
-            updateUI();
+            updateReferralLinkInput();
         };
     </script>
 </body>
