@@ -4,14 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIP Ultimate Earning Hub & Real-time Admin Control</title>
-
-    <!-- Telegram WebApp SDK & FontAwesome Icons -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Monetag Ads SDK -->
     <script src="//libtl.com/sdk.js" data-zone="11399320" data-sdk="show_11399320"></script>
-
     <style>
         :root {
             --bg-dark: #030611;
@@ -25,17 +20,13 @@
             --aviator-red: #e51d38;
             --aviator-bg: #0e131d;
         }
-
         * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-
         body {
             margin: 0; padding: 0;
             background: var(--bg-dark);
             background-image: radial-gradient(circle at top, #1e0938 0%, #030611 85%);
             color: white; user-select: none; padding-bottom: 90px; overflow-x: hidden;
         }
-
-        /* TOP TOAST NOTIFICATION */
         #custom-toast {
             position: fixed; top: -100px; left: 5%; right: 5%; width: 90%;
             background: linear-gradient(135deg, #ff0055, #a855f7, #00e5ff);
@@ -49,14 +40,11 @@
             border: 2px solid rgba(255,255,255,0.4);
         }
         #custom-toast.show { top: 20px; }
-
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
-        /* SPLASH SCREEN */
         #app-splash {
             position: fixed; inset: 0; background: #030611; z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -66,7 +54,6 @@
         }
         .splash-logo { font-size: 65px; color: var(--gold); text-shadow: var(--gold-glow); margin-bottom: 15px; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-
         .splash-features {
             background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 16px;
@@ -76,7 +63,6 @@
             font-size: 13px; color: var(--neon-green); font-weight: bold; margin: 6px 0;
             display: flex; align-items: center; justify-content: center; gap: 8px; text-shadow: 0 0 8px rgba(0,255,136,0.4);
         }
-
         .progress-bar-container {
             width: 85%; max-width: 300px; height: 16px; background: rgba(255,255,255,0.1);
             border-radius: 20px; border: 2px solid var(--gold); overflow: hidden; margin-top: 15px;
@@ -89,8 +75,6 @@
             border-radius: 20px; transition: width 0.05s linear;
         }
         .progress-text { font-size: 14px; font-weight: bold; color: var(--gold); margin-top: 10px; text-shadow: 0 0 10px var(--gold); }
-
-        /* LOADER */
         #game-loader {
             position: fixed; inset: 0; 
             background: radial-gradient(circle at center, #1e0938 0%, #030611 100%);
@@ -110,8 +94,6 @@
             animation: spin 0.8s linear infinite; margin: 0 auto 20px auto; box-shadow: 0 0 20px var(--neon-pink);
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* HEADER BANNER */
         .channel-banner {
             background: linear-gradient(90deg, #0088cc, #ff0055, #00e5ff);
             background-size: 200% 100%; animation: gradientShift 4s infinite linear;
@@ -122,7 +104,6 @@
             background: white; color: #0088cc; padding: 6px 14px; border-radius: 20px; 
             text-decoration: none; font-size: 11px; font-weight: 900; box-shadow: 0 0 10px rgba(255,255,255,0.8);
         }
-
         .dash-card {
             background: var(--card-bg); backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 215, 0, 0.4); border-radius: 20px;
@@ -134,7 +115,6 @@
             50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.9); }
             100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
         }
-
         .vip-tag { 
             position: absolute; top: 15px; right: 15px; 
             background: linear-gradient(45deg, var(--gold), #ff8800); 
@@ -142,8 +122,6 @@
             letter-spacing: 1px; box-shadow: var(--gold-glow); cursor: pointer;
         }
         .coin-balance { font-size: 38px; font-weight: 900; color: var(--gold); text-shadow: var(--gold-glow); margin: 5px 0; }
-
-        /* GAME BANNERS */
         .game-card {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
             border-radius: 20px; padding: 14px; margin-bottom: 15px; 
@@ -153,38 +131,31 @@
         }
         .game-card:hover { transform: translateY(-3px) scale(1.01); }
         .game-card:active { transform: scale(0.97); }
-
         .game-card.aviator-banner {
             background: linear-gradient(135deg, #2b040e 0%, #0e131d 60%, #3d0012 100%);
             border: 2px solid var(--aviator-red);
             box-shadow: 0 0 18px rgba(229, 29, 56, 0.4);
         }
-
         .game-card.spin-banner {
             background: linear-gradient(135deg, #2e1c01 0%, #0f172a 60%, #472b00 100%);
             border: 2px solid var(--gold);
             box-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
         }
-
         .game-card.battle-banner {
             background: linear-gradient(135deg, #022636 0%, #0f172a 60%, #004d66 100%);
             border: 2px solid var(--neon-blue);
             box-shadow: 0 0 18px rgba(0, 229, 255, 0.4);
         }
-
         .game-thumb {
             width: 80px; height: 80px; border-radius: 16px; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.6); overflow: hidden; position: relative;
         }
-
         .game-badge {
             position: absolute; top: 0; right: 0; background: linear-gradient(45deg, #ff0055, #a855f7);
             color: white; font-size: 9px; font-weight: bold; padding: 3px 8px;
             border-bottom-left-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px;
         }
-
-        /* AVIATOR FRAME & CANVAS */
         .aviator-frame {
             background: #000; border-radius: 16px; border: 2px solid #232938; position: relative; overflow: hidden; box-shadow: 0 0 25px rgba(229,29,56,0.3); margin-bottom: 15px;
         }
@@ -198,8 +169,6 @@
         .multiplier-display.crashed { color: var(--aviator-red); text-shadow: 0 0 25px var(--aviator-red); }
         .aviator-plane-svg { position: absolute; width: 65px; height: 35px; bottom: 10px; left: 10px; z-index: 4; transition: transform 0.05s linear; filter: drop-shadow(0px 0px 8px #ff0055); }
         #aviatorCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; }
-
-        /* WHEEL */
         .wheel-wrapper { position: relative; width: 230px; height: 230px; margin: 15px auto; }
         .wheel-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 32px; color: var(--gold); z-index: 10; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
         .wheel-box {
@@ -208,48 +177,38 @@
             transition: transform 4s cubic-bezier(0.15, 0.9, 0.15, 1);
             background: conic-gradient(#ff0055 0deg 60deg, #00c853 60deg 120deg, #ff9800 120deg 180deg, #00e5ff 180deg 240deg, #a855f7 240deg 300deg, #ffd700 300deg 360deg);
         }
-
         .casino-btn {
             background: linear-gradient(45deg, #ff0055, #ff5000); color: white; border: none; width: 100%; padding: 14px;
             font-size: 15px; font-weight: 900; border-radius: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
             box-shadow: 0 4px 15px rgba(255, 0, 85, 0.5); transition: all 0.15s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
         }
         .casino-btn:active { transform: scale(0.96); opacity: 0.9; }
-
-        /* CLEAN GLOBAL CHAT STYLING */
         .chat-box { height: 260px; background: rgba(0,0,0,0.6); border-radius: 16px; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; border: 1px solid #334155; }
         .chat-row { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 4px; }
         .chat-row.mine { flex-direction: row-reverse; }
         .chat-avatar { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; flex-shrink: 0; box-shadow: 0 0 8px rgba(255,215,0,0.4); }
         .chat-msg-bubble { background: #1e293b; padding: 10px 14px; border-radius: 14px; font-size: 13px; max-width: 75%; border: 1px solid rgba(255,255,255,0.08); word-break: break-word; color: #f8fafc; }
         .chat-row.mine .chat-msg-bubble { background: linear-gradient(135deg, #a855f7, #ff0055); border: none; color: white; }
-
         .navbar {
             position: fixed; bottom: 0; left: 0; right: 0; background: rgba(5, 7, 17, 0.95);
             display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(255,215,0,0.3); backdrop-filter: blur(20px); z-index: 1000;
         }
         .nav-link { color: #64748b; text-decoration: none; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
         .nav-link.active { color: var(--gold); text-shadow: var(--gold-glow); font-weight: bold; }
-
         .tab-page { display: none; padding: 0 15px; }
         .tab-page.active { display: block; }
         .input-box { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: white; margin-bottom: 10px; outline: none; }
         .input-box:focus { border-color: var(--gold); }
-
         .method-btn { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; font-weight: bold; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 100px; }
         .method-btn.selected { border-color: var(--gold); background: rgba(255,215,0,0.15); box-shadow: 0 0 10px rgba(255,215,0,0.4); }
-
         .aviator-history { display: flex; gap: 6px; overflow-x: auto; padding: 5px 0; margin-bottom: 8px; }
         .history-chip { background: #1e293b; color: var(--neon-green); font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 10px; border: 1px solid rgba(0,255,136,0.3); flex-shrink: 0; }
         .history-chip.high { color: var(--gold); border-color: var(--gold); }
-
         .badge-pending { background: #eab308; color: black; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
         .badge-approved { background: #22c55e; color: white; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
         .badge-rejected { background: #ef4444; color: white; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
         .admin-item { background: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #334155; font-size: 12px; }
-
         .history-section { margin-top: 15px; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 12px; border: 1px solid #334155; }
-        
         .modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
             z-index: 15000; justify-content: center; align-items: center; padding: 15px;
@@ -258,8 +217,6 @@
         .modal-content {
             background: #0f172a; border: 1px solid var(--gold); border-radius: 16px; padding: 20px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; position: relative;
         }
-
-        /* PROFILE AVATAR */
         .profile-avatar-container {
             position: relative; width: 90px; height: 90px; margin: 0 auto 10px auto;
         }
@@ -272,50 +229,36 @@
             color: white; border: none; border-radius: 50%; width: 28px; height: 28px;
             cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;
         }
-
-        /* TASKS CARD */
         .task-card {
             background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px;
             padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
         }
         .task-card:hover { border-color: var(--neon-blue); }
-
-        /* LEADERBOARD CARD */
         .lb-card {
             background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 14px;
             padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
         }
-
         .task-btn-group { display: flex; gap: 6px; }
         .btn-join { background: #0088cc; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; text-decoration: none; }
         .btn-verify { background: var(--neon-green); color: black; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <!-- TOP TOAST NOTIFICATION -->
     <div id="custom-toast"><i class="fa-solid fa-bell"></i> <span id="toast-text">নোটিফিকেশন</span></div>
-
-    <!-- SPLASH SCREEN -->
     <div id="app-splash">
         <div class="splash-logo"><i class="fa-solid fa-gem"></i></div>
         <h2 style="color:var(--gold); margin:0; text-shadow: var(--gold-glow); font-size:24px;">VIP REWARD HUB</h2>
-        
         <div class="splash-features">
             <div class="splash-feature-item"><i class="fa-solid fa-gift"></i> প্রতিটি এড দেখলে ৫০ কয়েন বোনাস!</div>
             <div class="splash-feature-item"><i class="fa-solid fa-bolt"></i> ইনস্ট্যান্ট উইথড্র ও ডিপোজিট সার্ভিস</div>
-            <div class="splash-feature-item"><i class="fa-solid fa-users"></i> বন্ধু রেফার করে পান ১০০ কয়েন বোনাস</div>
+            <div class="splash-feature-item"><i class="fa-solid fa-users"></i> বন্ধু রেফার করে পান ১০০ কয়েন বোনাস</div>
         </div>
-
         <p style="color:#94a3b8; font-size:11px; margin-top:0;">সার্ভারের সাথে রিয়েল-টাইম সিঙ্ক হচ্ছে...</p>
-        
         <div class="progress-bar-container">
             <div class="progress-bar-fill" id="splash-progress"></div>
         </div>
         <div class="progress-text" id="splash-percentage">1%</div>
     </div>
-
-    <!-- GAME LOADER -->
     <div id="game-loader">
         <div class="premium-loader-box">
             <div class="loader-spinner"></div>
@@ -323,14 +266,10 @@
             <p style="font-size: 12px; color:#cbd5e1; margin-top:8px;" id="loader-desc">সুরক্ষিত সার্ভারে সংযোগ স্থাপন করা হচ্ছে...</p>
         </div>
     </div>
-
-    <!-- TELEGRAM OFFICIAL CHANNEL BANNER -->
     <div class="channel-banner">
         <span><i class="fa-brands fa-telegram"></i> সকল আপডেট ও সিক্রেট সিগন্যাল পেতে</span>
-        <a href="https://t.me/earningzone6357" id="channel-link-btn" target="_blank" class="channel-btn" onclick="playAudio('click')">জয়েন করুন</a>
+        <a href="https://t.me/earningzone6357" id="channel-link-btn" target="_blank" class="channel-btn" onclick="playAudio('click')">জয়েন করুন</a>
     </div>
-
-    <!-- MAIN COIN DASHBOARD -->
     <div class="dash-card">
         <span class="vip-tag" id="vip-badge" onclick="openVipModal()">VIP LEVEL 1 ℹ️</span>
         <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing:1px;">আপনার ব্যালেন্স (REAL CASH / COINS)</div>
@@ -341,31 +280,25 @@
         </div>
     </div>
 
-    <!-- TAB 1: WATCH ADS & TASKS SECTION -->
     <div id="tab-earn" class="tab-page active">
-        <!-- ADS CARD -->
         <div class="dash-card" style="margin:0 0 15px 0;">
             <i class="fa-solid fa-play-circle" style="font-size: 55px; color: var(--neon-pink); margin-bottom: 10px; filter: drop-shadow(0 0 10px var(--neon-pink));"></i>
-            <h2>স্পিড ওয়াচ এডস (Monetag)</h2>
+            <h2>স্পিড ওয়াচ এডস (Monetag)</h2>
             <p style="color:#94a3b8; font-size:12px;">সম্পূর্ণ এডস দেখলে সাথে সাথে পাবেন <b id="ad-reward-display" style="color:var(--gold);">50</b> কয়েন!</p>
             <button class="casino-btn" id="ad-btn" onclick="watchAd()"><i class="fa-solid fa-bolt"></i> এড দেখুন (<span id="ad-btn-coins">50</span> কয়েন)</button>
             <div id="ad-timer-status" style="margin-top:10px; font-size:12px; color:var(--neon-green); font-weight:bold; display:none;"></div>
         </div>
-
-        <!-- TASKS SECTION -->
         <div class="dash-card" style="margin:0; text-align:left;">
             <h3 style="color:var(--neon-blue); margin-top:0;"><i class="fa-solid fa-list-check"></i> মাইক্রো টাস্ক (Admin Tasks)</h3>
-            <p style="font-size:11px; color:#94a3b8; margin-bottom:12px;">টাস্ক সম্পন্ন করে ভেরিফাই বাটনে ক্লিক করে বোনাস কয়েন সংগ্রহ করুন:</p>
+            <p style="font-size:11px; color:#94a3b8; margin-bottom:12px;">টাস্ক সম্পন্ন করে ভেরিফাই বাটনে ক্লিক করে বোনাস কয়েন সংগ্রহ করুন:</p>
             <div id="user-tasks-list">
                 <div style="text-align:center; color:#94a3b8; font-size:11px;">টাস্ক লোড হচ্ছে...</div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 2: GAMES HUB PAGE -->
     <div id="tab-games" class="tab-page">
         <h3 style="color:var(--gold); text-align:center; margin-bottom:15px;"><i class="fa-solid fa-gamepad"></i> ভিআইপি গেমস হাব</h3>
-
         <div class="game-card aviator-banner" onclick="openGame('aviator')">
             <span class="game-badge">HOT 🔴</span>
             <div class="game-thumb" style="background: radial-gradient(circle, #e51d38 0%, #000000 100%);">
@@ -376,11 +309,10 @@
                 </svg>
             </div>
             <div>
-                <h4 style="margin:0; font-size:16px; color:#fff; text-shadow: 0 0 8px #ff0055;">✈️ এভিয়েটর ক্র্যাশ (AI Predictor Pro)</h4>
-                <small style="color:#cbd5e1; font-size:11px;">রিয়েল-টাইম এআই চালিত লাইভ ফ্লাইট গেম!</small>
+                <h4 style="margin:0; font-size:16px; color:#fff; text-shadow: 0 0 8px #ff0055;">✈️ এভিয়েটর ক্র্যাশ (AI Predictor Pro)</h4>
+                <small style="color:#cbd5e1; font-size:11px;">রিয়েল-টাইম এআই চালিত লাইভ ফ্লাইট গেম!</small>
             </div>
         </div>
-
         <div class="game-card spin-banner" onclick="openGame('spin')">
             <span class="game-badge">VIP 🎰</span>
             <div class="game-thumb" style="background: radial-gradient(circle, #ffd700 0%, #1a0f00 100%);">
@@ -388,10 +320,9 @@
             </div>
             <div>
                 <h4 style="margin:0; font-size:16px; color:#fff; text-shadow: 0 0 8px var(--gold);">🎰 কাস্টম বেট স্পিন</h4>
-                <small style="color:#cbd5e1; font-size:11px;">পছন্দমতো কয়েন বেট ধরে স্পিন ঘুরিয়ে জিতুন</small>
+                <small style="color:#cbd5e1; font-size:11px;">পছন্দমতো কয়েন বেট ধরে স্পিন ঘুরিয়ে জিতুন</small>
             </div>
         </div>
-
         <div class="game-card battle-banner" onclick="openGame('battle')">
             <span class="game-badge">LIVE 🎟️</span>
             <div class="game-thumb" style="background: radial-gradient(circle, #00e5ff 0%, #001f2b 100%);">
@@ -399,21 +330,18 @@
             </div>
             <div>
                 <h4 style="margin:0; font-size:16px; color:#fff; text-shadow: 0 0 8px var(--neon-blue);">🎟️ ৩-লেভেল টিকেট ব্যাটল রুম</h4>
-                <small style="color:#cbd5e1; font-size:11px;">মাল্টিপ্লেয়ার রিয়েল-টাইম টিকেট ব্যাটল রুম</small>
+                <small style="color:#cbd5e1; font-size:11px;">মাল্টিপ্লেয়ার রিয়েল-টাইম টিকেট ব্যাটল রুম</small>
             </div>
         </div>
     </div>
 
-    <!-- SUB-GAME 1: AVIATOR REAL CRASH GAME -->
     <div id="sub-aviator" class="tab-page">
         <button class="casino-btn" style="padding:6px 12px; font-size:11px; margin-bottom:10px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
-        
         <div class="aviator-frame">
             <div class="aviator-header">
                 <span style="color:var(--aviator-red);"><i class="fa-solid fa-robot"></i> AI SMART ENGINE ACTIVE</span>
                 <span id="aviator-status-badge" style="color:var(--neon-green);">● LIVE SERVER RUNNING</span>
             </div>
-
             <div class="aviator-history" id="aviator-history-box">
                 <div class="history-chip">1.24x</div>
                 <div class="history-chip high">5.60x</div>
@@ -421,7 +349,6 @@
                 <div class="history-chip high">12.30x</div>
                 <div class="history-chip">2.10x</div>
             </div>
-
             <div class="aviator-canvas-container">
                 <canvas id="aviatorCanvas"></canvas>
                 <div class="multiplier-display" id="aviator-mult">1.00x</div>
@@ -432,11 +359,10 @@
                     <circle cx="95" cy="10" r="4" fill="#ffd700"/>
                 </svg>
             </div>
-
             <div style="padding:12px; background:#0f172a;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                     <div>
-                        <label style="font-size:10px; color:#94a3b8;">বেট কয়েন পরিমাণ:</label>
+                        <label style="font-size:10px; color:#94a3b8;">বেট কয়েন পরিমাণ:</label>
                         <input type="number" id="aviator-bet-input" class="input-box" value="100" style="margin:0; text-align:center; font-weight:bold; color:var(--gold);">
                     </div>
                     <div style="text-align:right;">
@@ -445,7 +371,6 @@
                         </label>
                     </div>
                 </div>
-
                 <div style="display:flex; gap:10px;">
                     <button class="casino-btn" id="aviator-start-btn" style="background:linear-gradient(45deg, #00c853, #00e5ff); color:black;" onclick="placeAviatorBet()"><i class="fa-solid fa-plane-departure"></i> পরবর্তী রাউন্ডে বেট ধরুন</button>
                     <button class="casino-btn" id="aviator-cash-btn" style="background:linear-gradient(45deg, #ffd700, #ff8800); color:black; display:none;" onclick="cashoutAviator()"><i class="fa-solid fa-hand-holding-dollar"></i> ক্যাশআউট করুন</button>
@@ -454,60 +379,47 @@
         </div>
     </div>
 
-    <!-- SUB-GAME 2: CUSTOM BET SPIN -->
     <div id="sub-spin" class="tab-page">
         <button class="casino-btn" style="padding:6px 12px; font-size:11px; margin-bottom:10px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
-        
         <div class="dash-card" style="margin:0;">
             <h3>🎰 ভিআইপি কাস্টম বেট স্পিন</h3>
-            <label style="font-size:11px; color:#94a3b8;">আপনার স্পিন বেট কয়েন টাইপ করুন:</label>
+            <label style="font-size:11px; color:#94a3b8;">আপনার স্পিন বেট কয়েন টাইপ করুন:</label>
             <input type="number" id="spin-bet-amount" class="input-box" value="100" style="text-align:center; font-weight:bold; color:var(--gold);">
-
             <div class="wheel-wrapper">
                 <div class="wheel-pointer">▼</div>
                 <div class="wheel-box" id="spin-wheel-element"></div>
             </div>
-
             <button class="casino-btn" style="background: linear-gradient(45deg, #a855f7, #ff0055);" onclick="spinCustomWheel()"><i class="fa-solid fa-rotate"></i> স্পিন করুন</button>
         </div>
     </div>
 
-    <!-- SUB-GAME 3: BATTLE ROOMS -->
     <div id="sub-battle" class="tab-page">
         <button class="casino-btn" style="padding:6px 12px; font-size:11px; margin-bottom:10px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
-        
         <div class="dash-card" style="margin:0; background: radial-gradient(circle, #2d124d 0%, #120824 100%);">
             <h3 style="color:var(--neon-blue); margin-top:0;">🎟️ টিকেট ব্যাটল রুম</h3>
-            
             <label style="font-size:11px; color:#cbd5e1;">লেভেল সিলেক্ট করুন:</label>
             <select class="input-box" id="battle-level-select" onchange="changeBattleLevel()">
                 <option value="1">Level 1 (Bronze) - 50 Coins/Ticket</option>
                 <option value="2">Level 2 (Silver) - 200 Coins/Ticket</option>
                 <option value="3">Level 3 (Gold VIP) - 1000 Coins/Ticket</option>
             </select>
-
             <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0;">
-                <span style="font-size:12px; color:var(--gold);">পোট কয়েন: <b id="battle-pot-display">0</b> 🪙</span>
-                <span style="background:var(--neon-pink); padding:4px 8px; border-radius:8px; font-weight:bold; font-size:11px;" id="battle-timer">⏱️ ওয়েটিং...</span>
+                <span style="font-size:12px; color:var(--gold);">পোট কয়েন: <b id="battle-pot-display">0</b> 🪙</span>
+                <span style="background:var(--neon-pink); padding:4px 8px; border-radius:8px; font-weight:bold; font-size:11px;" id="battle-timer">⏱️ ওয়েটিং...</span>
             </div>
-
             <div style="max-height: 120px; overflow-y:auto; text-align:left; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; margin-bottom:10px;" id="battle-buyers-log">
                 <div style="font-size:11px; color:#94a3b8; text-align:center;">এখনো কেউ টিকেট কেনেনি! আপনি প্রথম টিকেট কিনলে ৩০ সে. টাইম শুরু হবে।</div>
             </div>
-
             <button class="casino-btn" style="background: linear-gradient(45deg, #00c853, #00e5ff);" onclick="buyLevelTicket()"><i class="fa-solid fa-cart-plus"></i> টিকেট কিনুন</button>
         </div>
     </div>
 
-    <!-- TAB: DEPOSIT -->
     <div id="tab-deposit" class="tab-page">
         <div class="dash-card" style="margin:0; text-align:left;">
             <h3 style="color:var(--gold); text-align:center; margin-top:0;"><i class="fa-solid fa-wallet"></i> ডিপোজিট একাউন্ট (১০% বোনাস)</h3>
             <p style="text-align:center; font-size:11px; color:#94a3b8; margin-bottom:15px;">যেকোনো ডিপোজিটে পান তাৎক্ষণিক <b>১০% ক্যাশব্যাক বোনাস</b>!</p>
-
             <label style="font-size:11px; color:#94a3b8;">ডিপোজিট মেথড বেছে নিন:</label>
             <div style="display:flex; gap:10px; margin-bottom:12px; overflow-x:auto; padding-bottom:5px;" id="deposit-method-container"></div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; border:1px dashed var(--gold); margin-bottom:12px;" id="deposit-info-box">
                 <div style="font-size:11px; color:#cbd5e1;"><span id="dep-method-title">মেথড</span> নম্বর/ID:</div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
@@ -515,19 +427,14 @@
                     <button onclick="copyDepositAddress()" style="background:#334155; color:white; border:none; padding:4px 8px; border-radius:6px; font-size:10px; cursor:pointer;">কপি</button>
                 </div>
             </div>
-
             <label style="font-size:11px; color:#94a3b8;">ডিপোজিট টাকা (৳):</label>
             <input type="number" id="deposit-amount-input" class="input-box" placeholder="যেমন: 50" oninput="calculateDepositBonus()">
-
             <div style="font-size:12px; color:var(--neon-green); margin-bottom:10px;">
                 🎁 অতিরিক্ত ১০% বোনাস: <b id="deposit-bonus-text">৳0</b> (মোট পাবেন: <b id="deposit-total-text">৳0</b>)
             </div>
-
             <label style="font-size:11px; color:#94a3b8;">ট্রানজেকশন আইডি (TrxID / Pay ID):</label>
             <input type="text" id="deposit-trx-input" class="input-box" placeholder="যেমন: 9X7A2K1M">
-
             <button class="casino-btn" style="background:linear-gradient(45deg, #00c853, #00e5ff); color:black;" onclick="submitDeposit()"><i class="fa-solid fa-check-circle"></i> ডিপোজিট কনফার্ম করুন (পেন্ডিং থাকবে)</button>
-
             <div class="history-section">
                 <h4 style="margin:0 0 8px 0; color:var(--gold); font-size:13px;"><i class="fa-solid fa-clock-rotate-left"></i> আপনার ডিপোজিট হিস্ট্রি</h4>
                 <div id="user-deposit-history"></div>
@@ -535,15 +442,13 @@
         </div>
     </div>
 
-    <!-- TAB: REFER & EARN -->
     <div id="tab-refer" class="tab-page">
         <div class="dash-card" style="margin:0;">
             <i class="fa-solid fa-users" style="font-size: 50px; color: var(--neon-blue); margin-bottom:10px;"></i>
             <h3>প্রফেশনাল রেফারেল প্রোগ্রাম</h3>
             <p style="font-size:12px; color:#cbd5e1; line-height:1.5;">
-                আপনার রেফারেল লিংকে জয়েন করার পর নতুন ইউজার **কমপক্ষে ১০টি এডস (Ads)** সম্পন্ন করলে রেফারেল Approved হবে এবং আপনি <b id="refer-bonus-display" style="color:var(--gold);">100</b> কয়েন বোনাস পাবেন!
+                আপনার রেফারেল লিংকে জয়েন করার পর নতুন ইউজার **কমপক্ষে ১০টি এডস (Ads)** সম্পন্ন করলে রেফারেল Approved হবে এবং আপনি <b id="refer-bonus-display" style="color:var(--gold);">100</b> কয়েন বোনাস পাবেন!
             </p>
-            
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin:15px 0;">
                 <label style="font-size:11px; color:#94a3b8; font-weight:bold;">আপনার Telegram Mini App রেফারেল লিংক:</label>
                 <div style="display:flex; gap:5px; margin-top:8px;">
@@ -552,12 +457,10 @@
                 </div>
                 <button class="casino-btn" style="margin-top:10px; background:linear-gradient(45deg, #0088cc, #00e5ff); color:black; font-size:12px;" onclick="shareReferLink()"><i class="fa-brands fa-telegram"></i> বন্ধুদের সাথে Share করুন</button>
             </div>
-
             <button class="casino-btn" style="background:linear-gradient(45deg, #a855f7, #ff0055); color:white;" onclick="openReferHistoryModal()"><i class="fa-solid fa-list"></i> আপনার রেফার হিস্ট্রি দেখুন</button>
         </div>
     </div>
 
-    <!-- REFER HISTORY MODAL -->
     <div class="modal" id="refer-modal">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -570,7 +473,6 @@
         </div>
     </div>
 
-    <!-- VIP PRO LEVEL MODAL -->
     <div class="modal" id="vip-modal">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -579,7 +481,7 @@
             </div>
             <div style="font-size:12px; color:#cbd5e1; line-height:1.6;">
                 <p style="color:var(--neon-green); font-weight:bold;">👑 ভিআইপি লেভেল কি এবং কীভাবে পাবেন?</p>
-                <p>আপনি যত বেশি গেম খেলবেন, ডিপোজিট করবেন এবং এডস দেখবেন আপনার ভিআইপি পয়েন্ট বাড়বে!</p>
+                <p>আপনি যত বেশি গেম খেলবেন, ডিপোজিট করবেন এবং এডস দেখবেন আপনার ভিআইপি পয়েন্ট বাড়বে!</p>
                 <hr style="border-color:#334155; margin:10px 0;">
                 <div style="margin-bottom:8px;">
                     <b style="color:var(--gold);">🏅 Level 1 (Bronze Pro):</b><br>
@@ -587,12 +489,12 @@
                     - ক্যাশআউট স্পিড: নরমাল
                 </div>
                 <div style="margin-bottom:8px;">
-                    <b style="color:var(--neon-blue);">🥈 Level 2 (Silver Pro - ৫,০০০ কয়েন ইনভেস্ট):</b><br>
+                    <b style="color:var(--neon-blue);">🥈 Level 2 (Silver Pro - ৫,০০০ কয়েন ইনভেস্ট):</b><br>
                     - ডিপোজিট বোনাস: ১২% ক্যাশব্যাক<br>
                     - উইথড্র প্রসেসিং টাইম: ইনস্ট্যান্ট
                 </div>
                 <div>
-                    <b style="color:var(--neon-pink);">🥇 Level 3 (Gold VIP Pro - ২০,০০০+ কয়েন ইনভেস্ট):</b><br>
+                    <b style="color:var(--neon-pink);">🥇 Level 3 (Gold VIP Pro - ২০,০০০+ কয়েন ইনভেস্ট):</b><br>
                     - ২৪/৭ এডমিন সাপোর্ট<br>
                     - প্রতি উইকলি ফ্রি ক্যাশ ব্যাক ও রেফার কমিশন ১৫%
                 </div>
@@ -600,7 +502,6 @@
         </div>
     </div>
 
-    <!-- ADMIN USER HISTORY MODAL -->
     <div class="modal" id="admin-user-history-modal">
         <div class="modal-content" style="max-width:500px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -611,50 +512,39 @@
         </div>
     </div>
 
-    <!-- TAB 3: LEADERBOARD -->
     <div id="tab-leaderboard" class="tab-page">
         <h3 style="text-align:center; color:var(--gold); margin-bottom:4px;"><i class="fa-solid fa-trophy"></i> টপ ১০ লিডারবোর্ড (Approved Referrals Only)</h3>
         <p style="text-align:center; font-size:11px; color:#94a3b8; margin-bottom:15px;">
-            প্রতিদিন রাত ১২টায় লিডারবোর্ড রিসেট হবে এবং ১ম স্থান বিজয়ী পাবেন <b id="leaderboard-bonus-text" style="color:var(--gold);">১০,০০০ কয়েন</b> বোনাস!
+            প্রতিদিন রাত ১২টায় লিডারবোর্ড রিসেট হবে এবং ১ম স্থান বিজয়ী পাবেন <b id="leaderboard-bonus-text" style="color:var(--gold);">১০,০০০ কয়েন</b> বোনাস!
         </p>
         <div id="leaderboard-list">
             <div style="text-align:center; color:#94a3b8; font-size:12px;">লিডারবোর্ড লোড করা হচ্ছে...</div>
         </div>
     </div>
 
-    <!-- TAB 4: GLOBAL CHAT -->
     <div id="tab-chat" class="tab-page">
         <h3><i class="fa-solid fa-comments"></i> গ্লোবাল চ্যাট রুম (লাইভ)</h3>
-        <div class="chat-box" id="chat-messages">
-            <!-- Messages inserted dynamically -->
-        </div>
+        <div class="chat-box" id="chat-messages"></div>
         <div style="display:flex; gap:8px;">
             <input type="text" id="chat-input" class="input-box" placeholder="আপনার মেসেজ টাইপ করুন..." style="margin:0;">
             <button onclick="sendChatMessage()" class="casino-btn" style="width:auto; padding:0 20px;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
-    <!-- TAB 5: WITHDRAW -->
     <div id="tab-withdraw" class="tab-page">
         <div class="dash-card" style="margin:0; text-align:left;">
-            <h3 style="color:var(--gold); text-align:center;">💳 কয়েন ক্যাশআউট (উত্তোলন)</h3>
-            <p style="text-align:center; font-size:11px; color:#94a3b8;" id="withdraw-rate-desc">৫০ কয়েন = ৳১</p>
-
+            <h3 style="color:var(--gold); text-align:center;">💳 কয়েন ক্যাশআউট (উত্তোলন)</h3>
+            <p style="text-align:center; font-size:11px; color:#94a3b8;" id="withdraw-rate-desc">৫০ কয়েন = ৳১</p>
             <label style="font-size:11px; color:#94a3b8;">মেথড সিলেক্ট করুন</label>
             <select class="input-box" id="withdraw-method"></select>
-
             <label style="font-size:11px; color:#94a3b8;">নম্বর / Pay ID</label>
             <input type="text" class="input-box" id="withdraw-acc" placeholder="যেমন: 01700000000">
-
-            <label style="font-size:11px; color:#94a3b8;">কয়েন পরিমাণ</label>
+            <label style="font-size:11px; color:#94a3b8;">কয়েন পরিমাণ</label>
             <input type="number" class="input-box" id="withdraw-coins" placeholder="যেমন: 50" oninput="calculateWithdrawAmount()">
-
             <div style="font-size:13px; color:var(--neon-green); margin-bottom:10px; font-weight:bold;">
                 💰 আপনি পাবেন: <span id="withdraw-bdt-calc">৳0</span> BDT
             </div>
-
             <button class="casino-btn" style="background:var(--neon-green); color:black;" onclick="requestWithdraw()"><i class="fa-solid fa-paper-plane"></i> উইথড্র দিন (পেন্ডিং থাকবে)</button>
-
             <div class="history-section">
                 <h4 style="margin:0 0 8px 0; color:var(--gold); font-size:13px;"><i class="fa-solid fa-clock-rotate-left"></i> আপনার উইথড্র হিস্ট্রি</h4>
                 <div id="user-withdraw-history"></div>
@@ -662,7 +552,6 @@
         </div>
     </div>
 
-    <!-- TAB 6: PROFILE SECTION -->
     <div id="tab-profile" class="tab-page">
         <div class="dash-card" style="margin:0;">
             <div class="profile-avatar-container">
@@ -670,10 +559,8 @@
                 <label for="profile-photo-input" class="avatar-upload-btn"><i class="fa-solid fa-camera"></i></label>
                 <input type="file" id="profile-photo-input" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
             </div>
-
             <h3 id="prof-name-display" style="margin:5px 0;">User Name</h3>
             <p style="font-size:11px; color:var(--gold); margin-top:0;" id="prof-vip-level-text">Level 1 (Bronze Member)</p>
-            
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin:15px 0; text-align:left; font-size:11px;">
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
                     <span style="color:#94a3b8;">💰 মোট Coins:</span> <b id="prof-total-coins" style="color:var(--gold);">0</b>
@@ -688,46 +575,37 @@
                     <span style="color:#94a3b8;">📅 Join Date:</span> <b id="prof-join-date" style="color:#cbd5e1;">Today</b>
                 </div>
             </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-top:10px; text-align:left;">
                 <label style="font-size:11px; color:#94a3b8;">ডিসপ্লে নাম পরিবর্তন করুন:</label>
                 <input type="text" id="custom-name-input" class="input-box" placeholder="আপনার কাস্টম নাম দিন" style="margin:5px 0;">
                 <button class="casino-btn" style="padding:8px; font-size:12px;" onclick="saveCustomName()"><i class="fa-solid fa-save"></i> সেভ করুন</button>
             </div>
-
             <button class="casino-btn" style="background:#334155; margin-top:15px; font-size:12px;" onclick="openAdminDirect()"><i class="fa-solid fa-user-shield"></i> এডমিন প্যানেল ওপেন করুন</button>
         </div>
     </div>
 
-    <!-- TAB 7: ADMIN PANEL -->
     <div id="tab-admin" class="tab-page">
         <div class="dash-card" style="margin:0; text-align:left; border-color:var(--neon-pink);">
             <h3 style="color:var(--neon-pink); text-align:center;"><i class="fa-solid fa-user-shield"></i> এডমিন কন্ট্রোল সেন্টার</h3>
-
             <button class="casino-btn" style="background:linear-gradient(45deg, #a855f7, #ff0055); margin-bottom:15px;" onclick="openAdminUserHistory()"><i class="fa-solid fa-chart-line"></i> 📊 ইউজার হিস্ট্রি (কে কত জিতছে/রেফার/এডস)</button>
-
-            <!-- DYNAMIC TASKS CONTROL -->
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-blue);"><i class="fa-solid fa-plus-circle"></i> নতুন টাস্ক যোগ করুন (Unlimited Tasks)</h4>
                 <input type="text" id="admin-task-title" class="input-box" placeholder="টাস্ক টাইটেল (যেমন: Join Official Channel)">
                 <input type="text" id="admin-task-link" class="input-box" placeholder="টাস্ক লিংক (https://t.me/...)">
-                <input type="number" id="admin-task-reward" class="input-box" placeholder="রিওয়ার্ড কয়েন (যেমন: 100)">
+                <input type="number" id="admin-task-reward" class="input-box" placeholder="রিওয়ার্ড কয়েন (যেমন: 100)">
                 <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-green); color:black;" onclick="addNewAdminTask()"><i class="fa-solid fa-plus"></i> টাস্ক যোগ করুন</button>
                 <div id="admin-tasks-manage-list" style="margin-top:10px;"></div>
             </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-blue);">🔗 টেলিগ্রাম চ্যানেল লিংক পরিবর্তন</h4>
                 <input type="text" id="admin-channel-link-input" class="input-box" placeholder="https://t.me/your_channel">
                 <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-blue); color:black;" onclick="saveChannelLink()"><i class="fa-solid fa-link"></i> চ্যানেল লিংক সেভ করুন</button>
             </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-pink);">📢 ইউজার ব্রডকাস্ট নোটিফিকেশন</h4>
                 <input type="text" id="admin-broadcast-msg" class="input-box" placeholder="সকল ইউজারের জন্য নোটিফিকেশন মেসেজ লিখুন...">
                 <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-pink);" onclick="sendBroadcast()"><i class="fa-solid fa-paper-plane"></i> ব্রডকাস্ট পাঠান</button>
             </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--gold);">👤 ইউজার ব্যালেন্স ও ব্যান কন্ট্রোল</h4>
                 <label style="font-size:11px; color:#cbd5e1;">ইউজার নাম / ID:</label>
@@ -739,34 +617,24 @@
                     <button class="casino-btn" style="padding:8px; font-size:12px; background:#ef4444;" onclick="banUser()"><i class="fa-solid fa-ban"></i> ব্যান করুন</button>
                 </div>
             </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
-                <h4 style="margin:0 0 10px 0; color:var(--gold);">⚙️ সেটিংস ও এডমিন পাসওয়ার্ড কন্ট্রোল</h4>
-                
+                <h4 style="margin:0 0 10px 0; color:var(--gold);">⚙️ সেটিংস ও এডমিন পাসওয়ার্ড কন্ট্রোল</h4>
                 <label style="font-size:11px; color:#cbd5e1;">এডমিন পাসওয়ার্ড পরিবর্তন করুন (বর্তমান: <b id="current-pass-lbl" style="color:var(--gold);">018212</b>):</label>
                 <input type="text" id="admin-pass-input" class="input-box" value="018212">
-
                 <label style="font-size:11px; color:#cbd5e1;">প্রতি এডে কত কয়েন পাবে (Ad Reward):</label>
                 <input type="number" id="admin-ad-reward" class="input-box" value="50">
-
                 <label style="font-size:11px; color:#cbd5e1;">প্রতি Approved রেফারে কত কয়েন বোনাস:</label>
                 <input type="number" id="admin-refer-reward" class="input-box" value="100">
-
-                <label style="font-size:11px; color:#cbd5e1;">সর্বনিম্ন উইথড্র কয়েন (Min Withdraw):</label>
+                <label style="font-size:11px; color:#cbd5e1;">সর্বনিম্ন উইথড্র কয়েন (Min Withdraw):</label>
                 <input type="number" id="admin-min-withdraw" class="input-box" value="50">
-
-                <label style="font-size:11px; color:#cbd5e1;">লিডারবোর্ড ১ম স্থান বিজয়ী বোনাস কয়েন:</label>
+                <label style="font-size:11px; color:#cbd5e1;">লিডারবোর্ড ১ম স্থান বিজয়ী বোনাস কয়েন:</label>
                 <input type="number" id="admin-lb-bonus" class="input-box" value="10000">
-
-                <label style="font-size:11px; color:#cbd5e1;">৫০ কয়েনের দাম (টাকা ৳):</label>
+                <label style="font-size:11px; color:#cbd5e1;">৫০ কয়েনের দাম (টাকা ৳):</label>
                 <input type="number" id="admin-coin-rate" class="input-box" value="1">
-
-                <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-blue); color:black;" onclick="saveAdminSettings()"><i class="fa-solid fa-floppy-disk"></i> সেটিংস ও পাসওয়ার্ড সেভ করুন</button>
+                <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-blue); color:black;" onclick="saveAdminSettings()"><i class="fa-solid fa-floppy-disk"></i> সেটিংস ও পাসওয়ার্ড সেভ করুন</button>
             </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-green);">💳 মেথড ও নাম্বার ম্যানেজমেন্ট</h4>
-                
                 <div style="border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;">
                     <label style="font-size:11px; color:#cbd5e1;">নতুন ডিপোজিট মেথড ও নাম্বার এড / ম্যানেজ:</label>
                     <input type="text" id="admin-dep-method-name" class="input-box" placeholder="মেথড নাম (যেমন: Bkash)">
@@ -774,7 +642,6 @@
                     <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--gold); color:black;" onclick="addDepositMethodDynamic()"><i class="fa-solid fa-plus"></i> ডিপোজিট মেথড যোগ করুন</button>
                     <div id="admin-dep-methods-list" style="margin-top:10px;"></div>
                 </div>
-
                 <div>
                     <label style="font-size:11px; color:#cbd5e1;">নতুন উইথড্র মেথড নাম এড / ম্যানেজ:</label>
                     <div style="display:flex; gap:5px;">
@@ -784,12 +651,10 @@
                     <div id="admin-with-methods-list" style="margin-top:10px;"></div>
                 </div>
             </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--gold);">📥 পেন্ডিং ডিপোজিট সমূহ</h4>
                 <div id="admin-deposit-list"></div>
             </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-pink);">📤 পেন্ডিং উইথড্রয়াল সমূহ</h4>
                 <div id="admin-withdraw-list"></div>
@@ -797,7 +662,6 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVBAR -->
     <div class="navbar">
         <div class="nav-link active" onclick="navigate('earn', this)"><i class="fa-solid fa-play"></i>এডস/টাস্ক</div>
         <div class="nav-link" onclick="navigate('games', this)"><i class="fa-solid fa-gamepad"></i>গেমস</div>
@@ -809,7 +673,6 @@
         <div class="nav-link" onclick="navigate('profile', this)"><i class="fa-solid fa-user"></i>প্রোফাইল</div>
     </div>
 
-    <!-- FIREBASE REALTIME DB & FIRESTORE INTEGRATION MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getDatabase, ref, set, get, child, onValue, update, push } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
@@ -848,9 +711,8 @@
     </script>
 
     <script>
-        // PROPROVIDED BOT TOKEN ADDED HERE
         const BOT_TOKEN = "8745222764:AAHqiSPKBNaDPn1tkZ3a8yOhVVKiAxdSs8k";
-        let botUsername = "earningzone6357_bot"; // Default fallback username
+        let botUsername = "earningzone6357_bot";
 
         const tg = window.Telegram?.WebApp;
         if(tg) {
@@ -859,22 +721,6 @@
         }
 
         let currentTab = 'earn';
-
-        // Fetch Telegram Bot Information using Provided Token
-        async function fetchBotDetails() {
-            try {
-                const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getMe`);
-                const data = await res.json();
-                if (data.ok && data.result.username) {
-                    botUsername = data.result.username;
-                }
-            } catch (e) {
-                console.error("Bot verification failed:", e);
-            }
-            updateReferralLinkInput();
-        }
-
-        // SPLASH LOADER
         let splashProgress = 0;
         const splashInterval = setInterval(() => {
             splashProgress += 4;
@@ -882,7 +728,6 @@
             const txt = document.getElementById('splash-percentage');
             if(bar) bar.style.width = splashProgress + '%';
             if(txt) txt.innerText = splashProgress + '%';
-
             if (splashProgress >= 100) {
                 clearInterval(splashInterval);
                 const splash = document.getElementById('app-splash');
@@ -890,7 +735,6 @@
             }
         }, 40);
 
-        // TOAST NOTIFICATION
         function showNotification(msg) {
             const toast = document.getElementById('custom-toast');
             document.getElementById('toast-text').innerText = msg;
@@ -918,15 +762,20 @@
             coins: 0,
             adsSeen: 0,
             spinCount: 0,
+            aviatorBets: 0,
             bonusEarned: 0,
             totalBet: 0,
             totalWon: 0,
             totalLost: 0,
             referredBy: getTelegramStartParam() || null,
             approvedReferralsCount: 0,
+            pendingReferralCount: 0,
             referralApproved: false,
+            referralApprovedDate: null,
+            referralBonusHistory: [],
             photoUrl: userPhoto,
             joinDate: new Date().toLocaleDateString('bn-BD'),
+            telegramUsername: tg?.initDataUnsafe?.user?.username || 'unknown',
             welcomeBonusClaimed: false,
             completedTasks: []
         };
@@ -961,37 +810,43 @@
             }
         }
 
-        // TAB NAVIGATION WITH AUDIO CLEANUP
+        async function fetchBotDetails() {
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getMe`);
+                const data = await res.json();
+                if (data.ok && data.result.username) {
+                    botUsername = data.result.username;
+                }
+            } catch (e) {
+                console.error("Bot verification failed:", e);
+            }
+            updateReferralLinkInput();
+        }
+
         function navigate(tabName, el) {
             playAudio('click');
             stopEngineSound();
-
             const pages = document.querySelectorAll('.tab-page');
             pages.forEach(p => p.classList.remove('active'));
-
             if(el) {
                 const navLinks = document.querySelectorAll('.nav-link');
                 navLinks.forEach(n => n.classList.remove('active'));
                 el.classList.add('active');
             }
-
             const target = document.getElementById('tab-' + tabName) || document.getElementById(tabName);
             if(target) {
                 target.classList.add('active');
                 currentTab = tabName.startsWith('sub-') ? tabName : tabName;
             }
-
             if(tabName === 'sub-aviator') {
                 initAviatorLiveEngine();
             }
         }
 
-        // FIREBASE LISTENERS (REALTIME SYNC)
         window.initFirebaseListeners = function() {
             if(!window.db) return;
             fetchBotDetails();
 
-            // 1. Live Sync User State Realtime
             const rtdbUserRef = window.dbRef(window.db, 'users/' + userData.id);
             window.dbOnValue(rtdbUserRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -1001,7 +856,7 @@
                     if(!userData.welcomeBonusClaimed) {
                         userData.coins = 100;
                         userData.welcomeBonusClaimed = true;
-                        showNotification("🎁 Welcome Bonus! আপনি ১০০ কয়েন বোনাস পেয়েছেন!");
+                        showNotification("🎁 Welcome Bonus! আপনি ১০০ কয়েন বোনাস পেয়েছেন!");
                     }
                     syncUserDatabase();
                 }
@@ -1009,7 +864,6 @@
                 checkReferralQualification();
             });
 
-            // 2. Global Realtime Withdrawal Alert Broadcast Listener
             const withdrawAlertsRef = window.dbRef(window.db, 'withdrawal_alerts');
             window.dbOnValue(withdrawAlertsRef, (snapshot) => {
                 if(snapshot.exists()) {
@@ -1021,7 +875,6 @@
                 }
             });
 
-            // 3. Sync Settings Realtime
             const settingsRef = window.dbRef(window.db, 'settings');
             window.dbOnValue(settingsRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -1030,7 +883,6 @@
                 }
             });
 
-            // 4. Sync All Users Realtime
             const allUsersRef = window.dbRef(window.db, 'users');
             window.dbOnValue(allUsersRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -1040,7 +892,6 @@
                 }
             });
 
-            // 5. Realtime Global Chat
             const chatRef = window.dbRef(window.db, 'chats');
             window.dbOnValue(chatRef, (snapshot) => {
                 const box = document.getElementById('chat-messages');
@@ -1060,7 +911,6 @@
                 }
             });
 
-            // 6. Realtime Deposits
             const depRef = window.dbRef(window.db, 'deposits');
             window.dbOnValue(depRef, (snapshot) => {
                 depositsList = snapshot.exists() ? Object.values(snapshot.val()) : [];
@@ -1068,7 +918,6 @@
                 renderAdminPanel();
             });
 
-            // 7. Realtime Withdrawals
             const withRef = window.dbRef(window.db, 'withdraws');
             window.dbOnValue(withRef, (snapshot) => {
                 withdrawsList = snapshot.exists() ? Object.values(snapshot.val()) : [];
@@ -1076,7 +925,6 @@
                 renderAdminPanel();
             });
 
-            // 8. Realtime Tasks
             const tasksRef = window.dbRef(window.db, 'tasks');
             window.dbOnValue(tasksRef, (snapshot) => {
                 tasksList = snapshot.exists() ? Object.values(snapshot.val()) : [];
@@ -1087,12 +935,42 @@
             checkMidnightReset();
         };
 
+        function checkReferralQualification() {
+            if (userData.referredBy && userData.adsSeen >= 10 && !userData.referralApproved) {
+                userData.referralApproved = true;
+                userData.referralApprovedDate = new Date().toLocaleString('bn-BD');
+                saveProfile();
+                showNotification("🎉 অভিনন্দন! ১০টি এড দেখে রেফারেল এপ্রুভ হয়েছে!");
+
+                const referrerRef = window.dbRef(window.db, 'users/' + userData.referredBy);
+                window.dbGet(referrerRef).then((snap) => {
+                    if (snap.exists()) {
+                        let referrerData = snap.val();
+                        let reward = adminSettings.referRewardCoins || 100;
+                        referrerData.coins = (referrerData.coins || 0) + reward;
+                        referrerData.approvedReferralsCount = (referrerData.approvedReferralsCount || 0) + 1;
+                        referrerData.referralBonusHistory = referrerData.referralBonusHistory || [];
+                        referrerData.referralBonusHistory.push({
+                            referredUserId: userData.id,
+                            referredUserName: userData.name,
+                            bonusAmount: reward,
+                            approvedDate: new Date().toLocaleString('bn-BD')
+                        });
+                        window.dbSet(referrerRef, referrerData);
+                        let notifyRef = window.dbRef(window.db, 'notifications/' + referrerData.id + '_' + Date.now());
+                        window.dbSet(notifyRef, {
+                            message: `🎁 ${userData.name} এপ্রুভড! +${reward} কয়েন পেয়েছেন`,
+                            type: 'referral_approved',
+                            timestamp: Date.now()
+                        });
+                    }
+                });
+            }
+        }
+
         function syncUserDatabase() {
             if (window.db && window.dbSet && window.dbRef) {
                 window.dbSet(window.dbRef(window.db, 'users/' + userData.id), userData);
-            }
-            if (window.fs && window.fsSetDoc && window.fsDoc) {
-                window.fsSetDoc(window.fsDoc(window.fs, 'users', userData.id), userData, { merge: true });
             }
         }
 
@@ -1106,26 +984,6 @@
             }
         }
 
-        // STRICT REFERRAL APPROVAL AT 10 ADS
-        function checkReferralQualification() {
-            if (userData.referredBy && userData.adsSeen >= 10 && !userData.referralApproved) {
-                userData.referralApproved = true;
-                saveProfile();
-
-                const referrerRef = window.dbRef(window.db, 'users/' + userData.referredBy);
-                window.dbGet(referrerRef).then((snap) => {
-                    if (snap.exists()) {
-                        let referrerData = snap.val();
-                        let reward = adminSettings.referRewardCoins || 100;
-                        referrerData.coins = (referrerData.coins || 0) + reward;
-                        referrerData.approvedReferralsCount = (referrerData.approvedReferralsCount || 0) + 1;
-                        window.dbSet(referrerRef, referrerData);
-                    }
-                });
-            }
-        }
-
-        /* 🔊 AUDIO ENGINE */
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
         let engineLoopGain = null;
@@ -1158,7 +1016,6 @@
             try {
                 initAudio();
                 if(!audioCtx) return;
-
                 if(!isGameActive() && (type === 'engine' || type === 'fly')) {
                     stopEngineSound(); return;
                 }
@@ -1233,7 +1090,7 @@
                 desc.innerText = "স্পিন এলগরিদম লোড করা হচ্ছে...";
             } else {
                 title.innerText = "BATTLE MULTIPLAYER ROOM LOAD...";
-                desc.innerText = "লাইভ প্লেয়ার লবির সাথে যুক্ত হওয়া হচ্ছে...";
+                desc.innerText = "লাইভ প্লেয়ার লবির সাথে যুক্ত হওয়া হচ্ছে...";
             }
 
             loader.style.display = 'flex';
@@ -1243,7 +1100,6 @@
             }, 800);
         }
 
-        /* 📺 MONETAG ADS WATCH SYSTEM WITH STRICT 15-SECOND ANTI-CHEAT */
         let isAdWatching = false;
         let adStartTime = 0;
         let adTimerInterval = null;
@@ -1253,7 +1109,7 @@
             let reward = adminSettings.adRewardCoins || 50;
 
             if (isAdWatching) {
-                showNotification("⚠️ আপনার এড ইতিপূর্বে চলমান রয়েছে!");
+                showNotification("⚠️ আপনার এড ইতিপূর্বে চলমান রয়েছে!");
                 return;
             }
 
@@ -1269,7 +1125,6 @@
 
             let adCompletedWithoutTabSwitch = true;
 
-            // Anti-cheat detect function
             const onVisibilityChange = () => {
                 if (document.hidden) {
                     adCompletedWithoutTabSwitch = false;
@@ -1298,9 +1153,9 @@
                         saveProfile(); 
                         updateUI(); 
                         playAudio('coin');
-                        showNotification(`🎉 ${reward} কয়েন সফলতার সাথে আপনার ব্যালেন্স এ যোগ হয়েছে!`);
+                        showNotification(`🎉 ${reward} কয়েন সফলতার সাথে আপনার ব্যালেন্স এ যোগ হয়েছে!`);
                     } else {
-                        showNotification("🚨 চালাকি ধরা পড়েছে! এডটি ১৫ সেকেন্ড সম্পূর্ণ না দেখে বের হওয়ার কারণে ব্যালেন্স অ্যাড হয়নি।");
+                        showNotification("🚨 চালাকি ধরা পড়েছে! এডটি ১৫ সেকেন্ড সম্পূর্ণ না দেখে বের হওয়ার কারণে ব্যালেন্স অ্যাড হয়নি।");
                     }
                 }
             }, 1000);
@@ -1311,18 +1166,17 @@
                     document.removeEventListener("visibilitychange", onVisibilityChange);
                     isAdWatching = false;
                     if(timerStatus) timerStatus.style.display = 'none';
-                    showNotification("⚠️ এড পুরোপুরি দেখা সম্ভব হয়নি বা স্কিপ করা হয়েছে!");
+                    showNotification("⚠️ এড পুরোপুরি দেখা সম্ভব হয়নি বা স্কিপ করা হয়েছে!");
                 });
             } else {
                 clearInterval(adTimerInterval);
                 document.removeEventListener("visibilitychange", onVisibilityChange);
                 isAdWatching = false;
                 if(timerStatus) timerStatus.style.display = 'none';
-                showNotification("⚠️ এড নেটওয়ার্ক কানেক্ট হয়নি! এড না আসলে কোন কয়েন পাবেন না।");
+                showNotification("⚠️ এড নেটওয়ার্ক কানেক্ট হয়নি! এড না আসলে কোন কয়েন পাবেন না।");
             }
         }
 
-        /* 🤖 SMART AI AVIATOR ENGINE */
         let aviatorLoopInterval = null;
         let currentMultiplier = 1.00;
         let isPlaneFlying = false;
@@ -1345,7 +1199,7 @@
             userData.autoBetEnabled = document.getElementById('aviator-auto-bet').checked;
             saveProfile();
             if(userData.autoBetEnabled) {
-                showNotification("🔄 অটো বেট মোড সক্রিয় করা হয়েছে!");
+                showNotification("🔄 অটো বেট মোড সক্রিয় করা হয়েছে!");
             }
         }
 
@@ -1373,7 +1227,7 @@
             }
 
             if(userData.hasBetNextRound) {
-                document.getElementById('aviator-start-btn').innerText = "⏳ বেট এক্সেপ্টেড (ওয়েটিং)";
+                document.getElementById('aviator-start-btn').innerText = "⏳ বেট এক্সেপ্টেড (ওয়েটিং)";
             } else {
                 document.getElementById('aviator-start-btn').innerText = "✈️ পরবর্তী রাউন্ডে বেট ধরুন";
             }
@@ -1489,7 +1343,7 @@
 
                     if(userData.hasBetNextRound && !userHasCashedOut) {
                         userData.totalLost = (userData.totalLost || 0) + aviatorBetAmount;
-                        showNotification(`💥 বিমানটি ক্র্যাশ করেছে! আপনি ${aviatorBetAmount} কয়েন হারিয়েছেন`);
+                        showNotification(`💥 বিমানটি ক্র্যাশ করেছে! আপনি ${aviatorBetAmount} কয়েন হারিয়েছেন`);
                     }
 
                     userData.hasBetNextRound = false;
@@ -1510,17 +1364,18 @@
             playAudio('click');
             let amt = parseInt(document.getElementById('aviator-bet-input').value) || 100;
             if(amt <= 0 || userData.coins < amt) {
-                showNotification("❌ পর্যাপ্ত কয়েন ব্যালেন্স নেই!");
+                showNotification("❌ পর্যাপ্ত কয়েন ব্যালেন্স নেই!");
                 return;
             }
 
             userData.coins -= amt;
             userData.totalBet = (userData.totalBet || 0) + amt;
+            userData.aviatorBets = (userData.aviatorBets || 0) + 1;
             userData.pendingNextRoundBet = amt;
             saveProfile();
             updateUI();
 
-            if(!isAuto) showNotification(`✅ ${amt} কয়েন বেট ধরা হয়েছে! পরবর্তী রাউন্ডে কার্যকর হবে।`);
+            if(!isAuto) showNotification(`✅ ${amt} কয়েন বেট ধরা হয়েছে! পরবর্তী রাউন্ডে কার্যকর হবে।`);
         }
 
         function cashoutAviator() {
@@ -1535,18 +1390,17 @@
             updateUI();
 
             playAudio('win');
-            showNotification(`🎉 অভিনন্দন! আপনি ${currentMultiplier.toFixed(2)}x এ ৳${winAmount} কয়েন ক্যাশআউট করেছেন!`);
+            showNotification(`🎉 অভিনন্দন! আপনি ${currentMultiplier.toFixed(2)}x এ ৳${winAmount} কয়েন ক্যাশআউট করেছেন!`);
 
             document.getElementById('aviator-start-btn').style.display = 'inline-flex';
             document.getElementById('aviator-cash-btn').style.display = 'none';
         }
 
-        /* 🎰 CUSTOM BET SPIN */
         function spinCustomWheel() {
             playAudio('click');
             let bet = parseInt(document.getElementById('spin-bet-amount').value) || 100;
             if(bet <= 0 || userData.coins < bet) {
-                showNotification("❌ পর্যাপ্ত কয়েন ব্যালেন্স নেই!");
+                showNotification("❌ পর্যাপ্ত কয়েন ব্যালেন্স নেই!");
                 return;
             }
 
@@ -1568,7 +1422,7 @@
                 if(won > 0) {
                     userData.coins += won;
                     playAudio('win');
-                    showNotification(`🎉 স্পিন জিতেছেন ${won} কয়েন (${mult}x)!`);
+                    showNotification(`🎉 স্পিন জিতেছেন ${won} কয়েন (${mult}x)!`);
                 } else {
                     showNotification("😞 ভাগ্য খারাপ! পরবর্তীতে আবার চেষ্টা করুন।");
                 }
@@ -1577,7 +1431,6 @@
             }, 4000);
         }
 
-        /* 🎟️ BATTLE ROOM MULTIPLAYER */
         let currentBattleLevel = 1;
         function changeBattleLevel() {
             currentBattleLevel = parseInt(document.getElementById('battle-level-select').value);
@@ -1587,7 +1440,7 @@
             playAudio('click');
             let ticketPrice = currentBattleLevel === 1 ? 50 : currentBattleLevel === 2 ? 200 : 1000;
             if(userData.coins < ticketPrice) {
-                showNotification("❌ পর্যাপ্ত কয়েন নেই!");
+                showNotification("❌ পর্যাপ্ত কয়েন নেই!");
                 return;
             }
 
@@ -1597,10 +1450,9 @@
 
             const log = document.getElementById('battle-buyers-log');
             log.innerHTML += `<div style="font-size:11px; color:var(--neon-green);">🎟️ ${userData.name} টিকেট কিনেছেন (${ticketPrice} Coins)</div>`;
-            showNotification("🎟️ ব্যাটল টিকেট সফলভাবে ক্রয় করা হয়েছে!");
+            showNotification("🎟️ ব্যাটল টিকেট সফলভাবে ক্রয় করা হয়েছে!");
         }
 
-        /* 💳 DEPOSIT & WITHDRAW MANAGEMENT */
         function renderDepositMethodsUI() {
             const container = document.getElementById('deposit-method-container');
             if(!container) return;
@@ -1637,7 +1489,7 @@
             playAudio('click');
             let addr = document.getElementById('deposit-address').innerText;
             navigator.clipboard.writeText(addr);
-            showNotification("📋 নাম্বার কপি করা হয়েছে!");
+            showNotification("📋 নাম্বার কপি করা হয়েছে!");
         }
 
         function calculateDepositBonus() {
@@ -1702,7 +1554,7 @@
             let minCoins = adminSettings.minWithdraw || 50;
 
             if(coins < minCoins || userData.coins < coins || !acc) {
-                showNotification("❌ সঠিক তথ্য ও পর্যাপ্ত উইথড্র কয়েন প্রদান করুন!");
+                showNotification("❌ সঠিক তথ্য ও পর্যাপ্ত উইথড্র কয়েন প্রদান করুন!");
                 return;
             }
 
@@ -1775,7 +1627,6 @@
             });
         }
 
-        /* 💬 GLOBAL CHAT */
         function sendChatMessage() {
             playAudio('click');
             let text = document.getElementById('chat-input').value.trim();
@@ -1795,7 +1646,6 @@
             document.getElementById('chat-input').value = "";
         }
 
-        /* 👥 REFERRAL SYSTEM & LINK COPY WITH REAL BOT SERVER INTEGRATION */
         function copyReferLink() {
             playAudio('click');
             let link = `https://t.me/${botUsername}?start=${userData.id}`;
@@ -1806,7 +1656,7 @@
         function shareReferLink() {
             playAudio('click');
             let link = `https://t.me/${botUsername}?start=${userData.id}`;
-            let shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent("🔥 VIP Earning Mini App এ জয়েন করে ১০টি এডস দেখলেই রেফার বোনাস এক্টিভ হবে!")}`;
+            let shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent("🔥 VIP Earning Mini App এ জয়েন করে ১০টি এডস দেখলেই রেফার বোনাস এক্টিভ হবে!")}`;
             if(tg?.openTelegramLink) tg.openTelegramLink(shareUrl);
             else window.open(shareUrl, '_blank');
         }
@@ -1828,7 +1678,7 @@
             let myRefers = Object.values(allUsersMap).filter(u => u.referredBy === userData.id);
 
             if(myRefers.length === 0) {
-                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">এখনো কেউ আপনার লিংকে জয়েন করেনি!</div>`;
+                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">এখনো কেউ আপনার লিংকে জয়েন করেনি!</div>`;
                 return;
             }
 
@@ -1846,7 +1696,6 @@
             });
         }
 
-        /* 📋 ADVANCED TASK SYSTEM WITH REAL-TIME TELEGRAM CHANNEL VERIFICATION */
         function renderUserTasks() {
             const container = document.getElementById('user-tasks-list');
             if(!container) return;
@@ -1888,7 +1737,7 @@
             userData.completedTasks = userData.completedTasks || [];
 
             if(userData.completedTasks.includes(taskId)) {
-                showNotification("❌ আপনি এই কাজটি কমপ্লিট করতে পারবেন না কারণ আপনি আগে থেকেই এটি কমপ্লিট করেছেন এবং চ্যানেলে জয়েন আছেন!");
+                showNotification("❌ আপনি এই কাজটি কমপ্লিট করতে পারবেন না কারণ আপনি আগে থেকেই এটি কমপ্লিট করেছেন!");
                 return;
             }
 
@@ -1898,10 +1747,9 @@
                 btn.disabled = true;
             }
 
-            // 3-second delay simulation for server-side Telegram chat membership verification
             setTimeout(async () => {
                 let channelUsername = task.link.replace("https://t.me/", "").replace("@", "").trim();
-                let isMember = true; // Fallback check simulation via API
+                let isMember = true;
 
                 try {
                     let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=@${channelUsername}&user_id=${userData.id}`);
@@ -1913,7 +1761,7 @@
                         }
                     }
                 } catch(e) {
-                    console.error("Task check failed, using direct verification");
+                    console.error("Task check failed");
                 }
 
                 if (isMember) {
@@ -1922,9 +1770,9 @@
                     saveProfile();
                     updateUI();
                     playAudio('win');
-                    showNotification(`🎉 ভেরিফিকেশন সফল! +${task.reward} কয়েন আপনার ব্যালেন্সে যোগ হয়েছে!`);
+                    showNotification(`🎉 ভেরিফিকেশন সফল! +${task.reward} কয়েন আপনার ব্যালেন্সে যোগ হয়েছে!`);
                 } else {
-                    showNotification("❌ আপনি চ্যানেলে জয়েন করেননি! আগে চ্যানেল জয়েন হন তারপর ভেরিফাই এ ক্লিক করুন।");
+                    showNotification("❌ আপনি চ্যানেলে জয়েন করেননি!");
                     if(btn) {
                         btn.innerText = "Verify";
                         btn.disabled = false;
@@ -1933,13 +1781,12 @@
             }, 3000);
         }
 
-        /* 🛠️ ADMIN CONTROLLER FUNCTIONS */
         function openAdminDirect() {
-            let pass = prompt("এডমিন পাসওয়ার্ড দিন:");
+            let pass = prompt("এডমিন পাসওয়ার্ড দিন:");
             if(pass === adminSettings.adminPass) {
                 navigate('admin');
             } else {
-                showNotification("❌ ভুল পাসওয়ার্ড!");
+                showNotification("❌ ভুল পাসওয়ার্ড!");
             }
         }
 
@@ -1952,7 +1799,7 @@
             adminSettings.coinRate50 = parseFloat(document.getElementById('admin-coin-rate').value) || 1;
 
             saveAdminData();
-            showNotification("✅ এডমিন সেটিংস সফলভাবে সেভ হয়েছে!");
+            showNotification("✅ এডমিন সেটিংস সফলভাবে সেভ হয়েছে!");
             updateUI();
         }
 
@@ -1961,7 +1808,7 @@
             if(link) {
                 adminSettings.channelLink = link;
                 saveAdminData();
-                showNotification("✅ টেলিগ্রাম চ্যানেল লিংক আপডেট হয়েছে!");
+                showNotification("✅ টেলিগ্রাম চ্যানেল লিংক আপডেট হয়েছে!");
                 updateUI();
             }
         }
@@ -1981,7 +1828,7 @@
 
             document.getElementById('admin-task-title').value = "";
             document.getElementById('admin-task-link').value = "";
-            showNotification("✅ নতুন টাস্ক যোগ করা হয়েছে!");
+            showNotification("✅ নতুন টাস্ক যোগ করা হয়েছে!");
         }
 
         function renderAdminTasksManager() {
@@ -2001,7 +1848,7 @@
 
         function deleteTask(taskId) {
             window.dbSet(window.dbRef(window.db, 'tasks/' + taskId), null);
-            showNotification("🗑️ টাস্ক ডিলিট করা হয়েছে!");
+            showNotification("🗑️ টাস্ক ডিলিট করা হয়েছে!");
         }
 
         function sendBroadcast() {
@@ -2027,9 +1874,9 @@
                     let uData = snap.val();
                     uData.coins = (uData.coins || 0) + amount;
                     window.dbSet(targetRef, uData);
-                    showNotification(`✅ ইউজার ${targetId} কে ${amount} কয়েন প্রদান করা হয়েছে!`);
+                    showNotification(`✅ ইউজার ${targetId} কে ${amount} কয়েন প্রদান করা হয়েছে!`);
                 } else {
-                    showNotification("❌ ইউজার পাওয়া যায়নি!");
+                    showNotification("❌ ইউজার পাওয়া যায়নি!");
                 }
             });
         }
@@ -2040,7 +1887,7 @@
                 adminSettings.bannedUsers = adminSettings.bannedUsers || [];
                 adminSettings.bannedUsers.push(targetId);
                 saveAdminData();
-                showNotification(`🚫 ইউজার ${targetId} কে ব্যান করা হয়েছে!`);
+                showNotification(`🚫 ইউজার ${targetId} কে ব্যান করা হয়েছে!`);
             }
         }
 
@@ -2053,7 +1900,7 @@
             adminSettings.depositMethods.push({ name, number });
             saveAdminData();
             renderDepositMethodsUI();
-            showNotification("✅ নতুন ডিপোজিট মেথড যুক্ত হয়েছে!");
+            showNotification("✅ নতুন ডিপোজিট মেথড যুক্ত হয়েছে!");
         }
 
         function addWithdrawMethod() {
@@ -2063,7 +1910,7 @@
             adminSettings.withdrawMethods.push(name);
             saveAdminData();
             renderWithdrawMethodsUI();
-            showNotification("✅ নতুন উইথড্র মেথড যুক্ত হয়েছে!");
+            showNotification("✅ নতুন উইথড্র মেথড যুক্ত হয়েছে!");
         }
 
         function renderAdminPanel() {
@@ -2104,19 +1951,18 @@
             dep.status = "Approved";
             window.dbSet(window.dbRef(window.db, 'deposits/' + depId), dep);
 
-            // Add coins with 10% bonus
             const targetRef = window.dbRef(window.db, 'users/' + dep.userId);
             window.dbGet(targetRef).then((snap) => {
                 if(snap.exists()) {
                     let uData = snap.val();
                     let bonusBdt = dep.amount * 1.10;
-                    let addedCoins = bonusBdt * 50; // Rate 50 Coins per 1 BDT
+                    let addedCoins = bonusBdt * 50;
                     uData.coins = (uData.coins || 0) + addedCoins;
                     window.dbSet(targetRef, uData);
                 }
             });
 
-            showNotification("✅ ডিপোজিট এপ্রুভ হয়েছে!");
+            showNotification("✅ ডিপোজিট এপ্রুভ হয়েছে!");
         }
 
         function rejectDeposit(depId) {
@@ -2124,7 +1970,7 @@
             if(!dep) return;
             dep.status = "Rejected";
             window.dbSet(window.dbRef(window.db, 'deposits/' + depId), dep);
-            showNotification("❌ ডিপোজিট রিজেক্ট করা হয়েছে!");
+            showNotification("❌ ডিপোজিট রিজেক্ট করা হয়েছে!");
         }
 
         function renderAdminWithdrawals() {
@@ -2139,14 +1985,37 @@
             }
 
             pendingWiths.forEach(w => {
+                let userInfo = allUsersMap[w.userId] || {};
+                let gameProfit = (userInfo.totalWon || 0) - (userInfo.totalLost || 0);
+                
                 list.innerHTML += `
-                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; font-size:11px;">
-                        <div><b>ইউজার:</b> ${w.userName} (${w.userId})</div>
-                        <div><b>মেথড:</b> ${w.method} | <b>নম্বর:</b> ${w.acc}</div>
-                        <div><b>কয়েন:</b> ${w.coins} (৳${w.amountBdt})</div>
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <button onclick="approveWithdraw('${w.id}')" style="background:#22c55e; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Approve</button>
-                            <button onclick="rejectWithdraw('${w.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Reject</button>
+                    <div style="background:linear-gradient(135deg, rgba(229,29,56,0.2), rgba(15,23,42,0.9)); padding:12px; border-radius:10px; margin-bottom:10px; font-size:11px; border-left:4px solid var(--neon-pink);">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                            <img src="${userInfo.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + w.userId}" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--neon-pink);" alt="User">
+                            <div>
+                                <div style="font-weight:bold; color:var(--neon-pink);">${w.userName} (ID: ${w.userId})</div>
+                                <div style="font-size:10px; color:#cbd5e1;">📅 ${w.date}</div>
+                            </div>
+                        </div>
+
+                        <div style="background:#0f172a; padding:10px; border-radius:8px; margin-bottom:8px; border-left:3px solid var(--gold);">
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:10px;">
+                                <div>💳 <b>মেথড:</b> ${w.method}</div>
+                                <div>📞 <b>নম্বর:</b> ${w.acc}</div>
+                                <div>💰 <b>টাকা:</b> ৳${w.amountBdt}</div>
+                                <div>🪙 <b>কয়েন:</b> ${w.coins}</div>
+                            </div>
+                        </div>
+
+                        <div style="background:#0f172a; padding:10px; border-radius:8px; margin-bottom:8px; border-left:3px solid var(--neon-green); font-size:10px;">
+                            <div>📺 এডস দেখা: <b style="color:var(--neon-green);">${userInfo.adsSeen || 0}</b> টি</div>
+                            <div>👥 অনুমোদিত রেফার: <b style="color:var(--neon-blue);">${userInfo.approvedReferralsCount || 0}</b> জন</div>
+                            <div>🎮 গেম জয়: <b style="color:var(--neon-green);">+${userInfo.totalWon || 0}</b> | হার: <b style="color:#ef4444;">-${userInfo.totalLost || 0}</b> | নেট: <b style="color:${gameProfit >= 0 ? 'var(--neon-green)' : '#ef4444'}">${gameProfit}</b></div>
+                        </div>
+
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="approveWithdraw('${w.id}')" style="background:linear-gradient(45deg, #22c55e, #00ff88); color:black; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; flex:1;">✅ এপ্রুভ করুন</button>
+                            <button onclick="rejectWithdraw('${w.id}')" style="background:#ef4444; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; flex:1;">❌ রিজেক্ট করুন</button>
                         </div>
                     </div>
                 `;
@@ -2158,20 +2027,26 @@
             if(!w) return;
 
             w.status = "Approved";
+            w.approvedDate = new Date().toLocaleString('bn-BD');
             window.dbSet(window.dbRef(window.db, 'withdraws/' + withDataId), w);
 
-            // Trigger Realtime Broadcast Alert
+            let userInfo = allUsersMap[w.userId] || {};
             let alertObj = {
                 id: Date.now().toString(),
                 userName: w.userName,
+                userId: w.userId,
                 amount: w.amountBdt,
+                coins: w.coins,
                 method: w.method,
                 acc: w.acc,
+                profilePhoto: userInfo.photoUrl || '',
+                adsWatched: userInfo.adsSeen || 0,
+                referrals: userInfo.approvedReferralsCount || 0,
                 timestamp: Date.now()
             };
             window.dbSet(window.dbRef(window.db, 'withdrawal_alerts/' + alertObj.id), alertObj);
 
-            showNotification("✅ ক্যাশআউট এপ্রুভ ও ব্রডকাস্ট পাঠানো হয়েছে!");
+            showNotification("✅ ক্যাশআউট এপ্রুভ ও ব্রডকাস্ট পাঠানো হয়েছে!");
         }
 
         function rejectWithdraw(withDataId) {
@@ -2181,7 +2056,6 @@
             w.status = "Rejected";
             window.dbSet(window.dbRef(window.db, 'withdraws/' + withDataId), w);
 
-            // Refund Coins
             const targetRef = window.dbRef(window.db, 'users/' + w.userId);
             window.dbGet(targetRef).then((snap) => {
                 if(snap.exists()) {
@@ -2191,7 +2065,7 @@
                 }
             });
 
-            showNotification("❌ ক্যাশআউট রিজেক্ট করা হয়েছে এবং কয়েন রিফান্ড করা হয়েছে!");
+            showNotification("❌ ক্যাশআউট রিজেক্ট করা হয়েছে এবং কয়েন রিফান্ড করা হয়েছে!");
         }
 
         function openAdminUserHistory() {
@@ -2199,13 +2073,67 @@
             const container = document.getElementById('admin-user-history-container');
             container.innerHTML = "";
 
-            Object.values(allUsersMap).forEach(u => {
+            let allUsersSorted = Object.values(allUsersMap).sort((a, b) => (b.coins || 0) - (a.coins || 0));
+
+            if(allUsersSorted.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">কোন ইউজার নেই</div>`;
+                return;
+            }
+
+            allUsersSorted.forEach((u, idx) => {
+                let totalProfit = (u.totalWon || 0) - (u.totalLost || 0);
+                let gameStatus = u.totalWon > 0 ? "🟢 Winning" : u.totalLost > 0 ? "🔴 Losing" : "⚪ Neutral";
+                let depositCount = depositsList.filter(d => d.userId === u.id && d.status === "Approved").length;
+                let withdrawCount = withdrawsList.filter(w => w.userId === u.id && w.status === "Approved").length;
+
                 container.innerHTML += `
-                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; font-size:11px;">
-                        <div style="color:var(--gold); font-weight:bold;">${u.name} (ID: ${u.id})</div>
-                        <div><b>Coins:</b> ${u.coins} | <b>Ads Watched:</b> ${u.adsSeen}</div>
-                        <div><b>Approved Referrals:</b> ${u.approvedReferralsCount || 0}</div>
-                        <div><b>Total Won:</b> ${u.totalWon || 0} | <b>Total Lost:</b> ${u.totalLost || 0}</div>
+                    <div style="background:rgba(30,41,59,0.8); padding:12px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,215,0,0.3); border-left:4px solid var(--neon-pink);">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:45px; height:45px; border-radius:50%; border:2px solid var(--gold);" alt="Profile">
+                                <div>
+                                    <div style="font-weight:bold; font-size:13px; color:var(--gold);">#${idx + 1} - ${u.name}</div>
+                                    <div style="font-size:10px; color:var(--neon-green);">💰 ব্যালেন্স: ${u.coins} কয়েন</div>
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:11px; background:${u.coins > 5000 ? 'rgba(0,255,136,0.2)' : 'rgba(255,0,85,0.2)'}; padding:6px 12px; border-radius:8px; border:1px solid ${u.coins > 5000 ? 'var(--neon-green)' : 'var(--neon-pink)'}; font-weight:bold;">
+                                    ${u.coins > 5000 ? '👑 VIP' : '📊 Regular'}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background:#0f172a; padding:8px; border-radius:6px; margin-top:8px; font-size:10px; color:#cbd5e1; border-left:3px solid var(--neon-blue);">
+                            👤 <b>টেলিগ্রাম ইউজারনেম:</b> ${u.telegramUsername || 'N/A'}<br>
+                            🔗 <b>টেলিগ্রাম ID:</b> ${u.id}<br>
+                            📛 <b>ডিসপ্লে নাম:</b> ${u.name}
+                        </div>
+
+                        <div style="background:#0f172a; padding:8px; border-radius:6px; margin-top:8px; font-size:10px; color:#cbd5e1; border-left:3px solid var(--neon-green);">
+                            ✅ <b>সম্পন্ন টাস্ক:</b> ${(u.completedTasks || []).length} টি<br>
+                            📺 <b>মোট এডস দেখা:</b> ${u.adsSeen || 0} টি<br>
+                            🎁 <b>এড বোনাস:</b> ${((u.adsSeen || 0) * (adminSettings.adRewardCoins || 50))} কয়েন
+                        </div>
+
+                        <div style="background:#0f172a; padding:8px; border-radius:6px; margin-top:8px; font-size:10px; color:#cbd5e1; border-left:3px solid var(--neon-pink);">
+                            🎮 <b>গেম খেলা:</b> ${(u.spinCount || 0) + (u.aviatorBets || 0)} বার<br>
+                            🏆 <b>মোট জয়:</b> ${u.totalWon || 0} কয়েন<br>
+                            💔 <b>মোট হার:</b> ${u.totalLost || 0} কয়েন<br>
+                            📊 <b>নেট লাভ/ক্ষতি:</b> <span style="color: ${totalProfit >= 0 ? 'var(--neon-green)' : '#ef4444'}">${totalProfit} কয়েন</span><br>
+                            ${gameStatus}
+                        </div>
+
+                        <div style="background:#0f172a; padding:8px; border-radius:6px; margin-top:8px; font-size:10px; color:#cbd5e1; border-left:3px solid var(--neon-blue);">
+                            👥 <b>মোট রেফার:</b> ${u.approvedReferralsCount || 0} জন<br>
+                            ✅ <b>অনুমোদিত রেফার:</b> ${u.approvedReferralsCount || 0} জন<br>
+                            💰 <b>রেফার বোনাস:</b> ${((u.approvedReferralsCount || 0) * (adminSettings.referRewardCoins || 100))} কয়েন
+                        </div>
+
+                        <div style="background:#0f172a; padding:8px; border-radius:6px; margin-top:8px; font-size:10px; color:#cbd5e1; border-left:3px solid var(--gold);">
+                            💳 <b>ডিপোজিট:</b> ${depositCount} বার<br>
+                            💸 <b>উত্তোলন:</b> ${withdrawCount} বার<br>
+                            📅 <b>যোগদান তারিখ:</b> ${u.joinDate || 'N/A'}
+                        </div>
                     </div>
                 `;
             });
@@ -2215,29 +2143,50 @@
             document.getElementById('admin-user-history-modal').classList.remove('active');
         }
 
-        /* 🏆 LEADERBOARD SYSTEM */
         function renderLeaderboard() {
             const list = document.getElementById('leaderboard-list');
             if(!list) return;
             list.innerHTML = "";
 
-            let sortedUsers = Object.values(allUsersMap).sort((a,b) => (b.approvedReferralsCount || 0) - (a.approvedReferralsCount || 0)).slice(0, 10);
+            let sortedUsers = Object.values(allUsersMap)
+                .filter(u => (u.approvedReferralsCount || 0) > 0)
+                .sort((a,b) => (b.approvedReferralsCount || 0) - (a.approvedReferralsCount || 0))
+                .slice(0, 10);
 
             if(sortedUsers.length === 0) {
-                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">লিডারবোর্ড খালি!</div>`;
+                list.innerHTML = `
+                    <div style="text-align:center; padding:30px; color:#94a3b8;">
+                        <div style="font-size:14px;">📭 এখনো কেউ অনুমোদিত রেফার করেনি!</div>
+                        <div style="font-size:11px; margin-top:10px;">প্রথম ১০ জন অনুমোদিত রেফারের সাথে বোনাস পাবেন</div>
+                    </div>
+                `;
                 return;
             }
 
             sortedUsers.forEach((u, index) => {
-                let badge = index === 0 ? "🥇 1st" : index === 1 ? "🥈 2nd" : index === 2 ? "🥉 3rd" : `#${index + 1}`;
+                let medals = ['🥇', '🥈', '🥉'];
+                let badge = index < 3 ? medals[index] : `#${index + 1}`;
+                let totalReferralBonus = (u.approvedReferralsCount || 0) * (adminSettings.referRewardCoins || 100);
+                
+                let leaderboardBonus = 0;
+                if(index === 0) leaderboardBonus = adminSettings.lbBonus || 10000;
+                else if(index === 1) leaderboardBonus = Math.floor((adminSettings.lbBonus || 10000) * 0.6);
+                else if(index === 2) leaderboardBonus = Math.floor((adminSettings.lbBonus || 10000) * 0.35);
+
                 list.innerHTML += `
-                    <div class="lb-card">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="font-weight:900; color:var(--gold); font-size:14px;">${badge}</span>
-                            <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--gold);" alt="Profile">
-                            <div>
-                                <div style="font-weight:bold; font-size:12px;">${u.name}</div>
-                                <div style="font-size:10px; color:#94a3b8;">${u.approvedReferralsCount || 0} Approved Referrals</div>
+                    <div class="lb-card" style="border-left:4px solid ${index === 0 ? '#ffd700' : index === 1 ? '#c0c0c0' : index === 2 ? '#cd7f32' : 'var(--neon-blue)'}; background: ${index < 3 ? 'rgba(' + (index === 0 ? '255,215,0' : index === 1 ? '192,192,192' : '205,127,50') + ',0.15)' : 'rgba(15,23,42,0.9)'};">
+                        <div style="display:flex; align-items:center; gap:12px; width:100%;">
+                            <div style="font-weight:900; font-size:20px; min-width:30px; text-align:center;">${badge}</div>
+                            <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:45px; height:45px; border-radius:50%; border:2px solid var(--gold); object-fit:cover;" alt="Profile">
+                            <div style="flex:1;">
+                                <div style="font-weight:bold; font-size:13px; color:var(--gold);">${u.name}</div>
+                                <div style="font-size:11px; color:var(--neon-green);">👥 ${u.approvedReferralsCount || 0} অনুমোদিত রেফার</div>
+                                <div style="font-size:10px; color:#cbd5e1;">💰 মোট বোনাস: ${totalReferralBonus} কয়েন</div>
+                                ${leaderboardBonus > 0 ? `<div style="font-size:10px; color:var(--neon-pink); font-weight:bold;">🏅 র‍্যাঙ্ক বোনাস: +${leaderboardBonus} কয়েন</div>` : ''}
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:12px; font-weight:bold; color:var(--gold);">৳ ${(u.coins || 0) + (leaderboardBonus || 0)}</div>
+                                <div style="font-size:9px; color:#94a3b8;">মোট ব্যালেন্স</div>
                             </div>
                         </div>
                     </div>
@@ -2268,7 +2217,6 @@
             }
         }
 
-        /* 👤 PROFILE MODAL AND UTILS */
         function openVipModal() { document.getElementById('vip-modal').classList.add('active'); }
         function closeVipModal() { document.getElementById('vip-modal').classList.remove('active'); }
 
@@ -2279,7 +2227,7 @@
                 userData.name = newName;
                 saveProfile();
                 updateUI();
-                showNotification("✅ নাম সফলভাবে পরিবর্তিত হয়েছে!");
+                showNotification("✅ নাম সফলভাবে পরিবর্তিত হয়েছে!");
             }
         }
 
@@ -2291,7 +2239,7 @@
                     userData.photoUrl = e.target.result;
                     saveProfile();
                     updateUI();
-                    showNotification("📸 প্রোফাইল ফটো আপডেট করা হয়েছে!");
+                    showNotification("📸 প্রোফাইল ফটো আপডেট করা হয়েছে!");
                 };
                 reader.readAsDataURL(file);
             }
