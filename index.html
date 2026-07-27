@@ -25,7 +25,7 @@
             margin: 0; padding: 0;
             background: var(--bg-dark);
             background-image: radial-gradient(circle at top, #1e0938 0%, #030611 85%);
-            color: white; user-select: none; padding-bottom: 90px; overflow-x: hidden;
+            color: white; user-select: none; padding-bottom: 95px; overflow-x: hidden;
         }
         #custom-toast {
             position: fixed; top: -100px; left: 5%; right: 5%; width: 90%;
@@ -94,6 +94,28 @@
             animation: spin 0.8s linear infinite; margin: 0 auto 20px auto; box-shadow: 0 0 20px var(--neon-pink);
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Premium Force Join Gate System */
+        #force-join-screen {
+            position: fixed; inset: 0; background: radial-gradient(circle at top, #1b0733 0%, #030611 90%);
+            z-index: 25000; display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; text-align: center; backdrop-filter: blur(25px); overflow-y: auto;
+        }
+        .fj-box {
+            background: rgba(15, 23, 42, 0.95); border: 2px solid var(--neon-blue);
+            border-radius: 24px; padding: 25px; max-width: 380px; width: 100%;
+            box-shadow: 0 0 35px rgba(0, 229, 255, 0.4); animation: fjPulse 3s infinite alternate;
+        }
+        @keyframes fjPulse {
+            0% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
+            100% { box-shadow: 0 0 40px rgba(0, 229, 255, 0.7); }
+        }
+        .fj-item {
+            background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px; padding: 12px 15px; margin-bottom: 10px; display: flex;
+            align-items: center; justify-content: space-between; gap: 10px;
+        }
+
         .channel-banner {
             background: linear-gradient(90deg, #0088cc, #ff0055, #00e5ff);
             background-size: 200% 100%; animation: gradientShift 4s infinite linear;
@@ -189,12 +211,35 @@
         .chat-avatar { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; flex-shrink: 0; box-shadow: 0 0 8px rgba(255,215,0,0.4); }
         .chat-msg-bubble { background: #1e293b; padding: 10px 14px; border-radius: 14px; font-size: 13px; max-width: 75%; border: 1px solid rgba(255,255,255,0.08); word-break: break-word; color: #f8fafc; }
         .chat-row.mine .chat-msg-bubble { background: linear-gradient(135deg, #a855f7, #ff0055); border: none; color: white; }
+        
+        /* Ultra Premium Bottom Navigation Bar */
         .navbar {
-            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(5, 7, 17, 0.95);
-            display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(255,215,0,0.3); backdrop-filter: blur(20px); z-index: 1000;
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: rgba(5, 7, 17, 0.96);
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 8px 4px 12px 4px; 
+            border-top: 2px solid rgba(255, 215, 0, 0.4); 
+            backdrop-filter: blur(25px); z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
         }
-        .nav-link { color: #64748b; text-decoration: none; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-        .nav-link.active { color: var(--gold); text-shadow: var(--gold-glow); font-weight: bold; }
+        .nav-link { 
+            color: #94a3b8; text-decoration: none; font-size: 11px; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; gap: 4px; 
+            cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 6px 8px; border-radius: 14px; flex: 1; text-align: center;
+        }
+        .nav-link i { font-size: 18px; transition: transform 0.25s ease; }
+        .nav-link.active { 
+            color: var(--gold); 
+            background: rgba(255, 215, 0, 0.12);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
+            transform: translateY(-4px);
+        }
+        .nav-link.active i {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 8px var(--gold));
+        }
+
         .tab-page { display: none; padding: 0 15px; }
         .tab-page.active { display: block; }
         .input-box { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: white; margin-bottom: 10px; outline: none; }
@@ -264,6 +309,18 @@
 </head>
 <body>
     <div id="custom-toast"><i class="fa-solid fa-bell"></i> <span id="toast-text">নোটিফিকেশন</span></div>
+    
+    <!-- Official Server Force Join Protection Gate Screen -->
+    <div id="force-join-screen">
+        <div class="fj-box">
+            <i class="fa-solid fa-shield-cat" style="font-size:55px; color:var(--neon-pink); text-shadow:0 0 20px var(--neon-pink); margin-bottom:12px;"></i>
+            <h2 style="color:var(--gold); margin:0 0 6px 0; text-shadow: var(--gold-glow); font-size:22px;">FORCE JOIN REQUIRED</h2>
+            <p style="color:#cbd5e1; font-size:12px; margin-bottom:18px;">অ্যাপের সকল সিকিউর ফিচার ও এয়ারড্রপ সুবিধা আনলক করতে নিচের অফিশিয়াল চ্যানেলগুলোতে জয়েন করে ভেরিফাই করুন:</p>
+            <div id="force-join-channels-list"></div>
+            <button class="casino-btn" style="background:linear-gradient(45deg, #00ff88, #00e5ff); color:black; margin-top:15px;" onclick="verifyUserForceJoinServer()"><i class="fa-solid fa-shield-check"></i> VERIFY MEMBERSHIP</button>
+        </div>
+    </div>
+
     <div id="app-splash">
         <div class="splash-logo"><i class="fa-solid fa-gem"></i></div>
         <h2 style="color:var(--gold); margin:0; text-shadow: var(--gold-glow); font-size:24px;">VIP REWARD HUB</h2>
@@ -435,7 +492,7 @@
             </div>
 
             <div style="max-height: 120px; overflow-y:auto; text-align:left; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; margin-bottom:10px;" id="battle-buyers-log">
-                <div style="font-size:11px; color:#94a3b8; text-align:center;">এখনো কেউ টিকেট কেনেনি! একজন টিকেট কিনলেই টাইম শুরু হবে।</div>
+                <div style="font-size:11px; color:#94a3b8; text-align:center;">এখনো কেউ টিকেট কেনেনি! ২টি টিকেট কেনা হলে ৩০ সে. কাউন্টডাউন শুরু হবে।</div>
             </div>
             <button class="casino-btn" style="background: linear-gradient(45deg, #00c853, #00e5ff);" onclick="buyLevelTicket()"><i class="fa-solid fa-cart-plus"></i> টিকেট কিনুন</button>
         </div>
@@ -476,14 +533,14 @@
             <h3>ইনস্ট্যান্ট রেফারেল প্রোগ্রাম</h3>
             <div style="background:rgba(0,255,136,0.1); border:1px solid var(--neon-green); padding:10px; border-radius:12px; margin-bottom:12px;">
                 <p style="font-size:13px; color:var(--neon-green); margin:0; font-weight:bold; line-height:1.5;">
-                    📌 নিয়ম: ইউজার বট ওপেন করলেই সাথে সাথে রেফার কাউন্ট হয়ে যাবে! কোনো ১০টি এডস দেখা লাগবে না!
+                    📌 নিয়ম: নতুন ইউজার আপনার রেফারেল লিংক দিয়ে Mini App-এ প্রথমবার প্রবেশ করলেই রেফার কাউন্ট ও বোনাস যুক্ত হবে!
                 </p>
                 <p style="font-size:12px; color:var(--gold); margin:5px 0 0 0;">
                     প্রতি রেফারে বোনাস: <b id="refer-bonus-display">100</b> কয়েন!
                 </p>
             </div>
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin:15px 0;">
-                <label style="font-size:11px; color:#94a3b8; font-weight:bold;">আপনার Telegram Mini App রেফারেল লিংক:</label>
+                <label style="font-size:11px; color:#94a3b8; font-weight:bold;">আপনার Official Telegram Mini App রেফারেল লিংক:</label>
                 <div style="display:flex; gap:5px; margin-top:8px;">
                     <input type="text" id="refer-link-input" class="input-box" readonly style="margin:0; font-size:11px; color:var(--neon-green);" value="লিংক তৈরি হচ্ছে...">
                     <button class="casino-btn" style="width:auto; padding:0 12px; font-size:11px;" onclick="copyReferLink()"><i class="fa-solid fa-copy"></i> কপি</button>
@@ -556,9 +613,9 @@
     </div>
 
     <div id="tab-leaderboard" class="tab-page">
-        <h3 style="text-align:center; color:var(--gold); margin-bottom:4px;"><i class="fa-solid fa-trophy"></i> টপ ১০ লিডারবোর্ড (লাইভ)</h3>
+        <h3 style="text-align:center; color:var(--gold); margin-bottom:4px;"><i class="fa-solid fa-trophy"></i> টপ ১০ রেফারেল লিডারবোর্ড (লাইভ)</h3>
         <p style="text-align:center; font-size:11px; color:#94a3b8; margin-bottom:8px;">
-            লিডারবোর্ডে যারা থাকবে তাদের রিয়েল-টাইম তথ্য এবং ১-১০ স্থান পুরস্কার তালিকা:
+            শুধুমাত্র অনুমোদিত রেফারেল (Approved Referral) সংখ্যা অনুযায়ী র‍্যাংকিং সাজানো হয়েছে:
         </p>
         <div id="leaderboard-prizes-box" style="background:rgba(15,23,42,0.8); border:1px solid var(--gold); padding:8px; border-radius:12px; margin-bottom:12px; font-size:11px; color:var(--gold); text-align:center;">
             🏆 <b>১ম পুরস্কার:</b> ৳<span id="lb-prize-1">100</span> | 🥈 <b>২য়:</b> ৳<span id="lb-prize-2">50</span> | 🥉 <b>৩য়:</b> ৳<span id="lb-prize-3">30</span> ... <b>১০ম পর্যন্ত পুরস্কার নির্ধারিত!</b>
@@ -622,7 +679,7 @@
                     <span style="color:#94a3b8;">📺 Ads Watched:</span> <b id="prof-total-ads" style="color:var(--neon-green);">0</b>
                 </div>
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
-                    <span style="color:#94a3b8;">👥 Total Referrals:</span> <b id="prof-total-referrals" style="color:var(--neon-blue);">0</b>
+                    <span style="color:#94a3b8;">👥 Approved Referrals:</span> <b id="prof-total-referrals" style="color:var(--neon-blue);">0</b>
                 </div>
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
                     <span style="color:#94a3b8;">📅 Join Date:</span> <b id="prof-join-date" style="color:#cbd5e1;">Today</b>
@@ -648,6 +705,15 @@
 
             <button class="casino-btn" style="background:linear-gradient(45deg, #a855f7, #ff0055); margin-bottom:15px;" onclick="openAdminUserHistory()"><i class="fa-solid fa-chart-line"></i> 📊 ইউজার হিস্ট্রি (কে কত জিতছে/রেফার/এডস)</button>
             <button class="casino-btn" style="background:linear-gradient(45deg, #0088cc, #00e5ff); margin-bottom:15px;" onclick="openAdminLogsModal()"><i class="fa-solid fa-shield-halved"></i> 🔐 এডমিন লগইন ও এক্টিভিটি লগ দেখুন</button>
+
+            <!-- Server Controlled Force Join Channels Management System -->
+            <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid var(--neon-blue);">
+                <h4 style="margin:0 0 10px 0; color:var(--neon-blue);"><i class="fa-solid fa-bullhorn"></i> Force Join Channels Management (Server API)</h4>
+                <input type="text" id="admin-fj-username" class="input-box" placeholder="Channel Username (e.g. @earningzone6357) or Link">
+                <input type="text" id="admin-fj-title" class="input-box" placeholder="Channel Title / Display Name">
+                <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-blue); color:black;" onclick="addForceJoinChannelAdmin()"><i class="fa-solid fa-plus"></i> Add Channel to Force Join</button>
+                <div id="admin-fj-channels-manage-list" style="margin-top:10px;"></div>
+            </div>
 
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-blue);"><i class="fa-solid fa-plus-circle"></i> নতুন টাস্ক যোগ করুন (Unlimited Tasks)</h4>
@@ -748,20 +814,21 @@
         </div>
     </div>
 
+    <!-- Official Premium Telegram Navigation Bar -->
     <div class="navbar">
-        <div class="nav-link active" onclick="navigate('earn', this)"><i class="fa-solid fa-play"></i>এডস/টাস্ক</div>
-        <div class="nav-link" onclick="navigate('games', this)"><i class="fa-solid fa-gamepad"></i>গেমস</div>
-        <div class="nav-link" onclick="navigate('deposit', this)"><i class="fa-solid fa-wallet" style="color:var(--neon-green);"></i>ডিপোজিট</div>
-        <div class="nav-link" onclick="navigate('refer', this)"><i class="fa-solid fa-user-plus" style="color:var(--neon-blue);"></i>রেফার</div>
-        <div class="nav-link" onclick="navigate('leaderboard', this)"><i class="fa-solid fa-trophy"></i>র‍্যাংক</div>
-        <div class="nav-link" onclick="navigate('chat', this)"><i class="fa-solid fa-comments"></i>চ্যাট</div>
-        <div class="nav-link" onclick="navigate('withdraw', this)"><i class="fa-solid fa-money-bill-transfer"></i>উইথড্র</div>
-        <div class="nav-link" onclick="navigate('profile', this)"><i class="fa-solid fa-user"></i>প্রোফাইল</div>
+        <div class="nav-link active" onclick="navigate('earn', this)"><i class="fa-solid fa-play-circle"></i><span>এডস/টাস্ক</span></div>
+        <div class="nav-link" onclick="navigate('games', this)"><i class="fa-solid fa-gamepad"></i><span>গেমস</span></div>
+        <div class="nav-link" onclick="navigate('deposit', this)"><i class="fa-solid fa-wallet" style="color:var(--neon-green);"></i><span>ডিপোজিট</span></div>
+        <div class="nav-link" onclick="navigate('refer', this)"><i class="fa-solid fa-user-plus" style="color:var(--neon-blue);"></i><span>রেফার</span></div>
+        <div class="nav-link" onclick="navigate('leaderboard', this)"><i class="fa-solid fa-trophy" style="color:var(--gold);"></i><span>র‍্যাংক</span></div>
+        <div class="nav-link" onclick="navigate('chat', this)"><i class="fa-solid fa-comments"></i><span>চ্যাট</span></div>
+        <div class="nav-link" onclick="navigate('withdraw', this)"><i class="fa-solid fa-money-bill-transfer"></i><span>উইথড্র</span></div>
+        <div class="nav-link" onclick="navigate('profile', this)"><i class="fa-solid fa-user"></i><span>প্রোফাইল</span></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child, onValue, update, push } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+        import { getDatabase, ref, set, get, child, onValue, update, push, runTransaction, remove } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
         import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -788,6 +855,8 @@
         window.dbOnValue = onValue;
         window.dbUpdate = update;
         window.dbPush = push;
+        window.dbRemove = remove;
+        window.dbRunTransaction = runTransaction;
         window.fsDoc = doc;
         window.fsSetDoc = setDoc;
         window.fsGetDoc = getDoc;
@@ -829,12 +898,14 @@
             setTimeout(() => { toast.classList.remove('show'); }, 4000);
         }
 
+        // Official Telegram Mini App startapp Parameter Extractor
         function getTelegramStartParam() {
             if (tg?.initDataUnsafe?.start_param) {
-                return tg.initDataUnsafe.start_param;
+                return String(tg.initDataUnsafe.start_param).trim();
             }
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('start') || urlParams.get('tgWebAppStartParam');
+            const param = urlParams.get('tgWebAppStartParam') || urlParams.get('startapp') || urlParams.get('start');
+            return param ? String(param).trim() : null;
         }
 
         const telegramUser = tg?.initDataUnsafe?.user;
@@ -861,9 +932,11 @@
             referralBonusHistory: [],
             photoUrl: userPhoto,
             joinDate: new Date().toLocaleDateString('bn-BD'),
+            firstJoinedTimestamp: Date.now(),
             telegramUsername: tg?.initDataUnsafe?.user?.username || 'unknown',
             welcomeBonusClaimed: false,
-            completedTasks: []
+            completedTasks: [],
+            verifiedChannels: []
         };
 
         let userData = { ...defaultUser };
@@ -880,7 +953,10 @@
                 { name: "Bkash", number: "01800000000" }
             ],
             withdrawMethods: ["Nagad", "Bkash", "Binance"],
-            bannedUsers: []
+            bannedUsers: [],
+            forceJoinChannels: [
+                { username: "@earningzone6357", title: "Official Earning Zone", enabled: true }
+            ]
         };
 
         let depositsList = [];
@@ -895,7 +971,31 @@
         function updateReferralLinkInput() {
             const input = document.getElementById('refer-link-input');
             if(input) {
-                input.value = `https://t.me/${botUsername}?start=${userData.id}`;
+                input.value = `https://t.me/${botUsername}/startapp?startapp=${userData.id}`;
+            }
+        }
+
+        function copyReferLink() {
+            const input = document.getElementById('refer-link-input');
+            if(input && input.value) {
+                navigator.clipboard.writeText(input.value).then(() => {
+                    showNotification("📋 Official Referral Link successfully copied!");
+                }).catch(() => {
+                    input.select();
+                    document.execCommand('copy');
+                    showNotification("📋 Official Referral Link copied!");
+                });
+            }
+        }
+
+        function shareReferLink() {
+            const link = `https://t.me/${botUsername}/startapp?startapp=${userData.id}`;
+            const text = encodeURIComponent(`🎉 VIP Earning Hub-এ জয়েন করে ফ্রিতে বোনাস আয় করুন! এখনই অ্যাপটি ওপেন করুন:`);
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
+            if (tg && tg.openTelegramLink) {
+                tg.openTelegramLink(shareUrl);
+            } else {
+                window.open(shareUrl, '_blank');
             }
         }
 
@@ -949,9 +1049,13 @@
                         userData.welcomeBonusClaimed = true;
                         showNotification("🎁 Welcome Bonus! আপনি ১০০ কয়েন বোনাস পেয়েছেন!");
                     }
+                    if(!userData.firstJoinedTimestamp) {
+                        userData.firstJoinedTimestamp = Date.now();
+                    }
                     syncUserDatabase();
                     processInstantReferral();
                 }
+                checkServerForceJoinStatus();
                 updateUI();
             });
 
@@ -970,7 +1074,9 @@
             window.dbOnValue(settingsRef, (snapshot) => {
                 if (snapshot.exists()) {
                     adminSettings = { ...adminSettings, ...snapshot.val() };
+                    checkServerForceJoinStatus();
                     updateUI();
+                    renderForceJoinChannelsAdmin();
                 }
             });
 
@@ -1030,36 +1136,330 @@
             checkMidnightReset();
         };
 
-        function processInstantReferral() {
-            if (userData.referredBy && !userData.referralApproved && userData.referredBy !== userData.id) {
-                userData.referralApproved = true;
-                userData.referralApprovedDate = new Date().toLocaleString('bn-BD');
-                saveProfile();
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           🛡 OFFICIAL TELEGRAM BOT SERVER FORCE JOIN SYSTEM
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        async function checkServerForceJoinStatus() {
+            const gateScreen = document.getElementById('force-join-screen');
+            if(!gateScreen) return;
 
-                const referrerRef = window.dbRef(window.db, 'users/' + userData.referredBy);
-                window.dbGet(referrerRef).then((snap) => {
-                    if (snap.exists()) {
-                        let referrerData = snap.val();
-                        let reward = adminSettings.referRewardCoins || 100;
-                        referrerData.coins = (referrerData.coins || 0) + reward;
-                        referrerData.approvedReferralsCount = (referrerData.approvedReferralsCount || 0) + 1;
-                        referrerData.referralBonusHistory = referrerData.referralBonusHistory || [];
-                        referrerData.referralBonusHistory.push({
-                            referredUserId: userData.id,
-                            referredUserName: userData.name,
-                            bonusAmount: reward,
-                            approvedDate: new Date().toLocaleString('bn-BD')
-                        });
-                        window.dbSet(referrerRef, referrerData);
-                        let notifyRef = window.dbRef(window.db, 'notifications/' + referrerData.id + '_' + Date.now());
-                        window.dbSet(notifyRef, {
-                            message: `🎉 নতুন ইউজার ${userData.name} জয়েন করেছে! +${reward} কয়েন বোনাস যুক্ত হয়েছে!`,
-                            type: 'referral_approved',
-                            timestamp: Date.now()
-                        });
-                    }
-                });
+            let activeChannels = (adminSettings.forceJoinChannels || []).filter(c => c.enabled !== false);
+            if(activeChannels.length === 0) {
+                gateScreen.style.display = 'none';
+                return;
             }
+
+            renderForceJoinGateUI(activeChannels);
+
+            let allVerified = true;
+            for(let ch of activeChannels) {
+                let cleanUsername = ch.username.replace('https://t.me/', '').replace('@', '').trim();
+                if(!userData.verifiedChannels || !userData.verifiedChannels.includes(cleanUsername)) {
+                    allVerified = false;
+                    break;
+                }
+            }
+
+            if(allVerified) {
+                gateScreen.style.display = 'none';
+            } else {
+                gateScreen.style.display = 'flex';
+            }
+        }
+
+        function renderForceJoinGateUI(channels) {
+            const container = document.getElementById('force-join-channels-list');
+            if(!container) return;
+            container.innerHTML = "";
+
+            channels.forEach((ch, idx) => {
+                let cleanUsername = ch.username.replace('https://t.me/', '').replace('@', '').trim();
+                let isVerified = userData.verifiedChannels && userData.verifiedChannels.includes(cleanUsername);
+
+                container.innerHTML += `
+                    <div class="fj-item">
+                        <div style="text-align:left;">
+                            <div style="font-weight:bold; font-size:13px; color:#fff;">${ch.title || '@' + cleanUsername}</div>
+                            <div style="font-size:10px; color:var(--neon-blue);">@${cleanUsername}</div>
+                        </div>
+                        <div>
+                            ${isVerified ? `<span style="color:var(--neon-green); font-size:12px; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> VERIFIED</span>` : 
+                            `<a href="https://t.me/${cleanUsername}" target="_blank" class="btn-join" onclick="playAudio('click')">JOIN NOW</a>`}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function verifyUserForceJoinServer() {
+            playAudio('click');
+            let activeChannels = (adminSettings.forceJoinChannels || []).filter(c => c.enabled !== false);
+            if(activeChannels.length === 0) {
+                document.getElementById('force-join-screen').style.display = 'none';
+                return;
+            }
+
+            let pendingChannels = [];
+            userData.verifiedChannels = userData.verifiedChannels || [];
+
+            for(let ch of activeChannels) {
+                let cleanUsername = ch.username.replace('https://t.me/', '').replace('@', '').trim();
+                
+                try {
+                    // Server-side Official Telegram Bot API Verification (getChatMember)
+                    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=@${cleanUsername}&user_id=${userData.id}`);
+                    const data = await res.json();
+
+                    if(data.ok && ['creator', 'administrator', 'member'].includes(data.result.status)) {
+                        if(!userData.verifiedChannels.includes(cleanUsername)) {
+                            userData.verifiedChannels.push(cleanUsername);
+                        }
+                    } else {
+                        pendingChannels.push(ch.title || cleanUsername);
+                    }
+                } catch(e) {
+                    console.error("Telegram API Verify Error:", e);
+                    pendingChannels.push(ch.title || cleanUsername);
+                }
+            }
+
+            saveProfile();
+
+            if(pendingChannels.length === 0) {
+                document.getElementById('force-join-screen').style.display = 'none';
+                showNotification("🎉 সকল চ্যানেল সফলভাবে ভেরিফাইড হয়েছে! Mini App আনলক করা হয়েছে!");
+            } else {
+                showNotification(`⚠️ আপনি এখনো সকল চ্যানেলে জয়েন করেননি! (${pendingChannels.join(', ')})`);
+                renderForceJoinGateUI(activeChannels);
+            }
+        }
+
+        function addForceJoinChannelAdmin() {
+            let uInput = document.getElementById('admin-fj-username').value.trim();
+            let tInput = document.getElementById('admin-fj-title').value.trim();
+
+            if(!uInput) {
+                showNotification("⚠️ Channel Username বা Link দিন!");
+                return;
+            }
+
+            adminSettings.forceJoinChannels = adminSettings.forceJoinChannels || [];
+            adminSettings.forceJoinChannels.push({
+                username: uInput,
+                title: tInput || uInput,
+                enabled: true
+            });
+
+            saveAdminData();
+            renderForceJoinChannelsAdmin();
+            document.getElementById('admin-fj-username').value = "";
+            document.getElementById('admin-fj-title').value = "";
+            showNotification("✅ Force Join Channel সফলভাবে যোগ করা হয়েছে!");
+            logAdminAction("ADD_FORCE_JOIN_CHANNEL", `Channel ${uInput} added.`);
+        }
+
+        function renderForceJoinChannelsAdmin() {
+            const list = document.getElementById('admin-fj-channels-manage-list');
+            if(!list) return;
+
+            let channels = adminSettings.forceJoinChannels || [];
+            list.innerHTML = "";
+
+            if(channels.length === 0) {
+                list.innerHTML = `<div style="font-size:11px; color:#94a3b8;">কোনো Force Join চ্যানেল এড করা নেই।</div>`;
+                return;
+            }
+
+            channels.forEach((ch, idx) => {
+                list.innerHTML += `
+                    <div style="background:#1e293b; padding:8px 12px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+                        <div>
+                            <b style="color:var(--gold);">${ch.title}</b> (${ch.username})
+                            <div>Status: <span style="color:${ch.enabled ? 'var(--neon-green)' : '#ef4444'};">${ch.enabled ? 'Enabled' : 'Disabled'}</span></div>
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            <button onclick="toggleForceJoinChannel(${idx})" style="background:${ch.enabled ? '#eab308' : 'var(--neon-green)'}; border:none; color:black; padding:4px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">${ch.enabled ? 'Disable' : 'Enable'}</button>
+                            <button onclick="removeForceJoinChannel(${idx})" style="background:#ef4444; border:none; color:white; padding:4px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleForceJoinChannel(idx) {
+            if(adminSettings.forceJoinChannels && adminSettings.forceJoinChannels[idx]) {
+                adminSettings.forceJoinChannels[idx].enabled = !adminSettings.forceJoinChannels[idx].enabled;
+                saveAdminData();
+                renderForceJoinChannelsAdmin();
+                showNotification("⚙️ Force Join Channel Status updated!");
+            }
+        }
+
+        function removeForceJoinChannel(idx) {
+            if(adminSettings.forceJoinChannels && adminSettings.forceJoinChannels[idx]) {
+                adminSettings.forceJoinChannels.splice(idx, 1);
+                saveAdminData();
+                renderForceJoinChannelsAdmin();
+                showNotification("🗑️ Channel removed from Force Join!");
+            }
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           🟢 SECURE OFFICIAL FIREBASE REFERRAL TRANSACTION
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        function processInstantReferral() {
+            const referrerId = userData.referredBy ? String(userData.referredBy).trim() : null;
+            if (!referrerId || userData.referralApproved || referrerId === String(userData.id)) {
+                return;
+            }
+
+            const refClaimRef = window.dbRef(window.db, 'referral_claims/' + userData.id);
+            if(!window.dbRunTransaction) return;
+
+            window.dbRunTransaction(refClaimRef, (currentData) => {
+                if (currentData === null) {
+                    return { referrerId: referrerId, timestamp: Date.now() };
+                } else {
+                    return; // Abort if already claimed
+                }
+            }).then((result) => {
+                if (result.committed) {
+                    userData.referralApproved = true;
+                    userData.referralApprovedDate = new Date().toLocaleString('bn-BD');
+                    saveProfile();
+
+                    const referrerRef = window.dbRef(window.db, 'users/' + referrerId);
+                    window.dbGet(referrerRef).then((snap) => {
+                        if (snap.exists()) {
+                            let referrerData = snap.val();
+                            let reward = adminSettings.referRewardCoins || 100;
+                            referrerData.coins = (referrerData.coins || 0) + reward;
+                            referrerData.bonusEarned = (referrerData.bonusEarned || 0) + reward;
+                            referrerData.approvedReferralsCount = (referrerData.approvedReferralsCount || 0) + 1;
+                            if(!referrerData.firstReferralTime) {
+                                referrerData.firstReferralTime = Date.now();
+                            }
+                            referrerData.lastReferralTime = Date.now();
+                            referrerData.referralBonusHistory = referrerData.referralBonusHistory || [];
+                            referrerData.referralBonusHistory.push({
+                                referredUserId: userData.id,
+                                referredUserName: userData.name,
+                                bonusAmount: reward,
+                                approvedDate: new Date().toLocaleString('bn-BD')
+                            });
+                            window.dbSet(referrerRef, referrerData);
+
+                            let notifyRef = window.dbRef(window.db, 'notifications/' + referrerData.id + '_' + Date.now());
+                            window.dbSet(notifyRef, {
+                                message: `🎉 নতুন ইউজার ${userData.name} জয়েন করেছে! +${reward} কয়েন বোনাস যুক্ত হয়েছে!`,
+                                type: 'referral_approved',
+                                timestamp: Date.now()
+                            });
+                        }
+                    });
+                }
+            }).catch((e) => {
+                console.error("Referral transaction error:", e);
+            });
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           🏆 STRICT TOP 10 APPROVED REFERRAL LEADERBOARD
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        function renderLeaderboard() {
+            const listEl = document.getElementById('leaderboard-list');
+            if(!listEl) return;
+
+            let usersArr = Object.values(allUsersMap || {});
+            
+            // Strictly filter to users with approvedReferralsCount > 0
+            usersArr = usersArr.filter(u => (u.approvedReferralsCount || 0) > 0);
+
+            // Strictly rank based on approvedReferralsCount and tie-breaking by time/ID
+            usersArr.sort((a, b) => {
+                let countA = a.approvedReferralsCount || 0;
+                let countB = b.approvedReferralsCount || 0;
+                if (countB !== countA) {
+                    return countB - countA;
+                }
+                let timeA = a.firstReferralTime || a.firstJoinedTimestamp || 0;
+                let timeB = b.firstReferralTime || b.firstJoinedTimestamp || 0;
+                if (timeA !== timeB) {
+                    return timeA - timeB;
+                }
+                return String(a.id).localeCompare(String(b.id));
+            });
+
+            // Limit display strictly to Top 10
+            let top10 = usersArr.slice(0, 10);
+            listEl.innerHTML = "";
+
+            if(top10.length === 0) {
+                listEl.innerHTML = `
+                    <div style="text-align:center; color:#94a3b8; font-size:13px; padding:25px; background:rgba(15,23,42,0.8); border:1px dashed var(--gold); border-radius:16px;">
+                        <i class="fa-solid fa-trophy" style="font-size:40px; color:var(--gold); margin-bottom:10px;"></i><br>
+                        "এখনো কোনো Referral Leader নেই। প্রথম Referral করে Leaderboard-এর ১ নম্বরে উঠে আসুন!"
+                    </div>
+                `;
+                return;
+            }
+
+            top10.forEach((u, index) => {
+                let rank = index + 1;
+                let badgeColor = rank === 1 ? "var(--gold)" : (rank === 2 ? "#c0c0c0" : (rank === 3 ? "#cd7f32" : "var(--neon-blue)"));
+                let isCurrent = String(u.id) === String(userData.id);
+                
+                listEl.innerHTML += `
+                    <div class="lb-card" style="${isCurrent ? 'border: 2px solid var(--neon-pink); background: rgba(255,0,85,0.15);' : ''}">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-weight:900; font-size:16px; color:${badgeColor}; width:25px; text-align:center;">#${rank}</span>
+                            <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:38px; height:38px; border-radius:50%; border:2px solid ${badgeColor};" alt="user">
+                            <div>
+                                <div style="font-weight:bold; font-size:13px; color:#fff;">${u.name || 'User'} ${isCurrent ? '<span style="color:var(--neon-pink); font-size:10px;">(আপনি)</span>' : ''}</div>
+                                <div style="font-size:10px; color:#94a3b8;">ID: ${u.id}</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:14px; font-weight:900; color:var(--neon-green);"><i class="fa-solid fa-users"></i> ${u.approvedReferralsCount || 0} Ref</div>
+                            <div style="font-size:10px; color:var(--gold); font-weight:bold;">Approved</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openReferHistoryModal() {
+            document.getElementById('refer-modal').classList.add('active');
+            renderReferralHistoryList();
+        }
+
+        function closeReferHistoryModal() {
+            document.getElementById('refer-modal').classList.remove('active');
+        }
+
+        function renderReferralHistoryList() {
+            const container = document.getElementById('refer-users-list');
+            if(!container) return;
+
+            let history = userData.referralBonusHistory || [];
+            container.innerHTML = "";
+
+            if(history.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px; padding:15px;">আপনার মাধ্যমে এখনো কেউ সফলভাবে জয়েন করেনি।</div>`;
+                return;
+            }
+
+            history.slice().reverse().forEach(item => {
+                container.innerHTML += `
+                    <div style="background:#1e293b; padding:10px; border-radius:10px; margin-bottom:8px; border:1px solid #334155; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:bold; font-size:12px; color:var(--gold);">${item.referredUserName || 'VIP Member'}</div>
+                            <div style="font-size:10px; color:#94a3b8;">ID: ${item.referredUserId} | ${item.approvedDate}</div>
+                        </div>
+                        <div style="color:var(--neon-green); font-weight:bold; font-size:12px;">+${item.bonusAmount} কয়েন</div>
+                    </div>
+                `;
+            });
         }
 
         function updateUI() {
@@ -1135,6 +1535,7 @@
                 if(p3) p3.innerText = adminSettings.lbPrizes[2];
             }
 
+            updateReferralLinkInput();
             renderDepositMethodsUI();
             renderWithdrawMethodsUI();
         }
@@ -1468,439 +1869,489 @@
             userData.aviatorBets = (userData.aviatorBets || 0) + 1;
             aviatorBetAmount = amt;
             isBetPlacedForCurrentMatch = true;
-
+            userHasCashedOut = false;
             saveProfile();
             updateUI();
             updateAviatorBetButtonUI();
-
-            showNotification(`✅ ${amt} কয়েন বেট সফলভাবে ধরা হয়েছে!`);
+            showNotification("✅ বেট সফলভাবে ধরা হয়েছে!");
         }
 
         function cancelAviatorBet() {
-            if(!isBetPlacedForCurrentMatch || !isWaitingCountDown) return;
-
+            if(!isBetPlacedForCurrentMatch || isPlaneFlying) return;
             userData.coins += aviatorBetAmount;
-            userData.totalBet = Math.max(0, (userData.totalBet || 0) - aviatorBetAmount);
+            userData.totalBet -= aviatorBetAmount;
+            userData.aviatorBets -= 1;
             isBetPlacedForCurrentMatch = false;
-
+            aviatorBetAmount = 0;
             saveProfile();
             updateUI();
             updateAviatorBetButtonUI();
-
-            showNotification("🚫 বেট ক্যানসেল করা হয়েছে এবং কয়েন ফেরত দেওয়া হয়েছে!");
-        }
-
-        function drawAviatorCanvas() {
-            const canvas = document.getElementById('aviatorCanvas');
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-            
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if(isPlaneFlying) {
-                const posX = Math.min((currentMultiplier - 1) * 35, canvas.width - 70);
-                const posY = Math.min((currentMultiplier - 1) * 25, canvas.height - 40);
-
-                const startX = 10;
-                const startY = canvas.height - 10;
-                const endX = posX + 10;
-                const endY = canvas.height - 10 - posY;
-
-                ctx.beginPath();
-                ctx.moveTo(startX, startY);
-                ctx.quadraticCurveTo(startX + (endX - startX) * 0.5, startY, endX, endY);
-                ctx.lineTo(endX, startY);
-                ctx.closePath();
-
-                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                grad.addColorStop(0, 'rgba(229, 29, 56, 0.4)');
-                grad.addColorStop(1, 'rgba(229, 29, 56, 0.0)');
-                ctx.fillStyle = grad;
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.moveTo(startX, startY);
-                ctx.quadraticCurveTo(startX + (endX - startX) * 0.5, startY, endX, endY);
-                ctx.strokeStyle = '#e51d38';
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            }
+            showNotification("↩️ বেট সফলভাবে ক্যানসেল করা হয়েছে!");
         }
 
         function executePlaneTakeoff() {
-            if(currentTab !== 'sub-aviator') return;
             isPlaneFlying = true;
             userHasCashedOut = false;
 
-            let editorNetProfit = (userData.totalWon || 0) - (userData.totalLost || 0);
+            let rand = Math.random();
+            if (rand < 0.3) {
+                aiCrashTarget = parseFloat((1.01 + Math.random() * 0.49).toFixed(2));
+            } else if (rand < 0.7) {
+                aiCrashTarget = parseFloat((1.50 + Math.random() * 1.50).toFixed(2));
+            } else if (rand < 0.9) {
+                aiCrashTarget = parseFloat((3.00 + Math.random() * 5.00).toFixed(2));
+            } else {
+                aiCrashTarget = parseFloat((8.00 + Math.random() * 15.00).toFixed(2));
+            }
+
+            let badge = document.getElementById('aviator-status-badge');
+            if(badge) {
+                badge.innerText = "● IN FLIGHT";
+                badge.style.color = "var(--neon-green)";
+            }
+
+            const cashBtn = document.getElementById('aviator-cash-btn');
+            const startBtn = document.getElementById('aviator-start-btn');
+            if(startBtn) startBtn.style.display = 'none';
 
             if(isBetPlacedForCurrentMatch) {
-                let rand = Math.random() * 100;
-                if (aviatorBetAmount > 500) {
-                    aiCrashTarget = rand < 40 ? (Math.random() * 0.4 + 1.10).toFixed(2) : (Math.random() * 1.8 + 1.30).toFixed(2);
-                } else if (editorNetProfit > 2000) {
-                    aiCrashTarget = (Math.random() * 0.50 + 1.08).toFixed(2);
-                } else {
-                    if(rand < 20) aiCrashTarget = (Math.random() * 0.2 + 1.05).toFixed(2);
-                    else if(rand < 75) aiCrashTarget = (Math.random() * 1.8 + 1.30).toFixed(2);
-                    else aiCrashTarget = (Math.random() * 8.0 + 3.00).toFixed(2);
-                }
-
-                document.getElementById('aviator-start-btn').style.display = 'none';
-                document.getElementById('aviator-cash-btn').style.display = 'inline-flex';
-            } else {
-                aiCrashTarget = (Math.random() * 4.0 + 1.20).toFixed(2);
-                document.getElementById('aviator-start-btn').style.display = 'none';
+                if(cashBtn) cashBtn.style.display = 'inline-flex';
             }
 
             let multDisplay = document.getElementById('aviator-mult');
-            let plane = document.getElementById('aviator-plane');
             if(multDisplay) multDisplay.classList.remove('crashed');
 
-            let flightInterval = setInterval(() => {
+            let flightTimer = setInterval(() => {
                 if(currentTab !== 'sub-aviator') {
-                    clearInterval(flightInterval);
+                    clearInterval(flightTimer);
                     isPlaneFlying = false;
                     stopEngineSound();
                     return;
                 }
 
-                currentMultiplier += 0.03;
-                if(multDisplay) multDisplay.innerText = currentMultiplier.toFixed(2) + "x";
-                
-                let curWinVal = Math.floor(aviatorBetAmount * currentMultiplier);
-                let cashValSpan = document.getElementById('aviator-cashout-val');
-                if(cashValSpan) cashValSpan.innerText = `${curWinVal} (${currentMultiplier.toFixed(2)}x)`;
-
+                currentMultiplier += 0.02 + (currentMultiplier * 0.015);
                 playAudio('fly', currentMultiplier);
-                drawAviatorCanvas();
 
-                let posX = Math.min((currentMultiplier - 1) * 35, 230);
-                let posY = Math.min((currentMultiplier - 1) * 25, 140);
-                if(plane) plane.style.transform = `translate(${posX}px, -${posY}px)`;
+                if(multDisplay) multDisplay.innerText = currentMultiplier.toFixed(2) + "x";
 
-                if(currentMultiplier >= parseFloat(aiCrashTarget)) {
-                    clearInterval(flightInterval);
-                    isPlaneFlying = false;
-                    stopEngineSound();
-                    playAudio('crash');
-
-                    if(multDisplay) {
-                        multDisplay.innerText = "FLEW AWAY " + aiCrashTarget + "x";
-                        multDisplay.classList.add('crashed');
-                    }
-
-                    if(isBetPlacedForCurrentMatch && !userHasCashedOut) {
-                        userData.totalLost = (userData.totalLost || 0) + aviatorBetAmount;
-                        showNotification(`💥 বিমানটি ক্র্যাশ করেছে! আপনি ${aviatorBetAmount} কয়েন হারিয়েছেন`);
-                    }
-
-                    isBetPlacedForCurrentMatch = false;
-                    saveProfile();
-                    updateUI();
-
-                    document.getElementById('aviator-start-btn').style.display = 'inline-flex';
-                    document.getElementById('aviator-cash-btn').style.display = 'none';
-                    updateAviatorBetButtonUI();
-
-                    setTimeout(() => {
-                        if(plane) plane.style.transform = `translate(0px, 0px)`;
-                    }, 1500);
+                let cashVal = document.getElementById('aviator-cashout-val');
+                if(cashVal && isBetPlacedForCurrentMatch && !userHasCashedOut) {
+                    cashVal.innerText = Math.floor(aviatorBetAmount * currentMultiplier);
                 }
-            }, 70);
+
+                drawAviatorCanvas(currentMultiplier);
+
+                if(currentMultiplier >= aiCrashTarget) {
+                    clearInterval(flightTimer);
+                    handleAviatorCrash();
+                }
+            }, 60);
+        }
+
+        function handleAviatorCrash() {
+            isPlaneFlying = false;
+            playAudio('crash');
+            
+            let multDisplay = document.getElementById('aviator-mult');
+            if(multDisplay) {
+                multDisplay.innerText = "FLEW AWAY @ " + currentMultiplier.toFixed(2) + "x";
+                multDisplay.classList.add('crashed');
+            }
+
+            let badge = document.getElementById('aviator-status-badge');
+            if(badge) {
+                badge.innerText = "● CRASHED";
+                badge.style.color = "var(--aviator-red)";
+            }
+
+            const cashBtn = document.getElementById('aviator-cash-btn');
+            if(cashBtn) cashBtn.style.display = 'none';
+
+            if(isBetPlacedForCurrentMatch && !userHasCashedOut) {
+                userData.totalLost = (userData.totalLost || 0) + aviatorBetAmount;
+                saveProfile();
+            }
+
+            addAviatorHistoryChip(currentMultiplier.toFixed(2) + "x");
+
+            setTimeout(() => {
+                if(currentTab === 'sub-aviator') startNewFlightRound();
+            }, 2500);
         }
 
         function cashoutAviator() {
-            if(!isPlaneFlying || userHasCashedOut || !isBetPlacedForCurrentMatch) return;
+            if(!isPlaneFlying || !isBetPlacedForCurrentMatch || userHasCashedOut) return;
+
             userHasCashedOut = true;
-
-            let winAmount = Math.floor(aviatorBetAmount * currentMultiplier);
-            userData.coins += winAmount;
-            userData.totalWon = (userData.totalWon || 0) + winAmount;
-            isBetPlacedForCurrentMatch = false;
-
+            let winCoins = Math.floor(aviatorBetAmount * currentMultiplier);
+            userData.coins += winCoins;
+            userData.totalWon = (userData.totalWon || 0) + winCoins;
             saveProfile();
             updateUI();
-
             playAudio('win');
-            showNotification(`🎉 অভিনন্দন! আপনি ${currentMultiplier.toFixed(2)}x এ ${winAmount} কয়েন ক্যাশআউট করেছেন!`);
 
-            document.getElementById('aviator-start-btn').style.display = 'inline-flex';
-            document.getElementById('aviator-cash-btn').style.display = 'none';
-            updateAviatorBetButtonUI();
+            showNotification(`🎉 Congratulations! আপনি ৳${winCoins} কয়েন ক্যাশআউট করেছেন (${currentMultiplier.toFixed(2)}x)`);
+
+            const cashBtn = document.getElementById('aviator-cash-btn');
+            if(cashBtn) cashBtn.style.display = 'none';
         }
+
+        function addAviatorHistoryChip(valStr) {
+            const box = document.getElementById('aviator-history-box');
+            if(!box) return;
+
+            let valNum = parseFloat(valStr);
+            let isHigh = valNum >= 3.00;
+            let chip = document.createElement('div');
+            chip.className = `history-chip ${isHigh ? 'high' : ''}`;
+            chip.innerText = valStr;
+
+            box.insertBefore(chip, box.firstChild);
+            if(box.children.length > 10) {
+                box.removeChild(box.lastChild);
+            }
+        }
+
+        function drawAviatorCanvas(mult) {
+            const canvas = document.getElementById('aviatorCanvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let progress = Math.min((mult - 1) / (aiCrashTarget - 1 || 1), 1);
+            let planeX = 20 + progress * (canvas.width - 90);
+            let planeY = canvas.height - 30 - (progress * (canvas.height - 80));
+
+            ctx.beginPath();
+            ctx.moveTo(10, canvas.height - 10);
+            ctx.quadraticCurveTo(planeX / 2, canvas.height - 10, planeX, planeY + 15);
+            ctx.strokeStyle = '#e51d38';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            ctx.lineTo(planeX, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.fillStyle = 'rgba(229, 29, 56, 0.15)';
+            ctx.fill();
+
+            const planeSvg = document.getElementById('aviator-plane');
+            if(planeSvg) {
+                planeSvg.style.left = (planeX - 10) + 'px';
+                planeSvg.style.top = (planeY - 10) + 'px';
+            }
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           🎰 3D CUSTOM BET SPIN WHEEL ENGINE
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        let isSpinningWheel = false;
+        const spinMultipliers = [0, 2, 0.5, 5, 1.5, 3];
 
         function spinCustomWheel() {
             playAudio('click');
-            let bet = parseInt(document.getElementById('spin-bet-amount').value) || 100;
-            if(bet <= 0 || userData.coins < bet) {
+            let amt = parseInt(document.getElementById('spin-bet-amount').value) || 100;
+
+            if(isSpinningWheel) return;
+            if(amt <= 0 || userData.coins < amt) {
                 showNotification("❌ পর্যাপ্ত কয়েন ব্যালেন্স নেই!");
                 return;
             }
 
-            userData.coins -= bet;
+            isSpinningWheel = true;
+            userData.coins -= amt;
             userData.spinCount = (userData.spinCount || 0) + 1;
             saveProfile();
             updateUI();
 
+            let targetIndex = Math.floor(Math.random() * spinMultipliers.length);
+            let targetDegree = 3600 + (targetIndex * 60) + 30;
+
             const wheel = document.getElementById('spin-wheel-element');
-            let randomDeg = Math.floor(Math.random() * 360) + 1440;
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
+            if(wheel) {
+                wheel.style.transition = "transform 4s cubic-bezier(0.15, 0.9, 0.15, 1)";
+                wheel.style.transform = `rotate(${targetDegree}deg)`;
+            }
 
             setTimeout(() => {
-                let multipliers = [0, 0.5, 1.2, 2.0, 0, 5.0];
-                let index = Math.floor((randomDeg % 360) / 60);
-                let mult = multipliers[index] || 1.0;
-                let won = Math.floor(bet * mult);
+                isSpinningWheel = false;
+                let mult = spinMultipliers[targetIndex];
+                let winAmount = Math.floor(amt * mult);
 
-                if(won > 0) {
-                    userData.coins += won;
+                if(winAmount > 0) {
+                    userData.coins += winAmount;
                     playAudio('win');
-                    showNotification(`🎉 স্পিন জিতেছেন ${won} কয়েন (${mult}x)!`);
+                    showNotification(`🎉 Woohoo! আপনি ${mult}x মাল্টিপ্লায়ার জিতেছেন! (+${winAmount} কয়েন)`);
                 } else {
-                    showNotification("😞 ভাগ্য খারাপ! পরবর্তীতে আবার চেষ্টা করুন।");
+                    playAudio('crash');
+                    showNotification("💔 দুর্ভাগ্যবশত আপনি এবার হেরেছেন! আবার চেষ্টা করুন!");
                 }
+
+                if(wheel) {
+                    wheel.style.transition = "none";
+                    wheel.style.transform = `rotate(${targetDegree % 360}deg)`;
+                }
+
                 saveProfile();
                 updateUI();
-            }, 4000);
+            }, 4200);
         }
 
-        let currentBattleLevel = 1;
-        let battleRoomTimer = null;
-        let isBattleSpinning = false;
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           🎟️ MULTIPLAYER 3-LEVEL TICKET BATTLE ROOM
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        let battleLevel = 1;
+        let battlePot = 0;
+        let battleTimer = null;
+        let battleCountdown = 30;
+        let battleBuyers = [];
+        let isBattleStarted = false;
 
         function changeBattleLevel() {
-            currentBattleLevel = parseInt(document.getElementById('battle-level-select').value);
-            initBattleLiveEngine();
+            battleLevel = parseInt(document.getElementById('battle-level-select').value) || 1;
+            resetBattleRoom();
         }
 
-        function initBattleLiveEngine() {
-            if(!window.db) return;
-            const battleRef = window.dbRef(window.db, 'battle_rooms/level_' + currentBattleLevel);
-            window.dbOnValue(battleRef, (snapshot) => {
-                if(snapshot.exists()) {
-                    let room = snapshot.val();
-                    renderBattleRoomState(room);
-                } else {
-                    renderBattleRoomState({ pot: 0, status: "waiting", buyers: [] });
-                }
-            });
-        }
+        function resetBattleRoom() {
+            battleBuyers = [];
+            battlePot = 0;
+            battleCountdown = 30;
+            if(battleTimer) clearInterval(battleTimer);
+            battleTimer = null;
+            isBattleStarted = false;
 
-        function renderBattleRoomState(room) {
             const potEl = document.getElementById('battle-pot-display');
+            if(potEl) potEl.innerText = "0";
+
             const timerEl = document.getElementById('battle-timer');
+            if(timerEl) timerEl.innerText = "⏱️ ওয়েটিং...";
+
             const logEl = document.getElementById('battle-buyers-log');
+            if(logEl) logEl.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">এখনো কেউ টিকেট কেনেনি! ২টি টিকেট কেনা হলে ৩০ সে. কাউন্টডাউন শুরু হবে।</div>`;
 
-            if(potEl) potEl.innerText = room.pot || 0;
-            
-            if(logEl) {
-                logEl.innerHTML = "";
-                if(room.buyers && room.buyers.length > 0) {
-                    room.buyers.forEach(b => {
-                        logEl.innerHTML += `<div style="font-size:11px; color:var(--neon-green);">🎟️ <b>${b.userName}</b> টিকেট কিনেছেন</div>`;
-                    });
-                } else {
-                    logEl.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">এখনো কেউ টিকেট কেনেনি! আপনি টিকেট কিনলে ৩০ সে. টাইম শুরু হবে।</div>`;
-                }
-            }
-
-            if(room.status === "active" && room.endTime) {
-                let remaining = Math.max(0, Math.ceil((room.endTime - Date.now()) / 1000));
-                if(timerEl) timerEl.innerText = `⏱️ ${remaining} সে. বাকি`;
-
-                if(remaining <= 0 && !isBattleSpinning && room.buyers && room.buyers.length > 0) {
-                    triggerBattleSpinWheel(room);
-                }
-            } else if(room.status === "finished") {
-                if(timerEl) timerEl.innerText = `🏆 বিজয়ী ঘোষিত!`;
-            } else {
-                if(timerEl) timerEl.innerText = `⏱️ ওয়েটিং...`;
-            }
-        }
-
-        function triggerBattleSpinWheel(room) {
-            isBattleSpinning = true;
             const wheelCont = document.getElementById('battle-wheel-container');
-            const wheelBox = document.getElementById('battle-wheel-element');
-            const innerTxt = document.getElementById('battle-wheel-inner-text');
-
-            if(wheelCont) wheelCont.style.display = 'block';
-
-            let randomIndex = Math.floor(Math.random() * room.buyers.length);
-            let winner = room.buyers[randomIndex];
-
-            let randomDeg = Math.floor(Math.random() * 360) + 1440;
-            if(wheelBox) wheelBox.style.transform = `rotate(${randomDeg}deg)`;
-
-            playAudio('click');
-
-            setTimeout(() => {
-                if(innerTxt) innerTxt.innerText = winner.userName;
-                playAudio('win');
-
-                let totalPot = room.pot || 0;
-                let prize = Math.floor(totalPot * 0.90);
-
-                if(winner.userId === userData.id) {
-                    userData.coins += prize;
-                    saveProfile();
-                    updateUI();
-                    showNotification(`🎉 অভিনন্দন! আপনি টিকেট ব্যাটল জিতে ৳${prize} কয়েন পেয়েছেন! (১০% এডমিন ফি কাটা হয়েছে)`);
-                } else {
-                    showNotification(`🏆 ব্যাটল বিজয়ী: ${winner.userName} (জিতেছে ${prize} কয়েন)!`);
-                }
-
-                if(window.db && window.dbSet && window.dbRef) {
-                    window.dbSet(window.dbRef(window.db, 'battle_rooms/level_' + currentBattleLevel), {
-                        pot: 0,
-                        status: "waiting",
-                        buyers: []
-                    });
-                }
-
-                setTimeout(() => {
-                    if(wheelCont) wheelCont.style.display = 'none';
-                    isBattleSpinning = false;
-                }, 3000);
-            }, 4000);
+            if(wheelCont) wheelCont.style.display = 'none';
         }
 
         function buyLevelTicket() {
             playAudio('click');
-            let ticketPrice = currentBattleLevel === 1 ? 50 : currentBattleLevel === 2 ? 200 : 1000;
-            if(userData.coins < ticketPrice) {
+            let cost = battleLevel === 1 ? 50 : (battleLevel === 2 ? 200 : 1000);
+
+            if(userData.coins < cost) {
                 showNotification("❌ পর্যাপ্ত কয়েন নেই!");
                 return;
             }
 
-            userData.coins -= ticketPrice;
+            userData.coins -= cost;
             saveProfile();
             updateUI();
 
-            const battleRef = window.dbRef(window.db, 'battle_rooms/level_' + currentBattleLevel);
-            window.dbGet(battleRef).then((snap) => {
-                let room = snap.exists() ? snap.val() : { pot: 0, status: "waiting", buyers: [] };
-                room.buyers = room.buyers || [];
-                room.buyers.push({ userId: userData.id, userName: userData.name });
-                room.pot = (room.pot || 0) + ticketPrice;
+            battleBuyers.push({ id: userData.id, name: userData.name });
+            battlePot += cost;
 
-                if(room.status !== "active") {
-                    room.status = "active";
-                    room.endTime = Date.now() + 30000;
-                }
+            const potEl = document.getElementById('battle-pot-display');
+            if(potEl) potEl.innerText = battlePot;
 
-                window.dbSet(battleRef, room);
-                showNotification("🎟️ টিকেট সফলভাবে ক্রয় করা হয়েছে!");
-            });
+            const logEl = document.getElementById('battle-buyers-log');
+            if(logEl) {
+                if(battleBuyers.length === 1) logEl.innerHTML = "";
+                logEl.innerHTML += `<div style="font-size:11px; color:var(--neon-green); margin-bottom:2px;">🎟️ ${userData.name} (Ticket #${battleBuyers.length}) - 🪙${cost}</div>`;
+            }
+
+            showNotification("✅ টিকেট সফলভাবে কেনা হয়েছে!");
+
+            if(battleBuyers.length >= 2 && !isBattleStarted) {
+                startBattleCountdown();
+            }
         }
 
+        function startBattleCountdown() {
+            isBattleStarted = true;
+            battleCountdown = 30;
+
+            const timerEl = document.getElementById('battle-timer');
+
+            battleTimer = setInterval(() => {
+                battleCountdown--;
+                if(timerEl) timerEl.innerText = `⏱️ ${battleCountdown}s`;
+
+                if(battleCountdown <= 0) {
+                    clearInterval(battleTimer);
+                    spinBattleWinnerWheel();
+                }
+            }, 1000);
+        }
+
+        function spinBattleWinnerWheel() {
+            const wheelCont = document.getElementById('battle-wheel-container');
+            if(wheelCont) wheelCont.style.display = 'block';
+
+            let winnerIndex = Math.floor(Math.random() * battleBuyers.length);
+            let winner = battleBuyers[winnerIndex];
+
+            const wheel = document.getElementById('battle-wheel-element');
+            if(wheel) {
+                wheel.style.transform = `rotate(3600deg)`;
+            }
+
+            setTimeout(() => {
+                if(String(winner.id) === String(userData.id)) {
+                    userData.coins += battlePot;
+                    playAudio('win');
+                    showNotification(`🎉 Congratulations! আপনি টিকেট ব্যাটল জیتےছেন! (+${battlePot} কয়েন)`);
+                } else {
+                    playAudio('crash');
+                    showNotification(`🏆 টিকেট ব্যাটল বিজয়ী: ${winner.name}! (+${battlePot} কয়েন)`);
+                }
+
+                saveProfile();
+                updateUI();
+
+                setTimeout(() => {
+                    resetBattleRoom();
+                }, 3000);
+            }, 4000);
+        }
+
+        function initBattleLiveEngine() {
+            resetBattleRoom();
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           💳 DEPOSIT & WITHDRAWAL MANAGEMENT
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
         function renderDepositMethodsUI() {
             const container = document.getElementById('deposit-method-container');
             if(!container) return;
+
+            let methods = adminSettings.depositMethods || [];
             container.innerHTML = "";
 
-            if(!adminSettings.depositMethods || adminSettings.depositMethods.length === 0) {
-                adminSettings.depositMethods = [
-                    { name: "Bkash", number: "01800000000" },
-                    { name: "Nagad", number: "01700000000" }
-                ];
-            }
-
-            adminSettings.depositMethods.forEach((m, idx) => {
-                const btn = document.createElement('button');
-                btn.className = `method-btn ${idx === selectedDepositIndex ? 'selected' : ''}`;
-                btn.innerHTML = `<i class="fa-solid fa-wallet"></i> ${m.name}`;
-                btn.onclick = () => {
-                    selectedDepositIndex = idx;
-                    renderDepositMethodsUI();
-                    updateDepositInfoBox();
-                };
-                container.appendChild(btn);
+            methods.forEach((m, idx) => {
+                let isSelected = idx === selectedDepositIndex;
+                container.innerHTML += `
+                    <div class="method-btn ${isSelected ? 'selected' : ''}" onclick="selectDepositMethod(${idx})">
+                        <span>${m.name}</span>
+                    </div>
+                `;
             });
-            updateDepositInfoBox();
+
+            if(methods[selectedDepositIndex]) {
+                const title = document.getElementById('dep-method-title');
+                const addr = document.getElementById('deposit-address');
+                if(title) title.innerText = methods[selectedDepositIndex].name;
+                if(addr) addr.innerText = methods[selectedDepositIndex].number;
+            }
         }
 
-        function updateDepositInfoBox() {
-            let methodObj = adminSettings.depositMethods[selectedDepositIndex] || { name: "Nagad", number: "01700000000" };
-            document.getElementById('dep-method-title').innerText = methodObj.name;
-            document.getElementById('deposit-address').innerText = methodObj.number;
+        function selectDepositMethod(idx) {
+            playAudio('click');
+            selectedDepositIndex = idx;
+            renderDepositMethodsUI();
         }
 
         function copyDepositAddress() {
-            playAudio('click');
-            let addr = document.getElementById('deposit-address').innerText;
-            navigator.clipboard.writeText(addr);
-            showNotification("📋 নাম্বার কপি করা হয়েছে!");
+            const addr = document.getElementById('deposit-address').innerText;
+            navigator.clipboard.writeText(addr).then(() => {
+                showNotification("📋 নম্বর কপি হয়েছে!");
+            });
         }
 
         function calculateDepositBonus() {
             let bdt = parseFloat(document.getElementById('deposit-amount-input').value) || 0;
             let coinRate = adminSettings.coinRate50 || 1;
-            
             let baseCoins = Math.floor((bdt / coinRate) * 50);
             let bonusCoins = Math.floor(baseCoins * 0.10);
-            let totalCoins = baseCoins + bonusCoins;
+            let total = baseCoins + bonusCoins;
 
             document.getElementById('deposit-base-coins').innerText = baseCoins;
             document.getElementById('deposit-bonus-text').innerText = bonusCoins;
-            document.getElementById('deposit-total-text').innerText = totalCoins;
+            document.getElementById('deposit-total-text').innerText = total;
         }
 
         function submitDeposit() {
             playAudio('click');
             let bdt = parseFloat(document.getElementById('deposit-amount-input').value) || 0;
             let trx = document.getElementById('deposit-trx-input').value.trim();
-            let methodObj = adminSettings.depositMethods[selectedDepositIndex] || { name: "Nagad", number: "" };
+            let methodObj = adminSettings.depositMethods[selectedDepositIndex];
 
             if(bdt <= 0 || !trx) {
-                showNotification("❌ সঠিক ডিপোজিট তথ্য পূরণ করুন!");
+                showNotification("⚠️ সঠিক টাকা ও ট্রানজেকশন আইডি প্রদান করুন!");
                 return;
             }
 
             let coinRate = adminSettings.coinRate50 || 1;
             let baseCoins = Math.floor((bdt / coinRate) * 50);
             let bonusCoins = Math.floor(baseCoins * 0.10);
-            let totalExpectedCoins = baseCoins + bonusCoins;
+            let total = baseCoins + bonusCoins;
 
-            let newDep = {
+            let depObj = {
                 id: Date.now().toString(),
                 userId: userData.id,
                 userName: userData.name,
-                amount: bdt,
-                expectedCoins: totalExpectedCoins,
+                method: methodObj ? methodObj.name : "Bkash",
+                amountBdt: bdt,
+                totalCoins: total,
                 trxId: trx,
-                method: methodObj.name,
-                status: "Pending",
-                date: new Date().toLocaleString('bn-BD')
+                status: 'pending',
+                timestamp: new Date().toLocaleString('bn-BD')
             };
 
-            window.dbSet(window.dbRef(window.db, 'deposits/' + newDep.id), newDep);
-            showNotification("✅ ডিপোজিট রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে (পেন্ডিং)!");
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'deposits/' + depObj.id), depObj);
+            }
+
             document.getElementById('deposit-amount-input').value = "";
             document.getElementById('deposit-trx-input').value = "";
+            calculateDepositBonus();
+            showNotification("✅ ডিপোজিট রিকোয়েস্ট জমা হয়েছে! এডমিন ভেরিফাই করবে।");
+        }
+
+        function renderUserDepositHistory() {
+            const container = document.getElementById('user-deposit-history');
+            if(!container) return;
+
+            let userDeps = depositsList.filter(d => String(d.userId) === String(userData.id));
+            container.innerHTML = "";
+
+            if(userDeps.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">কোনো ডিপোজিট হিস্ট্রি নেই।</div>`;
+                return;
+            }
+
+            userDeps.slice().reverse().forEach(d => {
+                let badgeClass = d.status === 'approved' ? 'badge-approved' : (d.status === 'rejected' ? 'badge-rejected' : 'badge-pending');
+                container.innerHTML += `
+                    <div style="background:#1e293b; padding:8px 12px; border-radius:8px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <b>${d.method}</b> - ৳${d.amountBdt} (${d.totalCoins} Coins)
+                            <div style="font-size:10px; color:#94a3b8;">Trx: ${d.trxId} | ${d.timestamp}</div>
+                        </div>
+                        <span class="${badgeClass}">${d.status.toUpperCase()}</span>
+                    </div>
+                `;
+            });
         }
 
         function renderWithdrawMethodsUI() {
             const select = document.getElementById('withdraw-method');
             if(!select) return;
+
+            let methods = adminSettings.withdrawMethods || ["Bkash", "Nagad", "Rocket"];
             select.innerHTML = "";
-            if(!adminSettings.withdrawMethods || adminSettings.withdrawMethods.length === 0) {
-                adminSettings.withdrawMethods = ["Nagad", "Bkash", "Binance"];
-            }
-            adminSettings.withdrawMethods.forEach(wm => {
-                select.innerHTML += `<option value="${wm}">${wm}</option>`;
+
+            methods.forEach(m => {
+                select.innerHTML += `<option value="${m}">${m}</option>`;
             });
         }
 
         function calculateWithdrawAmount() {
             let coins = parseInt(document.getElementById('withdraw-coins').value) || 0;
-            let rate = adminSettings.coinRate50 || 1;
-            let bdt = (coins / 50) * rate;
-            document.getElementById('withdraw-bdt-calc').innerText = "৳" + bdt.toFixed(2);
+            let coinRate = adminSettings.coinRate50 || 1;
+            let bdt = (coins / 50) * coinRate;
+            document.getElementById('withdraw-bdt-calc').innerText = `৳${bdt.toFixed(2)}`;
         }
 
         function requestWithdraw() {
@@ -1911,398 +2362,143 @@
 
             let minBdt = adminSettings.minWithdraw || 20;
             let coinRate = adminSettings.coinRate50 || 1;
-            let minCoins = Math.ceil((minBdt / coinRate) * 50);
+            let minCoinsNeeded = Math.ceil((minBdt / coinRate) * 50);
 
-            let currentBdt = ((userData.coins || 0) / 50) * coinRate;
-
-            if(!acc) {
-                showNotification("❌ আপনার উইথড্র নাম্বার প্রদান করুন!");
+            if(!acc || coins < minCoinsNeeded) {
+                showNotification(`⚠️ সর্বনিম্ন ${minCoinsNeeded} কয়েন (৳${minBdt}) উত্তোলন করা যাবে!`);
                 return;
             }
 
-            if(currentBdt < minBdt || userData.coins < minCoins) {
-                let neededBdt = (minBdt - currentBdt).toFixed(2);
-                showNotification(`⚠️ সর্বনিম্ন উত্তোলন ৳${minBdt} টাকা। আপনার আছে ৳${currentBdt.toFixed(2)} টাকা, আরো দরকার ৳${neededBdt} টাকা।`);
+            if(userData.coins < coins) {
+                showNotification("❌ আপনার পর্যাপ্ত ব্যালেন্স নেই!");
                 return;
             }
 
-            let withdrawBdt = (coins / 50) * coinRate;
-
-            if(withdrawBdt < minBdt || coins < minCoins) {
-                showNotification(`⚠️ সর্বনিম্ন ৳${minBdt} টাকা (${minCoins} কয়েন) উত্তোলন করতে হবে!`);
-                return;
-            }
+            let bdt = (coins / 50) * coinRate;
 
             userData.coins -= coins;
             saveProfile();
             updateUI();
 
-            let newWith = {
+            let withObj = {
                 id: Date.now().toString(),
                 userId: userData.id,
                 userName: userData.name,
-                coins: coins,
-                amountBdt: withdrawBdt,
-                acc: acc,
                 method: method,
-                status: "Pending",
-                date: new Date().toLocaleString('bn-BD')
+                acc: acc,
+                coins: coins,
+                amountBdt: bdt,
+                status: 'pending',
+                timestamp: new Date().toLocaleString('bn-BD')
             };
 
-            window.dbSet(window.dbRef(window.db, 'withdraws/' + newWith.id), newWith);
-            showNotification("✅ ক্যাশআউট রিকোয়েস্ট পেন্ডিং এ পাঠানো হয়েছে!");
-            document.getElementById('withdraw-coins').value = "";
-            document.getElementById('withdraw-acc').value = "";
-        }
-
-        function renderUserDepositHistory() {
-            const box = document.getElementById('user-deposit-history');
-            if(!box) return;
-            box.innerHTML = "";
-            let myDeps = depositsList.filter(d => d.userId === userData.id);
-            if(myDeps.length === 0) {
-                box.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন ডিপোজিট হিস্ট্রি নেই</div>`;
-                return;
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'withdraws/' + withObj.id), withObj);
             }
-            myDeps.forEach(d => {
-                box.innerHTML += `
-                    <div style="background:#0f172a; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div><b>${d.method}</b> - ৳${d.amount} (${d.expectedCoins || 0} Coins)</div>
-                            <div style="font-size:9px; color:#94a3b8;">TrxID: ${d.trxId} | ${d.date}</div>
-                        </div>
-                        <span class="badge-${d.status.toLowerCase()}">${d.status}</span>
-                    </div>
-                `;
-            });
+
+            document.getElementById('withdraw-acc').value = "";
+            document.getElementById('withdraw-coins').value = "";
+            calculateWithdrawAmount();
+            showNotification("✅ উইথড্র রিকোয়েস্ট জমা হয়েছে! পেন্ডিং থাকবে।");
         }
 
         function renderUserWithdrawHistory() {
-            const box = document.getElementById('user-withdraw-history');
-            if(!box) return;
-            box.innerHTML = "";
-            let myWiths = withdrawsList.filter(w => w.userId === userData.id);
-            if(myWiths.length === 0) {
-                box.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন উইথড্র হিস্ট্রি নেই</div>`;
+            const container = document.getElementById('user-withdraw-history');
+            if(!container) return;
+
+            let userWiths = withdrawsList.filter(w => String(w.userId) === String(userData.id));
+            container.innerHTML = "";
+
+            if(userWiths.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">কোনো উইথড্র হিস্ট্রি নেই।</div>`;
                 return;
             }
-            myWiths.forEach(w => {
-                box.innerHTML += `
-                    <div style="background:#0f172a; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
+
+            userWiths.slice().reverse().forEach(w => {
+                let badgeClass = w.status === 'approved' ? 'badge-approved' : (w.status === 'rejected' ? 'badge-rejected' : 'badge-pending');
+                container.innerHTML += `
+                    <div style="background:#1e293b; padding:8px 12px; border-radius:8px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <div><b>${w.method}</b> - ${w.coins} Coins (৳${w.amountBdt})</div>
-                            <div style="font-size:9px; color:#94a3b8;">N/Acc: ${w.acc} | ${w.date}</div>
+                            <b>${w.method}</b> - ৳${w.amountBdt} (${w.coins} Coins)
+                            <div style="font-size:10px; color:#94a3b8;">Acc: ${w.acc} | ${w.timestamp}</div>
                         </div>
-                        <span class="badge-${w.status.toLowerCase()}">${w.status}</span>
+                        <span class="${badgeClass}">${w.status.toUpperCase()}</span>
                     </div>
                 `;
             });
         }
 
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           💬 GLOBAL CHAT ROOM ENGINE
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
         function sendChatMessage() {
-            playAudio('click');
-            let text = document.getElementById('chat-input').value.trim();
-            if(!text) return;
+            let input = document.getElementById('chat-input');
+            let txt = input.value.trim();
+            if(!txt) return;
 
-            let msgId = Date.now().toString();
-            let msgObj = {
-                id: msgId,
+            playAudio('click');
+            let chatObj = {
+                id: Date.now().toString(),
                 senderId: userData.id,
                 senderName: userData.name,
                 photo: userData.photoUrl,
-                text: text,
-                time: new Date().toLocaleTimeString()
+                text: txt,
+                timestamp: Date.now()
             };
 
-            window.dbSet(window.dbRef(window.db, 'chats/' + msgId), msgObj);
-            document.getElementById('chat-input').value = "";
-        }
-
-        function copyReferLink() {
-            playAudio('click');
-            let link = `https://t.me/${botUsername}?start=${userData.id}`;
-            navigator.clipboard.writeText(link);
-            showNotification("📋 রেফারেল লিংক সফলভাবে কপি করা হয়েছে!");
-        }
-
-        function shareReferLink() {
-            playAudio('click');
-            let link = `https://t.me/${botUsername}?start=${userData.id}`;
-            let shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent("🔥 VIP Earning Mini App এ জয়েন করে সাথে সাথে ইনস্ট্যান্ট বোনাস নিন!")}`;
-            if(tg?.openTelegramLink) tg.openTelegramLink(shareUrl);
-            else window.open(shareUrl, '_blank');
-        }
-
-        function openReferHistoryModal() {
-            document.getElementById('refer-modal').classList.add('active');
-            renderReferralHistoryList();
-        }
-
-        function closeReferHistoryModal() {
-            document.getElementById('refer-modal').classList.remove('active');
-        }
-
-        function renderReferralHistoryList() {
-            const list = document.getElementById('refer-users-list');
-            if(!list) return;
-            list.innerHTML = "";
-
-            let myRefers = Object.values(allUsersMap).filter(u => u.referredBy === userData.id);
-
-            if(myRefers.length === 0) {
-                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">এখনো কেউ আপনার লিংকে জয়েন করেনি!</div>`;
-                return;
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'chats/' + chatObj.id), chatObj);
             }
 
-            myRefers.forEach(u => {
-                list.innerHTML += `
-                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-weight:bold; font-size:12px;">${u.name}</div>
-                            <div style="font-size:10px; color:#94a3b8;">ID: ${u.id} | Ads: ${u.adsSeen || 0}</div>
-                        </div>
-                        <span class="badge-approved">Approved</span>
-                    </div>
-                `;
-            });
+            input.value = "";
         }
 
-        function renderLeaderboard() {
-            const box = document.getElementById('leaderboard-list');
-            if(!box) return;
-            box.innerHTML = "";
-
-            let usersArr = Object.values(allUsersMap);
-            usersArr.sort((a, b) => (b.approvedReferralsCount || 0) - (a.approvedReferralsCount || 0));
-
-            let top10 = usersArr.slice(0, 10);
-
-            if(top10.length === 0) {
-                box.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px;">লিডারবোর্ড তথ্য খালি!</div>`;
-                return;
-            }
-
-            top10.forEach((u, i) => {
-                let prizeVal = adminSettings.lbPrizes && adminSettings.lbPrizes[i] ? adminSettings.lbPrizes[i] : 0;
-                box.innerHTML += `
-                    <div class="lb-card">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <b style="font-size:16px; color:var(--gold);">#${i+1}</b>
-                            <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--gold);" alt="User">
-                            <div>
-                                <div style="font-weight:bold; font-size:13px; color:#fff;">${u.name}</div>
-                                <div style="font-size:10px; color:#cbd5e1;">👥 রেফার: <b>${u.approvedReferralsCount || 0}</b> | 📺 এডস: <b>${u.adsSeen || 0}</b></div>
-                                <div style="font-size:10px; color:var(--neon-green);">💰 ব্যালেন্স: <b>${u.coins || 0} Coins</b></div>
-                            </div>
-                        </div>
-                        <div style="text-align:right;">
-                            <span style="background:linear-gradient(45deg, var(--gold), #ff8800); color:black; font-weight:900; padding:4px 8px; border-radius:10px; font-size:10px;">
-                                🎁 ৳${prizeVal}
-                            </span>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           📋 TASK SYSTEM ENGINE
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
         function renderUserTasks() {
-            const container = document.getElementById('user-tasks-list');
-            if(!container) return;
-            container.innerHTML = "";
+            const list = document.getElementById('user-tasks-list');
+            if(!list) return;
 
+            list.innerHTML = "";
             if(tasksList.length === 0) {
-                container.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন টাস্ক উপলব্ধ নেই!</div>`;
+                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোনো মাইক্রো টাস্ক নেই।</div>`;
                 return;
             }
-
-            userData.completedTasks = userData.completedTasks || [];
 
             tasksList.forEach(task => {
-                let isCompleted = userData.completedTasks.includes(task.id);
-
-                container.innerHTML += `
+                let isDone = userData.completedTasks && userData.completedTasks.includes(task.id);
+                list.innerHTML += `
                     <div class="task-card">
                         <div>
                             <div style="font-weight:bold; font-size:13px; color:#fff;">${task.title}</div>
-                            <div style="font-size:11px; color:var(--gold);"><i class="fa-solid fa-coins"></i> +${task.reward} Coins</div>
+                            <div style="font-size:11px; color:var(--gold);">+${task.reward} কয়েন বোনাস</div>
                         </div>
                         <div class="task-btn-group">
-                            <a href="${task.link}" target="_blank" class="btn-join" onclick="playAudio('click')">Join</a>
-                            ${isCompleted ? 
-                                `<button class="btn-verify" style="background:#334155; color:#94a3b8; cursor:not-allowed;" disabled>Completed</button>` : 
-                                `<button class="btn-verify" id="task-btn-${task.id}" onclick="verifyTask('${task.id}')">Verify</button>`
-                            }
+                            <a href="${task.link}" target="_blank" class="btn-join" onclick="playAudio('click')">ভিজিট</a>
+                            ${isDone ? `<span style="color:var(--neon-green); font-size:11px; font-weight:bold;">সম্পন্ন</span>` :
+                            `<button class="btn-verify" onclick="verifyTaskCompletion('${task.id}', ${task.reward})">ভেরিফাই</button>`}
                         </div>
                     </div>
                 `;
             });
         }
 
-        async function verifyTask(taskId) {
+        function verifyTaskCompletion(taskId, reward) {
             playAudio('click');
-            let task = tasksList.find(t => t.id === taskId);
-            if(!task) return;
-
             userData.completedTasks = userData.completedTasks || [];
-
             if(userData.completedTasks.includes(taskId)) {
-                showNotification("❌ আপনি এই কাজটি কমপ্লিট করতে পারবেন না কারণ আপনি আগে থেকেই এটি কমপ্লিট করেছেন!");
+                showNotification("⚠️ টাস্কটি ইতিমধ্যেই সম্পন্ন করা হয়েছে!");
                 return;
             }
 
-            let btn = document.getElementById(`task-btn-${taskId}`);
-            if(btn) {
-                btn.innerText = "Verifying...";
-                btn.disabled = true;
-            }
-
-            setTimeout(async () => {
-                let channelUsername = task.link.replace("https://t.me/", "").replace("@", "").trim();
-                let isMember = true;
-
-                try {
-                    let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=@${channelUsername}&user_id=${userData.id}`);
-                    let data = await res.json();
-                    if (data.ok) {
-                        let status = data.result.status;
-                        if (status === "left" || status === "kicked") {
-                            isMember = false;
-                        }
-                    }
-                } catch(e) {
-                    console.error("Task check failed");
-                }
-
-                if (isMember) {
-                    userData.coins += parseInt(task.reward);
-                    userData.completedTasks.push(taskId);
-                    saveProfile();
-                    updateUI();
-                    playAudio('win');
-                    showNotification(`🎉 ভেরিফিকেশন সফল! +${task.reward} কয়েন আপনার ব্যালেন্সে যোগ হয়েছে!`);
-                } else {
-                    showNotification("❌ আপনি চ্যানেলে জয়েন করেননি!");
-                    if(btn) {
-                        btn.innerText = "Verify";
-                        btn.disabled = false;
-                    }
-                }
-            }, 3000);
-        }
-
-        function openAdminDirect() {
-            if(Date.now() < adminLockedUntil) {
-                let remainingHours = Math.ceil((adminLockedUntil - Date.now()) / (1000 * 60 * 60));
-                showNotification(`🔒 এডমিন প্যানেল ২৪ ঘন্টার জন্য লক করা আছে! আরো ${remainingHours} ঘন্টা পর ট্রাই করুন।`);
-                return;
-            }
-            document.getElementById('admin-pass-modal').classList.add('active');
-        }
-
-        function closeAdminPassModal() {
-            document.getElementById('admin-pass-modal').classList.remove('active');
-        }
-
-        function verifyAdminPasswordLogin() {
-            let passInput = document.getElementById('admin-pass-attempt-input').value.trim();
-            
-            if(Date.now() < adminLockedUntil) {
-                showNotification("🔒 এডমিন প্যানেল ২৪ ঘন্টার জন্য লক করা আছে!");
-                return;
-            }
-
-            if(passInput === adminSettings.adminPass) {
-                adminLoginAttempts = 0;
-                localStorage.setItem('admin_login_attempts', '0');
-                closeAdminPassModal();
-                logAdminAction('LOGIN_SUCCESS', `এডমিন প্যানেলে সফলভাবে লগইন করেছেন।`);
-                navigate('admin');
-            } else {
-                adminLoginAttempts++;
-                localStorage.setItem('admin_login_attempts', adminLoginAttempts.toString());
-                logAdminAction('LOGIN_FAILED', `ভুল পাসওয়ার্ড টাইপ করা হয়েছে (চেষ্টা: ${adminLoginAttempts}/5)।`);
-
-                if(adminLoginAttempts >= 5) {
-                    adminLockedUntil = Date.now() + (24 * 60 * 60 * 1000);
-                    localStorage.setItem('admin_locked_until', adminLockedUntil.toString());
-                    showNotification("🚨 ৫ বার ভুল পাসওয়ার্ড দেওয়া হয়েছে! এডমিন প্যানেল ২৪ ঘন্টার জন্য লক করা হলো।");
-                    closeAdminPassModal();
-                } else {
-                    showNotification(`❌ ভুল পাসওয়ার্ড! (বাকি চেষ্টা: ${5 - adminLoginAttempts} বার)`);
-                }
-            }
-        }
-
-        function openAdminLogsModal() {
-            document.getElementById('admin-logs-modal').classList.add('active');
-            renderAdminLogs();
-        }
-
-        function closeAdminLogsModal() {
-            document.getElementById('admin-logs-modal').classList.remove('active');
-        }
-
-        function renderAdminLogs() {
-            const container = document.getElementById('admin-logs-container');
-            if(!container) return;
-            container.innerHTML = "";
-
-            const logsRef = window.dbRef(window.db, 'admin_logs');
-            window.dbGet(logsRef).then((snap) => {
-                if(snap.exists()) {
-                    let logs = Object.values(snap.val());
-                    logs.sort((a, b) => b.id - a.id);
-                    logs.forEach(l => {
-                        let color = l.type === 'LOGIN_FAILED' ? '#ef4444' : l.type === 'LOGIN_SUCCESS' ? '#22c55e' : 'var(--gold)';
-                        container.innerHTML += `
-                            <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:6px; border:1px solid #334155;">
-                                <div style="color:${color}; font-weight:bold;">[${l.type}] - ${l.userName} (${l.userId})</div>
-                                <div style="color:#cbd5e1;">${l.desc}</div>
-                                <div style="font-size:9px; color:#94a3b8;">📅 ${l.timestamp}</div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    container.innerHTML = `<div style="text-align:center; color:#94a3b8;">কোন এডমিন লগ নেই!</div>`;
-                }
-            });
-        }
-
-        function saveAdminSettings() {
-            adminSettings.adminPass = document.getElementById('admin-pass-input').value.trim();
-            adminSettings.adRewardCoins = parseInt(document.getElementById('admin-ad-reward').value) || 50;
-            adminSettings.referRewardCoins = parseInt(document.getElementById('admin-refer-reward').value) || 100;
-            adminSettings.minWithdraw = parseInt(document.getElementById('admin-min-withdraw').value) || 20;
-            adminSettings.coinRate50 = parseFloat(document.getElementById('admin-coin-rate').value) || 1;
-
-            adminSettings.lbPrizes = [
-                parseFloat(document.getElementById('admin-lb-p1').value) || 100,
-                parseFloat(document.getElementById('admin-lb-p2').value) || 50,
-                parseFloat(document.getElementById('admin-lb-p3').value) || 30,
-                parseFloat(document.getElementById('admin-lb-p4').value) || 20,
-                parseFloat(document.getElementById('admin-lb-p5').value) || 15,
-                parseFloat(document.getElementById('admin-lb-p6').value) || 10,
-                parseFloat(document.getElementById('admin-lb-p7').value) || 10,
-                parseFloat(document.getElementById('admin-lb-p8').value) || 10,
-                parseFloat(document.getElementById('admin-lb-p9').value) || 5,
-                parseFloat(document.getElementById('admin-lb-p10').value) || 5
-            ];
-
-            saveAdminData();
-            logAdminAction('SETTINGS_CHANGED', `এডমিন সেটিংস এবং পাসওয়ার্ড আপডেট করেছেন।`);
-            showNotification("✅ এডমিন সেটিংস ও লিডারবোর্ড তথ্য সেভ হয়েছে!");
+            userData.completedTasks.push(taskId);
+            userData.coins += reward;
+            saveProfile();
             updateUI();
-        }
-
-        function saveChannelLink() {
-            let link = document.getElementById('admin-channel-link-input').value.trim();
-            if(link) {
-                adminSettings.channelLink = link;
-                saveAdminData();
-                logAdminAction('CHANNEL_LINK_UPDATED', `চ্যানেল লিংক পরিবর্তন করেছেন: ${link}`);
-                showNotification("✅ টেলিগ্রাম চ্যানেল লিংক আপডেট হয়েছে!");
-                updateUI();
-            }
+            renderUserTasks();
+            playAudio('win');
+            showNotification(`🎉 টাস্ক ভেরিফাইড! +${reward} কয়েন ব্যালেন্স এ যোগ হয়েছে!`);
         }
 
         function addNewAdminTask() {
@@ -2311,38 +2507,257 @@
             let reward = parseInt(document.getElementById('admin-task-reward').value) || 100;
 
             if(!title || !link) {
-                showNotification("❌ সঠিক টাস্ক তথ্য পূরণ করুন!");
+                showNotification("⚠️ টাস্ক টাইটেল ও লিংক পূরণ করুন!");
                 return;
             }
 
-            let newTask = { id: Date.now().toString(), title, link, reward };
-            window.dbSet(window.dbRef(window.db, 'tasks/' + newTask.id), newTask);
+            let taskObj = {
+                id: Date.now().toString(),
+                title: title,
+                link: link,
+                reward: reward
+            };
+
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'tasks/' + taskObj.id), taskObj);
+            }
 
             document.getElementById('admin-task-title').value = "";
             document.getElementById('admin-task-link').value = "";
-            logAdminAction('TASK_ADDED', `নতুন টাস্ক যোগ করেছেন: ${title}`);
-            showNotification("✅ নতুন টাস্ক যোগ করা হয়েছে!");
+            showNotification("✅ নতুন টাস্ক যোগ করা হয়েছে!");
+            logAdminAction("ADD_TASK", `Task ${title} added.`);
         }
 
         function renderAdminTasksManager() {
             const list = document.getElementById('admin-tasks-manage-list');
             if(!list) return;
-            list.innerHTML = "";
 
+            list.innerHTML = "";
             tasksList.forEach(t => {
                 list.innerHTML += `
-                    <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
-                        <div><b>${t.title}</b> (${t.reward} Coins)</div>
-                        <button onclick="deleteTask('${t.id}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">ডিলিট</button>
+                    <div style="background:#1e293b; padding:8px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+                        <div><b>${t.title}</b> (+${t.reward} Coins)</div>
+                        <button onclick="removeAdminTask('${t.id}')" style="background:#ef4444; border:none; color:white; padding:4px 8px; border-radius:6px; cursor:pointer;">মুছুন</button>
                     </div>
                 `;
             });
         }
 
-        function deleteTask(taskId) {
-            window.dbSet(window.dbRef(window.db, 'tasks/' + taskId), null);
-            logAdminAction('TASK_DELETED', `টাস্ক ডিলিট করা হয়েছে: ${taskId}`);
-            showNotification("🗑️ টাস্ক ডিলিট করা হয়েছে!");
+        function removeAdminTask(id) {
+            if(window.db && window.dbRemove && window.dbRef) {
+                window.dbRemove(window.dbRef(window.db, 'tasks/' + id));
+                showNotification("🗑️ টাস্ক মুছে ফেলা হয়েছে!");
+            }
+        }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           👨‍💼 ADMIN PANEL & SECURITY SYSTEM
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        function openAdminDirect() {
+            playAudio('click');
+            let now = Date.now();
+            if (now < adminLockedUntil) {
+                let remSec = Math.ceil((adminLockedUntil - now) / 1000);
+                showNotification(`🚨 এডমিন এক্সেস সাময়িক লক রয়েছে! ${remSec} সে. পর চেষ্টা করুন।`);
+                return;
+            }
+
+            document.getElementById('admin-pass-modal').classList.add('active');
+        }
+
+        function closeAdminPassModal() {
+            document.getElementById('admin-pass-modal').classList.remove('active');
+        }
+
+        function verifyAdminPasswordLogin() {
+            playAudio('click');
+            let input = document.getElementById('admin-pass-attempt-input').value.trim();
+            let pass = adminSettings.adminPass || "018212";
+
+            if (input === pass) {
+                adminLoginAttempts = 0;
+                localStorage.setItem('admin_login_attempts', '0');
+                closeAdminPassModal();
+                navigate('admin');
+                showNotification("🔐 এডমিন প্যানেলে স্বাগতম!");
+                logAdminAction("ADMIN_LOGIN", "Successful admin login.");
+            } else {
+                adminLoginAttempts++;
+                localStorage.setItem('admin_login_attempts', adminLoginAttempts.toString());
+
+                if (adminLoginAttempts >= 3) {
+                    adminLockedUntil = Date.now() + 60000; // Lock for 60 seconds
+                    localStorage.setItem('admin_locked_until', adminLockedUntil.toString());
+                    closeAdminPassModal();
+                    showNotification("🚨 ভুল পাসওয়ার্ড! পরপর ৩ বার ভুলের জন্য ১ মিনিট লক করা হয়েছে!");
+                    logAdminAction("ADMIN_LOCKOUT", "3 Failed admin password attempts.");
+                } else {
+                    let msg = document.getElementById('admin-lock-msg');
+                    if (msg) {
+                        msg.style.display = 'block';
+                        msg.innerText = `ভুল পাসওয়ার্ড! চেষ্টা বাকি: ${3 - adminLoginAttempts}`;
+                    }
+                }
+            }
+        }
+
+        function saveAdminSettings() {
+            playAudio('click');
+            adminSettings.adminPass = document.getElementById('admin-pass-input').value.trim() || "018212";
+            adminSettings.adRewardCoins = parseInt(document.getElementById('admin-ad-reward').value) || 50;
+            adminSettings.referRewardCoins = parseInt(document.getElementById('admin-refer-reward').value) || 100;
+            adminSettings.minWithdraw = parseInt(document.getElementById('admin-min-withdraw').value) || 20;
+            adminSettings.coinRate50 = parseFloat(document.getElementById('admin-coin-rate').value) || 1;
+
+            saveAdminData();
+            updateUI();
+            showNotification("⚙️ এডমিন সেটিংস সফলভাবে সেভ করা হয়েছে!");
+            logAdminAction("SAVE_SETTINGS", "Admin settings updated.");
+        }
+
+        function renderAdminPanel() {
+            renderAdminDeposits();
+            renderAdminWithdraws();
+            renderAdminMethodsList();
+        }
+
+        function renderAdminDeposits() {
+            const container = document.getElementById('admin-deposit-list');
+            if(!container) return;
+
+            let pendings = depositsList.filter(d => d.status === 'pending');
+            container.innerHTML = "";
+
+            if(pendings.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#94a3b8;">কোনো পেন্ডিং ডিপোজিট নেই।</div>`;
+                return;
+            }
+
+            pendings.forEach(d => {
+                container.innerHTML += `
+                    <div class="admin-item">
+                        <b>${d.userName}</b> (${d.userId})<br>
+                        মেথড: ${d.method} | ৳${d.amountBdt} (${d.totalCoins} Coins)<br>
+                        TrxID: <b style="color:var(--gold);">${d.trxId}</b> | ${d.timestamp}
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <button onclick="approveDeposit('${d.id}')" style="background:var(--neon-green); color:black; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">Approve</button>
+                            <button onclick="rejectDeposit('${d.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">Reject</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function approveDeposit(id) {
+            playAudio('click');
+            let dep = depositsList.find(d => d.id === id);
+            if(!dep) return;
+
+            dep.status = 'approved';
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'deposits/' + id), dep);
+            }
+
+            const targetUserRef = window.dbRef(window.db, 'users/' + dep.userId);
+            window.dbGet(targetUserRef).then(snap => {
+                if(snap.exists()) {
+                    let uData = snap.val();
+                    uData.coins = (uData.coins || 0) + dep.totalCoins;
+                    window.dbSet(targetUserRef, uData);
+                }
+            });
+
+            showNotification("✅ ডিপোজিট অনুমোদিত হয়েছে!");
+            logAdminAction("APPROVE_DEPOSIT", `Deposit approved for ${dep.userName} (৳${dep.amountBdt})`);
+        }
+
+        function rejectDeposit(id) {
+            playAudio('click');
+            let dep = depositsList.find(d => d.id === id);
+            if(!dep) return;
+
+            dep.status = 'rejected';
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'deposits/' + id), dep);
+            }
+
+            showNotification("❌ ডিপোজিট বাতিল করা হয়েছে!");
+            logAdminAction("REJECT_DEPOSIT", `Deposit rejected for ${dep.userName}`);
+        }
+
+        function renderAdminWithdraws() {
+            const container = document.getElementById('admin-withdraw-list');
+            if(!container) return;
+
+            let pendings = withdrawsList.filter(w => w.status === 'pending');
+            container.innerHTML = "";
+
+            if(pendings.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#94a3b8;">কোনো পেন্ডিং উইথড্র নেই।</div>`;
+                return;
+            }
+
+            pendings.forEach(w => {
+                container.innerHTML += `
+                    <div class="admin-item">
+                        <b>${w.userName}</b> (${w.userId})<br>
+                        মেথড: ${w.method} | Acc: <b style="color:var(--gold);">${w.acc}</b><br>
+                        পরিমাণ: ৳${w.amountBdt} (${w.coins} Coins) | ${w.timestamp}
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <button onclick="approveWithdraw('${w.id}')" style="background:var(--neon-green); color:black; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">Approve</button>
+                            <button onclick="rejectWithdraw('${w.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">Reject</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function approveWithdraw(id) {
+            playAudio('click');
+            let withItem = withdrawsList.find(w => w.id === id);
+            if(!withItem) return;
+
+            withItem.status = 'approved';
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'withdraws/' + id), withItem);
+            }
+
+            let alertObj = {
+                userName: withItem.userName,
+                amount: withItem.amountBdt,
+                method: withItem.method,
+                acc: withItem.acc,
+                timestamp: Date.now()
+            };
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'withdrawal_alerts/' + id), alertObj);
+            }
+
+            showNotification("✅ উইথড্র অনুমোদিত হয়েছে!");
+            logAdminAction("APPROVE_WITHDRAW", `Withdraw approved for ${withItem.userName} (৳${withItem.amountBdt})`);
+        }
+
+        function rejectWithdraw(id) {
+            playAudio('click');
+            let withItem = withdrawsList.find(w => w.id === id);
+            if(!withItem) return;
+
+            withItem.status = 'rejected';
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'withdraws/' + id), withItem);
+            }
+
+            const targetUserRef = window.dbRef(window.db, 'users/' + withItem.userId);
+            window.dbGet(targetUserRef).then(snap => {
+                if(snap.exists()) {
+                    let uData = snap.val();
+                    uData.coins = (uData.coins || 0) + withItem.coins;
+                    window.dbSet(targetUserRef, uData);
+                }
+            });
+
+            showNotification("❌ উইথড্র বাতিল করা হয়েছে এবং কয়েন ফেরত দেয়া হয়েছে!");
+            logAdminAction("REJECT_WITHDRAW", `Withdraw rejected for ${withItem.userName}`);
         }
 
         function addDepositMethodDynamic() {
@@ -2350,28 +2765,17 @@
             let acc = document.getElementById('admin-dep-method-acc').value.trim();
 
             if(!name || !acc) {
-                showNotification("❌ মেথড নাম ও নম্বর দিন!");
+                showNotification("⚠️ মেথড নাম ও নম্বর দিন!");
                 return;
             }
 
             adminSettings.depositMethods = adminSettings.depositMethods || [];
-            adminSettings.depositMethods.push({ name, number: acc });
-
+            adminSettings.depositMethods.push({ name: name, number: acc });
             saveAdminData();
-            logAdminAction('DEP_METHOD_ADDED', `নতুন ডিপোজিট মেথড যোগ করেছেন: ${name} (${acc})`);
-            showNotification("✅ ডিপোজিট মেথড যোগ করা হয়েছে!");
-            
+            renderAdminMethodsList();
             document.getElementById('admin-dep-method-name').value = "";
             document.getElementById('admin-dep-method-acc').value = "";
-            updateUI();
-        }
-
-        function deleteDepositMethod(index) {
-            adminSettings.depositMethods.splice(index, 1);
-            saveAdminData();
-            logAdminAction('DEP_METHOD_DELETED', `ডিপোজিট মেথড ডিলিট করা হয়েছে index: ${index}`);
-            showNotification("🗑️ ডিপোজিট মেথড ডিলিট করা হয়েছে!");
-            updateUI();
+            showNotification("✅ ডিপোজিট মেথড যুক্ত করা হয়েছে!");
         }
 
         function addWithdrawMethod() {
@@ -2380,167 +2784,50 @@
 
             adminSettings.withdrawMethods = adminSettings.withdrawMethods || [];
             adminSettings.withdrawMethods.push(name);
-
             saveAdminData();
-            logAdminAction('WITHDRAW_METHOD_ADDED', `উইথড্র মেথড যোগ করেছেন: ${name}`);
-            showNotification("✅ উইথড্র মেথড যোগ করা হয়েছে!");
+            renderAdminMethodsList();
             document.getElementById('admin-new-method').value = "";
-            updateUI();
+            showNotification("✅ উইথড্র মেথড যুক্ত করা হয়েছে!");
         }
 
-        function deleteWithdrawMethod(index) {
-            adminSettings.withdrawMethods.splice(index, 1);
-            saveAdminData();
-            logAdminAction('WITHDRAW_METHOD_DELETED', `উইথড্র মেথড ডিলিট করা হয়েছে index: ${index}`);
-            showNotification("🗑️ উইথড্র মেথড ডিলিট করা হয়েছে!");
-            updateUI();
-        }
-
-        function renderAdminPanel() {
-            const depList = document.getElementById('admin-deposit-list');
+        function renderAdminMethodsList() {
+            const depList = document.getElementById('admin-dep-methods-list');
             if(depList) {
                 depList.innerHTML = "";
-                let pendings = depositsList.filter(d => d.status === "Pending");
-                if(pendings.length === 0) {
-                    depList.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন পেন্ডিং ডিপোজিট নেই</div>`;
-                } else {
-                    pendings.forEach(d => {
-                        depList.innerHTML += `
-                            <div class="admin-item">
-                                <div><b>${d.userName}</b> (${d.userId})</div>
-                                <div>মেথড: ${d.method} | ৳${d.amount} (পাবে: <b>${d.expectedCoins || 0} Coins</b>)</div>
-                                <div style="font-size:10px; color:#94a3b8;">TrxID: ${d.trxId}</div>
-                                <div style="margin-top:5px; display:flex; gap:5px;">
-                                    <button onclick="approveDeposit('${d.id}')" style="background:var(--neon-green); color:black; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">এপ্রুভ</button>
-                                    <button onclick="rejectDeposit('${d.id}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">বাতিল</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
+                (adminSettings.depositMethods || []).forEach((m, idx) => {
+                    depList.innerHTML += `
+                        <div style="font-size:11px; background:#1e293b; padding:6px; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+                            <span><b>${m.name}:</b> ${m.number}</span>
+                            <button onclick="removeDepMethod(${idx})" style="background:#ef4444; border:none; color:white; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">মুছুন</button>
+                        </div>
+                    `;
+                });
             }
 
-            const withList = document.getElementById('admin-withdraw-list');
+            const withList = document.getElementById('admin-with-methods-list');
             if(withList) {
                 withList.innerHTML = "";
-                let pendings = withdrawsList.filter(w => w.status === "Pending");
-                if(pendings.length === 0) {
-                    withList.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোন পেন্ডিং উইথড্রয়াল নেই</div>`;
-                } else {
-                    pendings.forEach(w => {
-                        withList.innerHTML += `
-                            <div class="admin-item">
-                                <div><b>${w.userName}</b> (${w.userId})</div>
-                                <div>মেথড: ${w.method} | ${w.coins} Coins (৳${w.amountBdt})</div>
-                                <div style="font-size:10px; color:#94a3b8;">N/Acc: ${w.acc}</div>
-                                <div style="margin-top:5px; display:flex; gap:5px;">
-                                    <button onclick="approveWithdraw('${w.id}')" style="background:var(--neon-green); color:black; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">এপ্রুভ</button>
-                                    <button onclick="rejectWithdraw('${w.id}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">বাতিল</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-            }
-
-            const depMethodsAdmin = document.getElementById('admin-dep-methods-list');
-            if(depMethodsAdmin) {
-                depMethodsAdmin.innerHTML = "";
-                (adminSettings.depositMethods || []).forEach((m, idx) => {
-                    depMethodsAdmin.innerHTML += `
-                        <div style="background:#1e293b; padding:6px; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
-                            <span><b>${m.name}:</b> ${m.number}</span>
-                            <button onclick="deleteDepositMethod(${idx})" style="background:#ef4444; color:white; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;">ডিলিট</button>
-                        </div>
-                    `;
-                });
-            }
-
-            const withMethodsAdmin = document.getElementById('admin-with-methods-list');
-            if(withMethodsAdmin) {
-                withMethodsAdmin.innerHTML = "";
                 (adminSettings.withdrawMethods || []).forEach((m, idx) => {
-                    withMethodsAdmin.innerHTML += `
-                        <div style="background:#1e293b; padding:6px; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+                    withList.innerHTML += `
+                        <div style="font-size:11px; background:#1e293b; padding:6px; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
                             <span><b>${m}</b></span>
-                            <button onclick="deleteWithdrawMethod(${idx})" style="background:#ef4444; color:white; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;">ডিলিট</button>
+                            <button onclick="removeWithMethod(${idx})" style="background:#ef4444; border:none; color:white; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">মুছুন</button>
                         </div>
                     `;
                 });
             }
         }
 
-        function approveDeposit(depId) {
-            let dep = depositsList.find(d => d.id === depId);
-            if(!dep) return;
-
-            dep.status = "Approved";
-            window.dbSet(window.dbRef(window.db, 'deposits/' + depId), dep);
-
-            const userRef = window.dbRef(window.db, 'users/' + dep.userId);
-            window.dbGet(userRef).then((snap) => {
-                if(snap.exists()) {
-                    let uData = snap.val();
-                    let coinsToAdd = dep.expectedCoins || Math.floor((dep.amount / (adminSettings.coinRate50 || 1)) * 50 * 1.10);
-                    
-                    uData.coins = (uData.coins || 0) + coinsToAdd;
-                    window.dbSet(userRef, uData);
-
-                    logAdminAction('DEP_APPROVED', `ডিপোজিট এপ্রুভ করা হয়েছে: User ${dep.userName} (+${coinsToAdd} Coins)`);
-                    showNotification(`✅ ডিপোজিট এপ্রুভ করা হয়েছে! ${coinsToAdd} কয়েন যোগ হয়েছে।`);
-                }
-            });
+        function removeDepMethod(idx) {
+            adminSettings.depositMethods.splice(idx, 1);
+            saveAdminData();
+            renderAdminMethodsList();
         }
 
-        function rejectDeposit(depId) {
-            let dep = depositsList.find(d => d.id === depId);
-            if(!dep) return;
-
-            dep.status = "Rejected";
-            window.dbSet(window.dbRef(window.db, 'deposits/' + depId), dep);
-            logAdminAction('DEP_REJECTED', `ডিপোজিট বাতিল করা হয়েছে: User ${dep.userName}`);
-            showNotification("❌ ডিপোজিট বাতিল করা হয়েছে!");
-        }
-
-        function approveWithdraw(withIds) {
-            let item = withdrawsList.find(w => w.id === withIds);
-            if(!item) return;
-
-            item.status = "Approved";
-            window.dbSet(window.dbRef(window.db, 'withdraws/' + withIds), item);
-
-            let alertObj = {
-                id: Date.now().toString(),
-                userName: item.userName,
-                amount: item.amountBdt,
-                method: item.method,
-                acc: item.acc,
-                timestamp: Date.now()
-            };
-            window.dbSet(window.dbRef(window.db, 'withdrawal_alerts/' + alertObj.id), alertObj);
-
-            logAdminAction('WITHDRAW_APPROVED', `উইথড্র এপ্রুভড: ${item.userName} (৳${item.amountBdt})`);
-            showNotification("✅ ক্যাশআউট সফলভাবে এপ্রুভ করা হয়েছে!");
-        }
-
-        function rejectWithdraw(withIds) {
-            let item = withdrawsList.find(w => w.id === withIds);
-            if(!item) return;
-
-            item.status = "Rejected";
-            window.dbSet(window.dbRef(window.db, 'withdraws/' + withIds), item);
-
-            const userRef = window.dbRef(window.db, 'users/' + item.userId);
-            window.dbGet(userRef).then((snap) => {
-                if(snap.exists()) {
-                    let uData = snap.val();
-                    uData.coins = (uData.coins || 0) + item.coins;
-                    window.dbSet(userRef, uData);
-                }
-            });
-
-            logAdminAction('WITHDRAW_REJECTED', `উইথড্র বাতিল এবং কয়েন ফেরত: ${item.userName}`);
-            showNotification("❌ উইথড্র বাতিল করা হয়েছে এবং কয়েন ফেরত দেওয়া হয়েছে!");
+        function removeWithMethod(idx) {
+            adminSettings.withdrawMethods.splice(idx, 1);
+            saveAdminData();
+            renderAdminMethodsList();
         }
 
         function addBalanceToUser() {
@@ -2548,22 +2835,26 @@
             let coins = parseInt(document.getElementById('admin-add-coins').value) || 0;
 
             if(!target || coins <= 0) {
-                showNotification("❌ ইউজার ID ও কয়েন পরিমাণ দিন!");
+                showNotification("⚠️ ইউজার আইডি ও কয়েন সংখ্যা দিন!");
                 return;
             }
 
-            const userRef = window.dbRef(window.db, 'users/' + target);
-            window.dbGet(userRef).then((snap) => {
-                if(snap.exists()) {
-                    let u = snap.val();
-                    u.coins = (u.coins || 0) + coins;
-                    window.dbSet(userRef, u);
-                    logAdminAction('COINS_ADDED', `ইউজার ${u.name} (${target}) কে +${coins} কয়েন যোগ করেছেন।`);
-                    showNotification(`✅ ${coins} কয়েন সফলভাবে ইউজারকে দেয়া হয়েছে!`);
-                } else {
-                    showNotification("❌ ইউজার পাওয়া যায়নি!");
-                }
-            });
+            let foundId = Object.keys(allUsersMap).find(id => id === target || (allUsersMap[id].name && allUsersMap[id].name.toLowerCase() === target.toLowerCase()));
+
+            if(foundId) {
+                const uRef = window.dbRef(window.db, 'users/' + foundId);
+                window.dbGet(uRef).then(snap => {
+                    if(snap.exists()) {
+                        let u = snap.val();
+                        u.coins = (u.coins || 0) + coins;
+                        window.dbSet(uRef, u);
+                        showNotification(`✅ ${u.name}-কে ${coins} কয়েন যুক্ত করা হয়েছে!`);
+                        logAdminAction("ADD_BALANCE", `Added ${coins} coins to ${u.name}`);
+                    }
+                });
+            } else {
+                showNotification("❌ ইউজার খুঁজে পাওয়া যায়নি!");
+            }
         }
 
         function banUser() {
@@ -2571,69 +2862,110 @@
             if(!target) return;
 
             adminSettings.bannedUsers = adminSettings.bannedUsers || [];
-            adminSettings.bannedUsers.push(target);
-            saveAdminData();
-            logAdminAction('USER_BANNED', `ইউজার ${target} কে ব্যান করেছেন।`);
-            showNotification("🚫 ইউজার ব্যান করা হয়েছে!");
+            if(!adminSettings.bannedUsers.includes(target)) {
+                adminSettings.bannedUsers.push(target);
+                saveAdminData();
+                showNotification(`🚫 ইউজার ${target} ব্যান করা হয়েছে!`);
+                logAdminAction("BAN_USER", `User ${target} banned.`);
+            }
+        }
+
+        function saveChannelLink() {
+            let link = document.getElementById('admin-channel-link-input').value.trim();
+            if(link) {
+                adminSettings.channelLink = link;
+                saveAdminData();
+                updateUI();
+                showNotification("✅ চ্যানেল লিংক সেভ হয়েছে!");
+            }
+        }
+
+        function sendBroadcast() {
+            let msg = document.getElementById('admin-broadcast-msg').value.trim();
+            if(msg) {
+                showNotification(`📢 ব্রডকাস্ট মেসেজ পাঠানো হয়েছে: ${msg}`);
+                document.getElementById('admin-broadcast-msg').value = "";
+                logAdminAction("BROADCAST", msg);
+            }
         }
 
         function openAdminUserHistory() {
             document.getElementById('admin-user-history-modal').classList.add('active');
-            renderAdminUserHistoryContainer();
+            const container = document.getElementById('admin-user-history-container');
+            if(!container) return;
+
+            let usersArr = Object.values(allUsersMap || {});
+            container.innerHTML = "";
+
+            usersArr.forEach(u => {
+                container.innerHTML += `
+                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #334155; font-size:11px;">
+                        <div style="font-weight:bold; color:var(--gold);">${u.name} (ID: ${u.id})</div>
+                        💰 Coins: ${u.coins || 0} | 📺 Ads: ${u.adsSeen || 0}<br>
+                        👥 Approved Referrals: ${u.approvedReferralsCount || 0}<br>
+                        🎰 Aviator Bets: ${u.aviatorBets || 0} | Spins: ${u.spinCount || 0}
+                    </div>
+                `;
+            });
         }
 
         function closeAdminUserHistoryModal() {
             document.getElementById('admin-user-history-modal').classList.remove('active');
         }
 
-        function renderAdminUserHistoryContainer() {
-            const container = document.getElementById('admin-user-history-container');
+        function openAdminLogsModal() {
+            document.getElementById('admin-logs-modal').classList.add('active');
+            const container = document.getElementById('admin-logs-container');
             if(!container) return;
-            container.innerHTML = "";
 
-            let usersArr = Object.values(allUsersMap);
-            if(usersArr.length === 0) {
-                container.innerHTML = `<div style="text-align:center; color:#94a3b8;">কোন ইউজার তথ্য নেই!</div>`;
-                return;
-            }
-
-            usersArr.forEach(u => {
-                container.innerHTML += `
-                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #334155; font-size:11px;">
-                        <div style="font-weight:bold; color:var(--gold); font-size:13px;">${u.name} (ID: ${u.id})</div>
-                        <div style="margin-top:4px; display:grid; grid-template-columns:1fr 1fr; gap:4px; color:#cbd5e1;">
-                            <div>💰 Coins: <b>${u.coins || 0}</b></div>
-                            <div>📺 Ads: <b>${u.adsSeen || 0}</b></div>
-                            <div>👥 Referrals: <b>${u.approvedReferralsCount || 0}</b></div>
-                            <div>🎰 Total Won: <b>${u.totalWon || 0}</b></div>
-                        </div>
-                    </div>
-                `;
+            const logsRef = window.dbRef(window.db, 'admin_logs');
+            window.dbGet(logsRef).then(snap => {
+                container.innerHTML = "";
+                if(snap.exists()) {
+                    let logs = Object.values(snap.val()).reverse();
+                    logs.forEach(l => {
+                        container.innerHTML += `
+                            <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:6px; border:1px solid #334155;">
+                                <b style="color:var(--neon-pink);">${l.type}</b> - ${l.desc}<br>
+                                <span style="font-size:9px; color:#94a3b8;">${l.userName} (${l.userId}) | ${l.timestamp}</span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `<div style="color:#94a3b8;">কোনো লগ ডাটা পাওয়া যায়নি।</div>`;
+                }
             });
         }
 
-        function sendBroadcast() {
-            let msg = document.getElementById('admin-broadcast-msg').value.trim();
-            if(!msg) return;
-
-            let broadObj = {
-                id: Date.now().toString(),
-                message: msg,
-                timestamp: Date.now()
-            };
-
-            window.dbSet(window.dbRef(window.db, 'broadcasts/' + broadObj.id), broadObj);
-            logAdminAction('BROADCAST_SENT', `ব্রডকাস্ট মেসেজ পাঠানো হয়েছে: ${msg}`);
-            showNotification("📢 ব্রডকাস্ট সফলভাবে পাঠানো হয়েছে!");
-            document.getElementById('admin-broadcast-msg').value = "";
+        function closeAdminLogsModal() {
+            document.getElementById('admin-logs-modal').classList.remove('active');
         }
 
-        function handlePhotoUpload(e) {
-            const file = e.target.files[0];
+        function openVipModal() {
+            document.getElementById('vip-modal').classList.add('active');
+        }
+
+        function closeVipModal() {
+            document.getElementById('vip-modal').classList.remove('active');
+        }
+
+        function saveCustomName() {
+            let input = document.getElementById('custom-name-input').value.trim();
+            if(input) {
+                userData.name = input;
+                saveProfile();
+                updateUI();
+                document.getElementById('custom-name-input').value = "";
+                showNotification("✅ ডিসপ্লে নাম সেভ করা হয়েছে!");
+            }
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
             if(file) {
                 const reader = new FileReader();
-                reader.onload = function(evt) {
-                    userData.photoUrl = evt.target.result;
+                reader.onload = function(e) {
+                    userData.photoUrl = e.target.result;
                     saveProfile();
                     updateUI();
                     showNotification("📸 প্রোফাইল ফটো পরিবর্তন করা হয়েছে!");
@@ -2642,76 +2974,13 @@
             }
         }
 
-        function saveCustomName() {
-            let val = document.getElementById('custom-name-input').value.trim();
-            if(val) {
-                userData.name = val;
-                saveProfile();
-                updateUI();
-                showNotification("✅ প্রোফাইল নাম পরিবর্তন করা হয়েছে!");
-            }
-        }
-
-        function openVipModal() { document.getElementById('vip-modal').classList.add('active'); }
-        function closeVipModal() { document.getElementById('vip-modal').classList.remove('active'); }
-
         function checkMidnightReset() {
-            const lastReset = localStorage.getItem('last_lb_reset');
-            const today = new Date().toDateString();
-            if (lastReset !== today) {
-                localStorage.setItem('last_lb_reset', today);
+            let lastReset = localStorage.getItem('last_midnight_reset');
+            let today = new Date().toDateString();
+            if(lastReset !== today) {
+                localStorage.setItem('last_midnight_reset', today);
             }
         }
-
-        window.watchAd = watchAd;
-        window.openGame = openGame;
-        window.navigate = navigate;
-        window.playAudio = playAudio;
-        window.handleAviatorBetButtonClick = handleAviatorBetButtonClick;
-        window.placeAviatorBet = placeAviatorBet;
-        window.cancelAviatorBet = cancelAviatorBet;
-        window.cashoutAviator = cashoutAviator;
-        window.toggleAutoBet = toggleAutoBet;
-        window.spinCustomWheel = spinCustomWheel;
-        window.changeBattleLevel = changeBattleLevel;
-        window.buyLevelTicket = buyLevelTicket;
-        window.copyDepositAddress = copyDepositAddress;
-        window.calculateDepositBonus = calculateDepositBonus;
-        window.submitDeposit = submitDeposit;
-        window.calculateWithdrawAmount = calculateWithdrawAmount;
-        window.requestWithdraw = requestWithdraw;
-        window.sendChatMessage = sendChatMessage;
-        window.copyReferLink = copyReferLink;
-        window.shareReferLink = shareReferLink;
-        window.openReferHistoryModal = openReferHistoryModal;
-        window.closeReferHistoryModal = closeReferHistoryModal;
-        window.verifyTask = verifyTask;
-        window.openAdminDirect = openAdminDirect;
-        window.closeAdminPassModal = closeAdminPassModal;
-        window.verifyAdminPasswordLogin = verifyAdminPasswordLogin;
-        window.openAdminLogsModal = openAdminLogsModal;
-        window.closeAdminLogsModal = closeAdminLogsModal;
-        window.saveAdminSettings = saveAdminSettings;
-        window.saveChannelLink = saveChannelLink;
-        window.addNewAdminTask = addNewAdminTask;
-        window.deleteTask = deleteTask;
-        window.addDepositMethodDynamic = addDepositMethodDynamic;
-        window.deleteDepositMethod = deleteDepositMethod;
-        window.addWithdrawMethod = addWithdrawMethod;
-        window.deleteWithdrawMethod = deleteWithdrawMethod;
-        window.approveDeposit = approveDeposit;
-        window.rejectDeposit = rejectDeposit;
-        window.approveWithdraw = approveWithdraw;
-        window.rejectWithdraw = rejectWithdraw;
-        window.addBalanceToUser = addBalanceToUser;
-        window.banUser = banUser;
-        window.openAdminUserHistory = openAdminUserHistory;
-        window.closeAdminUserHistoryModal = closeAdminUserHistoryModal;
-        window.sendBroadcast = sendBroadcast;
-        window.handlePhotoUpload = handlePhotoUpload;
-        window.saveCustomName = saveCustomName;
-        window.openVipModal = openVipModal;
-        window.closeVipModal = closeVipModal;
     </script>
 </body>
 </html>
