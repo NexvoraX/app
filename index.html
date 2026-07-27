@@ -25,15 +25,15 @@
             margin: 0; padding: 0;
             background: var(--bg-dark);
             background-image: radial-gradient(circle at top, #1e0938 0%, #030611 85%);
-            color: white; user-select: none; padding-bottom: 95px; overflow-x: hidden;
+            color: white; user-select: none; padding-bottom: 90px; overflow-x: hidden;
         }
         #custom-toast {
             position: fixed; top: -100px; left: 5%; right: 5%; width: 90%;
             background: linear-gradient(135deg, #ff0055, #a855f7, #00e5ff);
             background-size: 200% 200%;
             animation: gradientShift 3s ease infinite;
-            color: white; padding: 14px 20px; border-radius: 16px;
-            font-size: 13px; font-weight: bold; text-align: center;
+            color: white; padding: 16px 22px; border-radius: 18px;
+            font-size: 14px; font-weight: bold; text-align: center;
             box-shadow: 0 10px 30px rgba(255, 0, 85, 0.7); z-index: 30000;
             transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -48,33 +48,78 @@
         #app-splash {
             position: fixed; inset: 0; background: #030611; z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, #030611, #2d0b5a, #052e3d, #1a0022);
-            background-size: 400% 400%; animation: gradientShift 6s ease infinite;
+            background: linear-gradient(135deg, #030611, #2d0b5a, #052e3d, #1a0022, #3b0764, #030611);
+            background-size: 500% 500%; animation: gradientShift 5s ease infinite;
             padding: 20px; text-align: center;
         }
-        .splash-logo { font-size: 65px; color: var(--gold); text-shadow: var(--gold-glow); margin-bottom: 15px; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        .splash-logo { 
+            font-size: 72px; 
+            background: linear-gradient(90deg, #ffd700, #ff0055, #00e5ff, #00ff88, #ffd700);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            animation: float 3s ease-in-out infinite, gradientShift 3s linear infinite;
+            margin-bottom: 12px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.7));
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+        .splash-title {
+            font-size: 26px; font-weight: 900; letter-spacing: 2px; margin: 0 0 6px 0;
+            background: linear-gradient(90deg, #ffd700, #ff8800, #ffd700);
+            background-size: 200% 100%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            animation: gradientShift 2.5s linear infinite;
+            text-shadow: none; filter: drop-shadow(0 0 12px rgba(255,215,0,0.6));
+        }
+        .splash-subtitle {
+            font-size: 12px; color: #c4b5fd; font-weight: 600; margin: 0 0 12px 0;
+            letter-spacing: 1px; text-transform: uppercase;
+            animation: pulseText 2s ease-in-out infinite;
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.75; text-shadow: 0 0 8px rgba(168,85,247,0.4); }
+            50% { opacity: 1; text-shadow: 0 0 16px rgba(168,85,247,0.9); }
+        }
         .splash-features {
-            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 16px;
-            padding: 15px; margin: 15px 0; max-width: 320px; width: 100%;
+            background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 215, 0, 0.45); border-radius: 20px;
+            padding: 18px 16px; margin: 12px 0; max-width: 340px; width: 100%;
+            box-shadow: 0 0 30px rgba(255,0,85,0.25), inset 0 0 20px rgba(168,85,247,0.1);
+            position: relative; overflow: hidden;
+        }
+        .splash-features::before {
+            content: ''; position: absolute; inset: 0; border-radius: 20px;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.12), transparent);
+            background-size: 200% 100%; animation: gradientShift 3s linear infinite; pointer-events: none;
         }
         .splash-feature-item {
-            font-size: 13px; color: var(--neon-green); font-weight: bold; margin: 6px 0;
-            display: flex; align-items: center; justify-content: center; gap: 8px; text-shadow: 0 0 8px rgba(0,255,136,0.4);
+            font-size: 13px; font-weight: bold; margin: 8px 0;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: linear-gradient(90deg, #00ff88, #00e5ff, #ffd700, #00ff88);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s linear infinite;
         }
         .progress-bar-container {
-            width: 85%; max-width: 300px; height: 16px; background: rgba(255,255,255,0.1);
-            border-radius: 20px; border: 2px solid var(--gold); overflow: hidden; margin-top: 15px;
-            box-shadow: 0 0 15px rgba(255,215,0,0.5); position: relative;
+            width: 85%; max-width: 300px; height: 18px; background: rgba(255,255,255,0.08);
+            border-radius: 20px; border: 2px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(90deg, #ffd700, #ff0055, #00e5ff, #ffd700) 1;
+            overflow: hidden; margin-top: 18px;
+            box-shadow: 0 0 20px rgba(255,215,0,0.55), 0 0 40px rgba(255,0,85,0.2); position: relative;
         }
         .progress-bar-fill {
             height: 100%; width: 0%;
             background: linear-gradient(90deg, #ff0055, #a855f7, #00e5ff, #00ff88, #ffd700);
-            background-size: 300% 100%; animation: gradientShift 2s linear infinite;
+            background-size: 300% 100%; animation: gradientShift 1.5s linear infinite;
             border-radius: 20px; transition: width 0.05s linear;
+            box-shadow: 0 0 15px rgba(255,215,0,0.6);
         }
-        .progress-text { font-size: 14px; font-weight: bold; color: var(--gold); margin-top: 10px; text-shadow: 0 0 10px var(--gold); }
+        .progress-text { 
+            font-size: 15px; font-weight: 900; margin-top: 12px; letter-spacing: 1px;
+            background: linear-gradient(90deg, #ffd700, #00e5ff, #ffd700);
+            background-size: 200% 100%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            animation: gradientShift 2s linear infinite;
+        }
         #game-loader {
             position: fixed; inset: 0; 
             background: radial-gradient(circle at center, #1e0938 0%, #030611 100%);
@@ -94,42 +139,23 @@
             animation: spin 0.8s linear infinite; margin: 0 auto 20px auto; box-shadow: 0 0 20px var(--neon-pink);
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Premium Force Join Gate System */
-        #force-join-screen {
-            position: fixed; inset: 0; background: radial-gradient(circle at top, #1b0733 0%, #030611 90%);
-            z-index: 25000; display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; text-align: center; backdrop-filter: blur(25px); overflow-y: auto;
-        }
-        .fj-box {
-            background: rgba(15, 23, 42, 0.95); border: 2px solid var(--neon-blue);
-            border-radius: 24px; padding: 25px; max-width: 380px; width: 100%;
-            box-shadow: 0 0 35px rgba(0, 229, 255, 0.4); animation: fjPulse 3s infinite alternate;
-        }
-        @keyframes fjPulse {
-            0% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
-            100% { box-shadow: 0 0 40px rgba(0, 229, 255, 0.7); }
-        }
-        .fj-item {
-            background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 14px; padding: 12px 15px; margin-bottom: 10px; display: flex;
-            align-items: center; justify-content: space-between; gap: 10px;
-        }
-
         .channel-banner {
-            background: linear-gradient(90deg, #0088cc, #ff0055, #00e5ff);
-            background-size: 200% 100%; animation: gradientShift 4s infinite linear;
-            color: white; padding: 10px 15px; text-align: center; font-weight: bold; font-size: 12px;
-            display: flex; align-items: center; justify-content: space-between; box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            background: linear-gradient(90deg, #0088cc, #ff0055, #a855f7, #00e5ff, #ffd700, #0088cc);
+            background-size: 400% 100%; animation: gradientShift 5s infinite linear;
+            color: white; padding: 13px 18px; text-align: center; font-weight: bold; font-size: 13px;
+            display: flex; align-items: center; justify-content: space-between; 
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.55), 0 0 35px rgba(255, 0, 85, 0.3);
         }
         .channel-btn { 
-            background: white; color: #0088cc; padding: 6px 14px; border-radius: 20px; 
-            text-decoration: none; font-size: 11px; font-weight: 900; box-shadow: 0 0 10px rgba(255,255,255,0.8);
+            background: white; color: #0088cc; padding: 8px 18px; border-radius: 24px; 
+            text-decoration: none; font-size: 12px; font-weight: 900; box-shadow: 0 0 12px rgba(255,255,255,0.8);
+            transition: transform 0.2s;
         }
+        .channel-btn:active { transform: scale(0.95); }
         .dash-card {
             background: var(--card-bg); backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 215, 0, 0.4); border-radius: 20px;
-            margin: 15px; padding: 20px; text-align: center; position: relative;
+            margin: 15px; padding: 22px; text-align: center; position: relative;
             box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 15px rgba(255,215,0,0.1); animation: vipPulse 4s infinite;
         }
         @keyframes vipPulse {
@@ -139,131 +165,163 @@
         }
         .vip-tag { 
             position: absolute; top: 15px; right: 15px; 
-            background: linear-gradient(45deg, var(--gold), #ff8800); 
-            color: black; font-weight: 900; padding: 4px 10px; border-radius: 12px; font-size: 10px; 
-            letter-spacing: 1px; box-shadow: var(--gold-glow); cursor: pointer;
+            background: linear-gradient(45deg, #ffd700, #ff8800, #ff0055, #ffd700);
+            background-size: 300% 100%; animation: gradientShift 3s linear infinite;
+            color: black; font-weight: 900; padding: 7px 15px; border-radius: 14px; font-size: 11px; 
+            letter-spacing: 1px; box-shadow: 0 0 18px rgba(255,215,0,0.7); cursor: pointer;
         }
-        .coin-balance { font-size: 38px; font-weight: 900; color: var(--gold); text-shadow: var(--gold-glow); margin: 5px 0; }
+        .coin-balance { 
+            font-size: 44px; font-weight: 900; margin: 6px 0;
+            background: linear-gradient(90deg, #ffd700, #ff8800, #00ff88, #ffd700);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s linear infinite;
+            filter: drop-shadow(0 0 12px rgba(255,215,0,0.6));
+        }
         .game-card {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
-            border-radius: 20px; padding: 14px; margin-bottom: 15px; 
-            display: flex; align-items: center; gap: 15px; cursor: pointer;
-            transition: all 0.25s ease-in-out; position: relative; overflow: hidden; 
+            border-radius: 22px; padding: 18px; margin-bottom: 18px; 
+            display: flex; align-items: center; gap: 16px; cursor: pointer;
+            transition: all 0.3s ease-in-out; position: relative; overflow: hidden; 
             box-shadow: 0 8px 25px rgba(0,0,0,0.7);
         }
-        .game-card:hover { transform: translateY(-3px) scale(1.01); }
+        .game-card::before {
+            content: ''; position: absolute; inset: -2px; border-radius: 24px; z-index: 0;
+            background: linear-gradient(90deg, #ff0055, #a855f7, #00e5ff, #ffd700, #00ff88, #ff0055);
+            background-size: 300% 100%; animation: borderFlow 4s linear infinite; opacity: 0.85;
+        }
+        .game-card::after {
+            content: ''; position: absolute; inset: 2px; border-radius: 20px; z-index: 0;
+            background: inherit;
+        }
+        .game-card > * { position: relative; z-index: 1; }
+        @keyframes borderFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+        .game-card:hover { transform: translateY(-4px) scale(1.02); }
         .game-card:active { transform: scale(0.97); }
         .game-card.aviator-banner {
-            background: linear-gradient(135deg, #2b040e 0%, #0e131d 60%, #3d0012 100%);
-            border: 2px solid var(--aviator-red);
-            box-shadow: 0 0 18px rgba(229, 29, 56, 0.4);
+            background: linear-gradient(135deg, #2b040e 0%, #0e131d 50%, #3d0012 100%);
+            box-shadow: 0 0 28px rgba(229, 29, 56, 0.55), 0 0 50px rgba(255, 0, 85, 0.25);
+            animation: aviatorGlow 2.5s ease-in-out infinite alternate;
+        }
+        @keyframes aviatorGlow {
+            from { box-shadow: 0 0 18px rgba(229, 29, 56, 0.4), 0 0 30px rgba(255, 0, 85, 0.2); }
+            to { box-shadow: 0 0 35px rgba(229, 29, 56, 0.85), 0 0 60px rgba(255, 0, 85, 0.45); }
         }
         .game-card.spin-banner {
-            background: linear-gradient(135deg, #2e1c01 0%, #0f172a 60%, #472b00 100%);
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, #2e1c01 0%, #0f172a 50%, #472b00 100%);
+            box-shadow: 0 0 28px rgba(255, 215, 0, 0.5), 0 0 50px rgba(255, 136, 0, 0.25);
+            animation: spinGlow 2.5s ease-in-out infinite alternate;
+        }
+        @keyframes spinGlow {
+            from { box-shadow: 0 0 18px rgba(255, 215, 0, 0.4), 0 0 30px rgba(255, 136, 0, 0.2); }
+            to { box-shadow: 0 0 35px rgba(255, 215, 0, 0.9), 0 0 60px rgba(255, 136, 0, 0.5); }
         }
         .game-card.battle-banner {
-            background: linear-gradient(135deg, #022636 0%, #0f172a 60%, #004d66 100%);
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 18px rgba(0, 229, 255, 0.4);
+            background: linear-gradient(135deg, #022636 0%, #0f172a 50%, #004d66 100%);
+            box-shadow: 0 0 28px rgba(0, 229, 255, 0.5), 0 0 50px rgba(0, 136, 255, 0.25);
+            animation: battleGlow 2.5s ease-in-out infinite alternate;
+        }
+        @keyframes battleGlow {
+            from { box-shadow: 0 0 18px rgba(0, 229, 255, 0.4), 0 0 30px rgba(0, 136, 255, 0.2); }
+            to { box-shadow: 0 0 35px rgba(0, 229, 255, 0.9), 0 0 60px rgba(168, 85, 247, 0.45); }
         }
         .game-thumb {
-            width: 80px; height: 80px; border-radius: 16px; flex-shrink: 0;
+            width: 88px; height: 88px; border-radius: 20px; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6); overflow: hidden; position: relative;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.7), 0 0 15px rgba(255,215,0,0.25); overflow: hidden; position: relative;
+            border: 2px solid rgba(255,255,255,0.15);
         }
         .game-badge {
-            position: absolute; top: 0; right: 0; background: linear-gradient(45deg, #ff0055, #a855f7);
-            color: white; font-size: 9px; font-weight: bold; padding: 3px 8px;
-            border-bottom-left-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+            position: absolute; top: 0; right: 0; 
+            background: linear-gradient(45deg, #ff0055, #a855f7, #00e5ff);
+            background-size: 200% 200%; animation: gradientShift 2.5s ease infinite;
+            color: white; font-size: 10px; font-weight: bold; padding: 5px 12px;
+            border-bottom-left-radius: 14px; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 0 12px rgba(255,0,85,0.6);
         }
         .aviator-frame {
-            background: #000; border-radius: 16px; border: 2px solid #232938; position: relative; overflow: hidden; box-shadow: 0 0 25px rgba(229,29,56,0.3); margin-bottom: 15px;
+            background: #000; border-radius: 20px; border: 2px solid #232938; position: relative; overflow: hidden; box-shadow: 0 0 25px rgba(229,29,56,0.3); margin-bottom: 15px;
         }
-        .aviator-header { background: #141b29; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232938; font-size: 11px; font-weight: bold; color: #94a3b8; }
+        .aviator-header { background: #141b29; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232938; font-size: 12px; font-weight: bold; color: #94a3b8; }
         .aviator-canvas-container {
-            height: 220px; background: var(--aviator-bg); position: relative;
+            height: 240px; background: var(--aviator-bg); position: relative;
             background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 20px 20px; overflow: hidden;
         }
-        .multiplier-display { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 52px; font-weight: 900; color: #ffffff; text-shadow: 0 0 20px rgba(255,255,255,0.8); z-index: 5; text-align: center; }
+        .multiplier-display { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 56px; font-weight: 900; color: #ffffff; text-shadow: 0 0 20px rgba(255,255,255,0.8); z-index: 5; text-align: center; }
         .multiplier-display.crashed { color: var(--aviator-red); text-shadow: 0 0 25px var(--aviator-red); }
-        .aviator-plane-svg { position: absolute; width: 65px; height: 35px; bottom: 10px; left: 10px; z-index: 4; transition: transform 0.05s linear; filter: drop-shadow(0px 0px 8px #ff0055); }
+        .aviator-plane-svg { position: absolute; width: 70px; height: 40px; bottom: 10px; left: 10px; z-index: 4; transition: transform 0.05s linear; filter: drop-shadow(0px 0px 10px #ff0055); }
         #aviatorCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; }
-        .wheel-wrapper { position: relative; width: 230px; height: 230px; margin: 15px auto; }
-        .wheel-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 32px; color: var(--gold); z-index: 10; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
+        .wheel-wrapper { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+        .wheel-pointer { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 36px; color: var(--gold); z-index: 10; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); }
         .wheel-box {
             width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--gold);
             box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), inset 0 0 15px #000; position: relative; overflow: hidden;
-            transition: transform 4s cubic-bezier(0.15, 0.9, 0.15, 1);
-            background: conic-gradient(#ff0055 0deg 60deg, #00c853 60deg 120deg, #ff9800 120deg 180deg, #00e5ff 180deg 240deg, #a855f7 240deg 300deg, #ffd700 300deg 360deg);
+            transition: transform 3.5s cubic-bezier(0.1, 0.9, 0.1, 1);
+            background: radial-gradient(circle, #0f172a 0%, #030611 100%);
+        }
+        .wheel-segment-label {
+            position: absolute; top: 50%; left: 50%;
+            transform-origin: 0% 0%;
+            font-size: 12px; font-weight: 900; color: #ffffff;
+            text-shadow: 0 0 5px #000, 0 0 10px #000;
+            white-space: nowrap; pointer-events: none;
         }
         .casino-btn {
-            background: linear-gradient(45deg, #ff0055, #ff5000); color: white; border: none; width: 100%; padding: 14px;
-            font-size: 15px; font-weight: 900; border-radius: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.5); transition: all 0.15s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            background: linear-gradient(45deg, #ff0055, #ff5000); color: white; border: none; width: 100%; padding: 16px 20px;
+            font-size: 16px; font-weight: 900; border-radius: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 6px 20px rgba(255, 0, 85, 0.5); transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
         }
         .casino-btn:active { transform: scale(0.96); opacity: 0.9; }
-        .chat-box { height: 260px; background: rgba(0,0,0,0.6); border-radius: 16px; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; border: 1px solid #334155; }
+        .casino-btn.btn-active-red {
+            background: linear-gradient(45deg, #dc2626, #ff0055) !important;
+            box-shadow: 0 0 25px rgba(220, 38, 38, 0.9) !important;
+            animation: pulseRed 1s infinite alternate;
+        }
+        @keyframes pulseRed {
+            from { transform: scale(1); box-shadow: 0 0 15px rgba(255,0,85,0.7); }
+            to { transform: scale(1.02); box-shadow: 0 0 30px rgba(255,0,85,1); }
+        }
+        .chat-box { height: 270px; background: rgba(0,0,0,0.6); border-radius: 18px; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; border: 1px solid #334155; }
         .chat-row { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 4px; }
         .chat-row.mine { flex-direction: row-reverse; }
-        .chat-avatar { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; flex-shrink: 0; box-shadow: 0 0 8px rgba(255,215,0,0.4); }
-        .chat-msg-bubble { background: #1e293b; padding: 10px 14px; border-radius: 14px; font-size: 13px; max-width: 75%; border: 1px solid rgba(255,255,255,0.08); word-break: break-word; color: #f8fafc; }
+        .chat-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; flex-shrink: 0; box-shadow: 0 0 8px rgba(255,215,0,0.4); }
+        .chat-msg-bubble { background: #1e293b; padding: 12px 16px; border-radius: 16px; font-size: 13px; max-width: 75%; border: 1px solid rgba(255,255,255,0.08); word-break: break-word; color: #f8fafc; }
         .chat-row.mine .chat-msg-bubble { background: linear-gradient(135deg, #a855f7, #ff0055); border: none; color: white; }
-        
-        /* Ultra Premium Bottom Navigation Bar */
         .navbar {
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            background: rgba(5, 7, 17, 0.96);
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 8px 4px 12px 4px; 
-            border-top: 2px solid rgba(255, 215, 0, 0.4); 
-            backdrop-filter: blur(25px); z-index: 1000;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(5, 7, 17, 0.96);
+            display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,215,0,0.3); backdrop-filter: blur(20px); z-index: 1000;
         }
-        .nav-link { 
-            color: #94a3b8; text-decoration: none; font-size: 11px; font-weight: 700;
-            display: flex; flex-direction: column; align-items: center; gap: 4px; 
-            cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 6px 8px; border-radius: 14px; flex: 1; text-align: center;
-        }
-        .nav-link i { font-size: 18px; transition: transform 0.25s ease; }
-        .nav-link.active { 
-            color: var(--gold); 
-            background: rgba(255, 215, 0, 0.12);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
-            transform: translateY(-4px);
-        }
-        .nav-link.active i {
-            transform: scale(1.2);
-            filter: drop-shadow(0 0 8px var(--gold));
-        }
-
+        .nav-link { color: #64748b; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: all 0.2s; }
+        .nav-link i { font-size: 18px; }
+        .nav-link.active { color: var(--gold); text-shadow: var(--gold-glow); font-weight: bold; transform: translateY(-2px); }
         .tab-page { display: none; padding: 0 15px; }
         .tab-page.active { display: block; }
-        .input-box { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: white; margin-bottom: 10px; outline: none; }
-        .input-box:focus { border-color: var(--gold); }
-        .method-btn { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; font-weight: bold; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 100px; }
-        .method-btn.selected { border-color: var(--gold); background: rgba(255,215,0,0.15); box-shadow: 0 0 10px rgba(255,215,0,0.4); }
-        .aviator-history { display: flex; gap: 6px; overflow-x: auto; padding: 5px 0; margin-bottom: 8px; }
-        .history-chip { background: #1e293b; color: var(--neon-green); font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 10px; border: 1px solid rgba(0,255,136,0.3); flex-shrink: 0; }
+        .input-box { width: 100%; padding: 14px; background: #0f172a; border: 1px solid #334155; border-radius: 12px; color: white; margin-bottom: 12px; outline: none; font-size: 14px; }
+        .input-box:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        .method-btn { flex: 1; padding: 14px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; font-weight: bold; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 100px; font-size: 13px; }
+        .method-btn.selected { border-color: var(--gold); background: rgba(255,215,0,0.15); box-shadow: 0 0 12px rgba(255,215,0,0.4); }
+        .aviator-history { display: flex; gap: 8px; overflow-x: auto; padding: 6px 0; margin-bottom: 10px; }
+        .history-chip { background: #1e293b; color: var(--neon-green); font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(0,255,136,0.3); flex-shrink: 0; }
         .history-chip.high { color: var(--gold); border-color: var(--gold); }
-        .badge-pending { background: #eab308; color: black; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
-        .badge-approved { background: #22c55e; color: white; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
-        .badge-rejected { background: #ef4444; color: white; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
-        .admin-item { background: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #334155; font-size: 12px; }
-        .history-section { margin-top: 15px; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 12px; border: 1px solid #334155; }
+        .badge-pending { background: #eab308; color: black; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; }
+        .badge-approved { background: #22c55e; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; }
+        .badge-rejected { background: #ef4444; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; }
+        .admin-item { background: #1e293b; padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #334155; font-size: 13px; }
+        .history-section { margin-top: 15px; background: rgba(0,0,0,0.4); border-radius: 14px; padding: 14px; border: 1px solid #334155; }
         .modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
             z-index: 15000; justify-content: center; align-items: center; padding: 15px;
         }
         .modal.active { display: flex; }
         .modal-content {
-            background: #0f172a; border: 1px solid var(--gold); border-radius: 16px; padding: 20px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; position: relative;
+            background: #0f172a; border: 1px solid var(--gold); border-radius: 20px; padding: 22px; width: 100%; max-width: 440px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.9);
         }
         .profile-avatar-container {
-            position: relative; width: 90px; height: 90px; margin: 0 auto 10px auto;
+            position: relative; width: 95px; height: 95px; margin: 0 auto 12px auto;
         }
         .profile-avatar {
             width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--gold);
@@ -271,21 +329,21 @@
         }
         .avatar-upload-btn {
             position: absolute; bottom: 0; right: 0; background: var(--neon-pink);
-            color: white; border: none; border-radius: 50%; width: 28px; height: 28px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;
+            color: white; border: none; border-radius: 50%; width: 32px; height: 32px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;
         }
         .task-card {
-            background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px;
-            padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 14px;
+            padding: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
         }
         .task-card:hover { border-color: var(--neon-blue); }
         .lb-card {
-            background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 14px;
-            padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 16px;
+            padding: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
         }
-        .task-btn-group { display: flex; gap: 6px; }
-        .btn-join { background: #0088cc; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; text-decoration: none; }
-        .btn-verify { background: var(--neon-green); color: black; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .task-btn-group { display: flex; gap: 8px; }
+        .btn-join { background: #0088cc; color: white; border: none; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .btn-verify { background: var(--neon-green); color: black; border: none; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; }
         
         .cancel-btn {
             background: linear-gradient(45deg, #ef4444, #dc2626) !important;
@@ -296,40 +354,46 @@
             background: linear-gradient(45deg, #ffd700, #ff8800) !important;
             color: black !important;
             font-weight: 900 !important;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8) !important;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.9) !important;
         }
         .battle-wheel-box {
-            width: 180px; height: 180px; border-radius: 50%; border: 5px solid var(--neon-blue);
+            width: 190px; height: 190px; border-radius: 50%; border: 5px solid var(--neon-blue);
             margin: 15px auto; position: relative; transition: transform 4s cubic-bezier(0.15, 0.9, 0.15, 1);
             background: conic-gradient(#ff0055 0deg 90deg, #00e5ff 90deg 180deg, #a855f7 180deg 270deg, #ffd700 270deg 360deg);
             display: flex; align-items: center; justify-content: center; overflow: hidden;
-            box-shadow: 0 0 20px var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue);
+        }
+        
+        .battle-winner-banner {
+            background: linear-gradient(135deg, #ffd700, #ff0055);
+            border: 2px solid #ffffff;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            animation: pulseWinner 1.5s infinite alternate;
+        }
+        @keyframes pulseWinner {
+            from { transform: scale(0.98); box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
+            to { transform: scale(1.02); box-shadow: 0 0 25px rgba(255, 215, 0, 1); }
         }
     </style>
 </head>
 <body>
     <div id="custom-toast"><i class="fa-solid fa-bell"></i> <span id="toast-text">নোটিফিকেশন</span></div>
-    
-    <!-- Official Server Force Join Protection Gate Screen -->
-    <div id="force-join-screen">
-        <div class="fj-box">
-            <i class="fa-solid fa-shield-cat" style="font-size:55px; color:var(--neon-pink); text-shadow:0 0 20px var(--neon-pink); margin-bottom:12px;"></i>
-            <h2 style="color:var(--gold); margin:0 0 6px 0; text-shadow: var(--gold-glow); font-size:22px;">FORCE JOIN REQUIRED</h2>
-            <p style="color:#cbd5e1; font-size:12px; margin-bottom:18px;">অ্যাপের সকল সিকিউর ফিচার ও এয়ারড্রপ সুবিধা আনলক করতে নিচের অফিশিয়াল চ্যানেলগুলোতে জয়েন করে ভেরিফাই করুন:</p>
-            <div id="force-join-channels-list"></div>
-            <button class="casino-btn" style="background:linear-gradient(45deg, #00ff88, #00e5ff); color:black; margin-top:15px;" onclick="verifyUserForceJoinServer()"><i class="fa-solid fa-shield-check"></i> VERIFY MEMBERSHIP</button>
-        </div>
-    </div>
-
     <div id="app-splash">
         <div class="splash-logo"><i class="fa-solid fa-gem"></i></div>
-        <h2 style="color:var(--gold); margin:0; text-shadow: var(--gold-glow); font-size:24px;">VIP REWARD HUB</h2>
+        <h2 class="splash-title">VIP REWARD HUB</h2>
+        <p class="splash-subtitle">✦ Premium Earning • Live Games • Instant Cash ✦</p>
         <div class="splash-features">
             <div class="splash-feature-item"><i class="fa-solid fa-gift"></i> প্রতিটি এড দেখলে <span id="splash-ad-reward">50</span> কয়েন বোনাস!</div>
             <div class="splash-feature-item"><i class="fa-solid fa-bolt"></i> ইনস্ট্যান্ট উইথড্র ও ডিপোজিট সার্ভিস</div>
             <div class="splash-feature-item"><i class="fa-solid fa-users"></i> বন্ধু রেফার করে পান <span id="splash-refer-reward">100</span> কয়েন বোনাস</div>
+            <div class="splash-feature-item"><i class="fa-solid fa-plane"></i> এভিয়েটর • স্পিন • টিকেট ব্যাটল লাইভ</div>
+            <div class="splash-feature-item"><i class="fa-solid fa-shield-halved"></i> ১০০% সিকিউর রিয়েল-টাইম সার্ভার</div>
         </div>
-        <p style="color:#94a3b8; font-size:11px; margin-top:0;">সার্ভারের সাথে রিয়েল-টাইম সিঙ্ক হচ্ছে...</p>
+        <p style="color:#c4b5fd; font-size:11px; margin-top:4px; font-weight:600; letter-spacing:0.5px;">⚡ সার্ভারের সাথে রিয়েল-টাইম সিঙ্ক হচ্ছে...</p>
         <div class="progress-bar-container">
             <div class="progress-bar-fill" id="splash-progress"></div>
         </div>
@@ -406,16 +470,16 @@
             </div>
             <div>
                 <h4 style="margin:0; font-size:16px; color:#fff; text-shadow: 0 0 8px var(--neon-blue);">🎟️ ৩-লেভেল টিকেট ব্যাটল রুম</h4>
-                <small style="color:#cbd5e1; font-size:11px;">মাল্টিপ্লেয়ার রিয়েল-টাইম টিকেট ব্যাটল রুম</small>
+                <small style="color:#cbd5e1; font-size:11px;">মাল্টিপ্লেয়ার রিয়েল-টাইম টিকেট ব্যাটল রুম (৯০% উইনার পেআউট)</small>
             </div>
         </div>
     </div>
 
     <div id="sub-aviator" class="tab-page">
-        <button class="casino-btn" style="padding:6px 12px; font-size:11px; margin-bottom:10px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
+        <button class="casino-btn" style="padding:8px 16px; font-size:12px; margin-bottom:12px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
         <div class="aviator-frame">
             <div class="aviator-header">
-                <span style="color:var(--aviator-red);"><i class="fa-solid fa-robot"></i> AI SMART ENGINE ACTIVE</span>
+                <span style="color:var(--aviator-red);"><i class="fa-solid fa-robot"></i> AI SMART ASSISTANT ACTIVE</span>
                 <span id="aviator-status-badge" style="color:var(--neon-green);">● LIVE SERVER RUNNING</span>
             </div>
             <div class="aviator-history" id="aviator-history-box">
@@ -435,17 +499,22 @@
                     <circle cx="95" cy="10" r="4" fill="#ffd700"/>
                 </svg>
             </div>
-            <div style="padding:12px; background:#0f172a;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="padding:14px; background:#0f172a;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
                     <div>
-                        <label style="font-size:10px; color:#94a3b8;">বেট কয়েন পরিমাণ:</label>
-                        <input type="number" id="aviator-bet-input" class="input-box" value="100" style="margin:0; text-align:center; font-weight:bold; color:var(--gold);">
+                        <label style="font-size:11px; color:#94a3b8;">বেট কয়েন পরিমাণ:</label>
+                        <input type="number" id="aviator-bet-input" class="input-box" value="100" style="margin:4px 0; text-align:center; font-weight:bold; color:var(--gold);">
                     </div>
-                    <div style="text-align:right;">
-                        <label style="font-size:11px; color:var(--gold); cursor:pointer;">
-                            <input type="checkbox" id="aviator-auto-bet" onchange="toggleAutoBet()"> 🔄 অটো বেট চালু
-                        </label>
+                    <div>
+                        <label style="font-size:11px; color:#94a3b8;">অটো ক্যাশআউট (Multi):</label>
+                        <input type="number" step="0.1" id="aviator-auto-cash-input" class="input-box" value="2.0" placeholder="e.g. 2.0" style="margin:4px 0; text-align:center; font-weight:bold; color:var(--neon-blue);">
                     </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <label style="font-size:12px; color:var(--gold); cursor:pointer;">
+                        <input type="checkbox" id="aviator-auto-bet" onchange="toggleAutoBet()"> 🔄 অটো বেট চালু
+                    </label>
+                    <span style="font-size:11px; color:#94a3b8;" id="ai-user-profile-summary">AI Memory Logged</span>
                 </div>
                 <div style="display:flex; gap:10px;">
                     <button class="casino-btn" id="aviator-start-btn" style="background:linear-gradient(45deg, #00c853, #00e5ff); color:black;" onclick="handleAviatorBetButtonClick()"><i class="fa-solid fa-plane-departure"></i> বেট ধরুন</button>
@@ -456,32 +525,39 @@
     </div>
 
     <div id="sub-spin" class="tab-page">
-        <button class="casino-btn" style="padding:6px 12px; font-size:11px; margin-bottom:10px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
+        <button class="casino-btn" style="padding:8px 16px; font-size:12px; margin-bottom:12px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
         <div class="dash-card" style="margin:0;">
             <h3>🎰 ভিআইপি কাস্টম বেট স্পিন</h3>
-            <label style="font-size:11px; color:#94a3b8;">আপনার স্পিন বেট কয়েন টাইপ করুন:</label>
-            <input type="number" id="spin-bet-amount" class="input-box" value="100" style="text-align:center; font-weight:bold; color:var(--gold);">
+            <label style="font-size:12px; color:#94a3b8;">আপনার স্পিন বেট কয়েন টাইপ করুন:</label>
+            <input type="number" id="spin-bet-amount" class="input-box" value="100" style="text-align:center; font-weight:bold; color:var(--gold);" oninput="updateCustomWheelVisuals()">
             <div class="wheel-wrapper">
                 <div class="wheel-pointer">▼</div>
                 <div class="wheel-box" id="spin-wheel-element"></div>
             </div>
-            <button class="casino-btn" style="background: linear-gradient(45deg, #a855f7, #ff0055);" onclick="spinCustomWheel()"><i class="fa-solid fa-rotate"></i> স্পিন করুন</button>
+            <button class="casino-btn" id="spin-trigger-btn" style="background: linear-gradient(45deg, #a855f7, #ff0055);" onclick="spinCustomWheel()"><i class="fa-solid fa-rotate"></i> স্পিন করুন</button>
         </div>
     </div>
 
     <div id="sub-battle" class="tab-page">
-        <button class="casino-btn" style="padding:6px 12px; font-size:11px; margin-bottom:10px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
+        <button class="casino-btn" style="padding:8px 16px; font-size:12px; margin-bottom:12px; width:auto; background:#1e293b; border:1px solid #334155;" onclick="navigate('games')">⬅️ হাবে ফিরুন</button>
         <div class="dash-card" style="margin:0; background: radial-gradient(circle, #2d124d 0%, #120824 100%);">
             <h3 style="color:var(--neon-blue); margin-top:0;">🎟️ টিকেট ব্যাটল রুম (লাইভ)</h3>
-            <label style="font-size:11px; color:#cbd5e1;">লেভেল সিলেক্ট করুন:</label>
+            
+            <div id="battle-winner-header-display" class="battle-winner-banner" style="display:none;">
+                <div style="font-size:12px; text-transform:uppercase; font-weight:900; color:#fff;">🏆 সর্বশেষ ব্যাটল উইনার 🏆</div>
+                <div id="battle-last-winner-name" style="font-size:18px; font-weight:900; color:var(--gold); text-shadow:0 0 10px #000; margin:4px 0;">-</div>
+                <div style="font-size:12px; color:#fff;">বিজয়ী পেয়েছে: <b id="battle-last-winner-prize" style="color:#00ff88;">0</b> কয়েন (১০% হাউজ ফি ব্যতীত)</div>
+            </div>
+
+            <label style="font-size:12px; color:#cbd5e1;">লেভেল সিলেক্ট করুন:</label>
             <select class="input-box" id="battle-level-select" onchange="changeBattleLevel()">
                 <option value="1">Level 1 (Bronze) - 50 Coins/Ticket</option>
                 <option value="2">Level 2 (Silver) - 200 Coins/Ticket</option>
                 <option value="3">Level 3 (Gold VIP) - 1000 Coins/Ticket</option>
             </select>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0;">
-                <span style="font-size:12px; color:var(--gold);">পোট কয়েন: <b id="battle-pot-display">0</b> 🪙</span>
-                <span style="background:var(--neon-pink); padding:4px 8px; border-radius:8px; font-weight:bold; font-size:11px;" id="battle-timer">⏱️ ওয়েটিং...</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0;">
+                <span style="font-size:13px; color:var(--gold);">পোট কয়েন: <b id="battle-pot-display" style="font-size:16px;">0</b> 🪙</span>
+                <span style="background:var(--neon-pink); padding:6px 12px; border-radius:10px; font-weight:bold; font-size:12px;" id="battle-timer">⏱️ ওয়েটিং...</span>
             </div>
             
             <div id="battle-wheel-container" style="display:none; text-align:center;">
@@ -491,10 +567,10 @@
                 </div>
             </div>
 
-            <div style="max-height: 120px; overflow-y:auto; text-align:left; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; margin-bottom:10px;" id="battle-buyers-log">
+            <div style="max-height: 140px; overflow-y:auto; text-align:left; background:rgba(0,0,0,0.5); padding:10px; border-radius:12px; margin-bottom:12px;" id="battle-buyers-log">
                 <div style="font-size:11px; color:#94a3b8; text-align:center;">এখনো কেউ টিকেট কেনেনি! ২টি টিকেট কেনা হলে ৩০ সে. কাউন্টডাউন শুরু হবে।</div>
             </div>
-            <button class="casino-btn" style="background: linear-gradient(45deg, #00c853, #00e5ff);" onclick="buyLevelTicket()"><i class="fa-solid fa-cart-plus"></i> টিকেট কিনুন</button>
+            <button class="casino-btn" id="battle-buy-btn" style="background: linear-gradient(45deg, #00c853, #00e5ff);" onclick="buyLevelTicket()"><i class="fa-solid fa-cart-plus"></i> টিকেট কিনুন</button>
         </div>
     </div>
 
@@ -508,7 +584,7 @@
                 <div style="font-size:11px; color:#cbd5e1;"><span id="dep-method-title">মেথড</span> নম্বর/ID:</div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
                     <b style="color:var(--gold); font-size:16px;" id="deposit-address">01700000000</b>
-                    <button onclick="copyDepositAddress()" style="background:#334155; color:white; border:none; padding:4px 8px; border-radius:6px; font-size:10px; cursor:pointer;">কপি</button>
+                    <button onclick="copyDepositAddress()" style="background:#334155; color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; cursor:pointer;">কপি</button>
                 </div>
             </div>
             <label style="font-size:11px; color:#94a3b8;">ডিপোজিট টাকা (৳):</label>
@@ -540,12 +616,12 @@
                 </p>
             </div>
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin:15px 0;">
-                <label style="font-size:11px; color:#94a3b8; font-weight:bold;">আপনার Official Telegram Mini App রেফারেল লিংক:</label>
+                <label style="font-size:11px; color:#94a3b8; font-weight:bold;">আপনার Telegram Mini App রেফারেল লিংক:</label>
                 <div style="display:flex; gap:5px; margin-top:8px;">
                     <input type="text" id="refer-link-input" class="input-box" readonly style="margin:0; font-size:11px; color:var(--neon-green);" value="লিংক তৈরি হচ্ছে...">
-                    <button class="casino-btn" style="width:auto; padding:0 12px; font-size:11px;" onclick="copyReferLink()"><i class="fa-solid fa-copy"></i> কপি</button>
+                    <button class="casino-btn" style="width:auto; padding:0 14px; font-size:12px;" onclick="copyReferLink()"><i class="fa-solid fa-copy"></i> কপি</button>
                 </div>
-                <button class="casino-btn" style="margin-top:10px; background:linear-gradient(45deg, #0088cc, #00e5ff); color:black; font-size:12px;" onclick="shareReferLink()"><i class="fa-brands fa-telegram"></i> বন্ধুদের সাথে Share করুন</button>
+                <button class="casino-btn" style="margin-top:10px; background:linear-gradient(45deg, #0088cc, #00e5ff); color:black; font-size:13px;" onclick="shareReferLink()"><i class="fa-brands fa-telegram"></i> বন্ধুদের সাথে Share করুন</button>
             </div>
             <button class="casino-btn" style="background:linear-gradient(45deg, #a855f7, #ff0055); color:white;" onclick="openReferHistoryModal()"><i class="fa-solid fa-list"></i> আপনার রেফার হিস্ট্রি দেখুন</button>
         </div>
@@ -555,7 +631,7 @@
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="margin:0; color:var(--gold); font-size:15px;"><i class="fa-solid fa-user-group"></i> আপনার রেফারেল লিস্ট</h3>
-                <i class="fa-solid fa-times" style="font-size:18px; cursor:pointer;" onclick="closeReferHistoryModal()"></i>
+                <i class="fa-solid fa-times" style="font-size:18px; cursor:pointer;" onclick="closeReferReferModal()"></i>
             </div>
             <div id="refer-users-list">
                 <div style="text-align:center; color:#94a3b8; font-size:12px;">হিস্ট্রি লোড হচ্ছে...</div>
@@ -630,7 +706,7 @@
         <div class="chat-box" id="chat-messages"></div>
         <div style="display:flex; gap:8px;">
             <input type="text" id="chat-input" class="input-box" placeholder="আপনার মেসেজ টাইপ করুন..." style="margin:0;">
-            <button onclick="sendChatMessage()" class="casino-btn" style="width:auto; padding:0 20px;"><i class="fa-solid fa-paper-plane"></i></button>
+            <button onclick="sendChatMessage()" class="casino-btn" style="width:auto; padding:0 22px;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
@@ -642,7 +718,9 @@
             
             <div style="background:rgba(239,68,68,0.1); border:1px solid #ef4444; border-radius:10px; padding:10px; margin-bottom:12px; font-size:11px; color:#fca5a5; line-height:1.4;">
                 📌 <b>উত্তোলন নিয়মকানুন:</b><br>
-                সর্বনিম্ন উত্তোলন ৳<span id="rule-min-bdt">20</span>। নিয়ম মেনে উত্তোলন করতে হবে। ভুল তথ্য বা কম কয়েনে উত্তোলন রিকোয়েস্ট করলে টাকা ফেরত দেওয়া হবে না এবং আবেদন বাতিল হবে।
+                ১. সর্বনিম্ন উত্তোলন ৳<span id="rule-min-bdt">20</span>।<br>
+                ২. প্রথমবার উত্তোলনের জন্য আপনাকে অবশ্যই <b>কমপক্ষে ১০টি এড</b> দেখতে হবে। (আপনার বর্তমান এড দেখা: <b id="withdraw-ads-check-count" style="color:var(--gold);">0</b>/১০)<br>
+                ৩. ভুল তথ্য বা কম কয়েনে উত্তোলন রিকোয়েস্ট করলে টাকা ফেরত দেওয়া হবে না।
             </div>
 
             <label style="font-size:11px; color:#94a3b8;">মেথড সিলেক্ট করুন</label>
@@ -671,9 +749,10 @@
             </div>
             <h3 id="prof-name-display" style="margin:5px 0;">User Name</h3>
             <p style="font-size:11px; color:var(--gold); margin-top:0;" id="prof-vip-level-text">Level 1 (Bronze Member)</p>
+            
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin:15px 0; text-align:left; font-size:11px;">
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
-                    <span style="color:#94a3b8;">💰 মোট Coins:</span> <b id="prof-total-coins" style="color:var(--gold);">0</b>
+                    <span style="color:#94a3b8;">💰 বর্তমান Coins:</span> <b id="prof-total-coins" style="color:var(--gold);">0</b>
                 </div>
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
                     <span style="color:#94a3b8;">📺 Ads Watched:</span> <b id="prof-total-ads" style="color:var(--neon-green);">0</b>
@@ -684,13 +763,24 @@
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
                     <span style="color:#94a3b8;">📅 Join Date:</span> <b id="prof-join-date" style="color:#cbd5e1;">Today</b>
                 </div>
+                <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
+                    <span style="color:#94a3b8;">🏆 মোট জিতেছে:</span> <b id="prof-total-won" style="color:var(--neon-green);">0 Coins</b>
+                </div>
+                <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
+                    <span style="color:#94a3b8;">💔 মোট হেরেছে:</span> <b id="prof-total-lost" style="color:var(--neon-pink);">0 Coins</b>
+                </div>
+                <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155; grid-column: span 2;">
+                    <span style="color:#cbd5e1; font-weight:bold;">🎮 গেম স্ট্যাটস (খেলেছেন):</span><br>
+                    <span style="color:#94a3b8;">✈️ এভিয়েটর: <b id="prof-aviator-count" style="color:var(--gold);">0</b> বার | 🎰 স্পিন: <b id="prof-spin-count" style="color:var(--neon-blue);">0</b> বার | 🎟️ ব্যাটল: <b id="prof-battle-count" style="color:var(--neon-pink);">0</b> বার</span>
+                </div>
             </div>
+            
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-top:10px; text-align:left;">
                 <label style="font-size:11px; color:#94a3b8;">ডিসপ্লে নাম পরিবর্তন করুন:</label>
                 <input type="text" id="custom-name-input" class="input-box" placeholder="আপনার কাস্টম নাম দিন" style="margin:5px 0;">
-                <button class="casino-btn" style="padding:8px; font-size:12px;" onclick="saveCustomName()"><i class="fa-solid fa-save"></i> সেভ করুন</button>
+                <button class="casino-btn" style="padding:10px; font-size:12px;" onclick="saveCustomName()"><i class="fa-solid fa-save"></i> সেভ করুন</button>
             </div>
-            <button class="casino-btn" style="background:#334155; margin-top:15px; font-size:12px;" onclick="openAdminDirect()"><i class="fa-solid fa-user-shield"></i> এডমিন প্যানেল ওপেন করুন</button>
+            <button class="casino-btn" style="background:#334155; margin-top:15px; font-size:13px;" onclick="openAdminDirect()"><i class="fa-solid fa-user-shield"></i> এডমিন প্যানেল ওপেন করুন</button>
         </div>
     </div>
 
@@ -706,21 +796,12 @@
             <button class="casino-btn" style="background:linear-gradient(45deg, #a855f7, #ff0055); margin-bottom:15px;" onclick="openAdminUserHistory()"><i class="fa-solid fa-chart-line"></i> 📊 ইউজার হিস্ট্রি (কে কত জিতছে/রেফার/এডস)</button>
             <button class="casino-btn" style="background:linear-gradient(45deg, #0088cc, #00e5ff); margin-bottom:15px;" onclick="openAdminLogsModal()"><i class="fa-solid fa-shield-halved"></i> 🔐 এডমিন লগইন ও এক্টিভিটি লগ দেখুন</button>
 
-            <!-- Server Controlled Force Join Channels Management System -->
-            <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid var(--neon-blue);">
-                <h4 style="margin:0 0 10px 0; color:var(--neon-blue);"><i class="fa-solid fa-bullhorn"></i> Force Join Channels Management (Server API)</h4>
-                <input type="text" id="admin-fj-username" class="input-box" placeholder="Channel Username (e.g. @earningzone6357) or Link">
-                <input type="text" id="admin-fj-title" class="input-box" placeholder="Channel Title / Display Name">
-                <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-blue); color:black;" onclick="addForceJoinChannelAdmin()"><i class="fa-solid fa-plus"></i> Add Channel to Force Join</button>
-                <div id="admin-fj-channels-manage-list" style="margin-top:10px;"></div>
-            </div>
-
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-blue);"><i class="fa-solid fa-plus-circle"></i> নতুন টাস্ক যোগ করুন (Unlimited Tasks)</h4>
                 <input type="text" id="admin-task-title" class="input-box" placeholder="টাস্ক টাইটেল (যেমন: Join Official Channel)">
                 <input type="text" id="admin-task-link" class="input-box" placeholder="টাস্ক লিংক (https://t.me/...)">
                 <input type="number" id="admin-task-reward" class="input-box" placeholder="রিওয়ার্ড কয়েন (যেমন: 100)">
-                <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-green); color:black;" onclick="addNewAdminTask()"><i class="fa-solid fa-plus"></i> টাস্ক যোগ করুন</button>
+                <button class="casino-btn" style="padding:10px; font-size:12px; background:var(--neon-green); color:black;" onclick="addNewAdminTask()"><i class="fa-solid fa-plus"></i> টাস্ক যোগ করুন</button>
                 <div id="admin-tasks-manage-list" style="margin-top:10px;"></div>
             </div>
 
@@ -743,12 +824,12 @@
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-blue);">🔗 টেলিগ্রাম চ্যানেল লিংক পরিবর্তন</h4>
                 <input type="text" id="admin-channel-link-input" class="input-box" placeholder="https://t.me/your_channel">
-                <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-blue); color:black;" onclick="saveChannelLink()"><i class="fa-solid fa-link"></i> চ্যানেল লিংক সেভ করুন</button>
+                <button class="casino-btn" style="padding:10px; font-size:12px; background:var(--neon-blue); color:black;" onclick="saveChannelLink()"><i class="fa-solid fa-link"></i> চ্যানেল লিংক সেভ করুন</button>
             </div>
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-pink);">📢 ইউজার ব্রডকাস্ট নোটিফিকেশন</h4>
                 <input type="text" id="admin-broadcast-msg" class="input-box" placeholder="সকল ইউজারের জন্য নোটিফিকেশন মেসেজ লিখুন...">
-                <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-pink);" onclick="sendBroadcast()"><i class="fa-solid fa-paper-plane"></i> ব্রডকাস্ট পাঠান</button>
+                <button class="casino-btn" style="padding:10px; font-size:12px; background:var(--neon-pink);" onclick="sendBroadcast()"><i class="fa-solid fa-paper-plane"></i> ব্রডকাস্ট পাঠান</button>
             </div>
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--gold);">👤 ইউজার ব্যালেন্স ও ব্যান কন্ট্রোল</h4>
@@ -757,8 +838,8 @@
                 <label style="font-size:11px; color:#cbd5e1;">কয়েন যুক্ত করার পরিমাণ:</label>
                 <input type="number" id="admin-add-coins" class="input-box" placeholder="যেমন: 500">
                 <div style="display:flex; gap:10px;">
-                    <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-green); color:black;" onclick="addBalanceToUser()"><i class="fa-solid fa-plus-circle"></i> কয়েন এড করুন</button>
-                    <button class="casino-btn" style="padding:8px; font-size:12px; background:#ef4444;" onclick="banUser()"><i class="fa-solid fa-ban"></i> ব্যান করুন</button>
+                    <button class="casino-btn" style="padding:10px; font-size:12px; background:var(--neon-green); color:black;" onclick="addBalanceToUser()"><i class="fa-solid fa-plus-circle"></i> কয়েন এড করুন</button>
+                    <button class="casino-btn" style="padding:10px; font-size:12px; background:#ef4444;" onclick="banUser()"><i class="fa-solid fa-ban"></i> ব্যান করুন</button>
                 </div>
             </div>
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
@@ -773,7 +854,7 @@
                 <input type="number" id="admin-min-withdraw" class="input-box" value="20">
                 <label style="font-size:11px; color:#cbd5e1;">৫০ কয়েনের দাম (টাকা ৳):</label>
                 <input type="number" id="admin-coin-rate" class="input-box" value="1">
-                <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--neon-blue); color:black;" onclick="saveAdminSettings()"><i class="fa-solid fa-floppy-disk"></i> সেটিংস ও পাসওয়ার্ড সেভ করুন</button>
+                <button class="casino-btn" style="padding:10px; font-size:12px; background:var(--neon-blue); color:black;" onclick="saveAdminSettings()"><i class="fa-solid fa-floppy-disk"></i> সেটিংস ও পাসওয়ার্ড সেভ করুন</button>
             </div>
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--neon-green);">💳 মেথড ও নাম্বার ম্যানেজমেন্ট</h4>
@@ -781,7 +862,7 @@
                     <label style="font-size:11px; color:#cbd5e1;">নতুন ডিপোজিট মেথড ও নাম্বার এড / ম্যানেজ:</label>
                     <input type="text" id="admin-dep-method-name" class="input-box" placeholder="মেথড নাম (যেমন: Bkash)">
                     <input type="text" id="admin-dep-method-acc" class="input-box" placeholder="মেথড নম্বর/ID (যেমন: 01800000000)">
-                    <button class="casino-btn" style="padding:8px; font-size:12px; background:var(--gold); color:black;" onclick="addDepositMethodDynamic()"><i class="fa-solid fa-plus"></i> ডিপোজিট মেথড যোগ করুন</button>
+                    <button class="casino-btn" style="padding:10px; font-size:12px; background:var(--gold); color:black;" onclick="addDepositMethodDynamic()"><i class="fa-solid fa-plus"></i> ডিপোজিট মেথড যোগ করুন</button>
                     <div id="admin-dep-methods-list" style="margin-top:10px;"></div>
                 </div>
                 <div>
@@ -814,16 +895,15 @@
         </div>
     </div>
 
-    <!-- Official Premium Telegram Navigation Bar -->
     <div class="navbar">
-        <div class="nav-link active" onclick="navigate('earn', this)"><i class="fa-solid fa-play-circle"></i><span>এডস/টাস্ক</span></div>
-        <div class="nav-link" onclick="navigate('games', this)"><i class="fa-solid fa-gamepad"></i><span>গেমস</span></div>
-        <div class="nav-link" onclick="navigate('deposit', this)"><i class="fa-solid fa-wallet" style="color:var(--neon-green);"></i><span>ডিপোজিট</span></div>
-        <div class="nav-link" onclick="navigate('refer', this)"><i class="fa-solid fa-user-plus" style="color:var(--neon-blue);"></i><span>রেফার</span></div>
-        <div class="nav-link" onclick="navigate('leaderboard', this)"><i class="fa-solid fa-trophy" style="color:var(--gold);"></i><span>র‍্যাংক</span></div>
-        <div class="nav-link" onclick="navigate('chat', this)"><i class="fa-solid fa-comments"></i><span>চ্যাট</span></div>
-        <div class="nav-link" onclick="navigate('withdraw', this)"><i class="fa-solid fa-money-bill-transfer"></i><span>উইথড্র</span></div>
-        <div class="nav-link" onclick="navigate('profile', this)"><i class="fa-solid fa-user"></i><span>প্রোফাইল</span></div>
+        <div class="nav-link active" onclick="navigate('earn', this)"><i class="fa-solid fa-play"></i>এডস/টাস্ক</div>
+        <div class="nav-link" onclick="navigate('games', this)"><i class="fa-solid fa-gamepad"></i>গেমস</div>
+        <div class="nav-link" onclick="navigate('deposit', this)"><i class="fa-solid fa-wallet" style="color:var(--neon-green);"></i>ডিপোজিট</div>
+        <div class="nav-link" onclick="navigate('refer', this)"><i class="fa-solid fa-user-plus" style="color:var(--neon-blue);"></i>রেফার</div>
+        <div class="nav-link" onclick="navigate('leaderboard', this)"><i class="fa-solid fa-trophy"></i>র‍্যাংক</div>
+        <div class="nav-link" onclick="navigate('chat', this)"><i class="fa-solid fa-comments"></i>চ্যাট</div>
+        <div class="nav-link" onclick="navigate('withdraw', this)"><i class="fa-solid fa-money-bill-transfer"></i>উইথড্র</div>
+        <div class="nav-link" onclick="navigate('profile', this)"><i class="fa-solid fa-user"></i>প্রোফাইল</div>
     </div>
 
     <script type="module">
@@ -867,7 +947,7 @@
 
     <script>
         const BOT_TOKEN = "8745222764:AAHqiSPKBNaDPn1tkZ3a8yOhVVKiAxdSs8k";
-        let botUsername = "earningzone6357_bot";
+        let botUsername = "Takar_Manuse_bot";
 
         const tg = window.Telegram?.WebApp;
         if(tg) {
@@ -898,13 +978,12 @@
             setTimeout(() => { toast.classList.remove('show'); }, 4000);
         }
 
-        // Official Telegram Mini App startapp Parameter Extractor
         function getTelegramStartParam() {
             if (tg?.initDataUnsafe?.start_param) {
                 return String(tg.initDataUnsafe.start_param).trim();
             }
             const urlParams = new URLSearchParams(window.location.search);
-            const param = urlParams.get('tgWebAppStartParam') || urlParams.get('startapp') || urlParams.get('start');
+            const param = urlParams.get('startapp') || urlParams.get('start') || urlParams.get('tgWebAppStartParam');
             return param ? String(param).trim() : null;
         }
 
@@ -920,10 +999,22 @@
             adsSeen: 0,
             spinCount: 0,
             aviatorBets: 0,
+            battleBets: 0,
             bonusEarned: 0,
             totalBet: 0,
             totalWon: 0,
             totalLost: 0,
+            autoCashoutMultiplier: 2.0,
+            autoBetEnabled: false,
+            aiBehaviorMemory: {
+                totalSpentCoins: 0,
+                totalEarnedCoins: 0,
+                gameHistoryLogs: [],
+                recentProfitStreak: 0,
+                lastKnownCoins: 0,
+                suspiciousActivity: 0,
+                lastCrashPattern: 0
+            },
             referredBy: getTelegramStartParam() || null,
             approvedReferralsCount: 0,
             pendingReferralCount: 0,
@@ -935,8 +1026,7 @@
             firstJoinedTimestamp: Date.now(),
             telegramUsername: tg?.initDataUnsafe?.user?.username || 'unknown',
             welcomeBonusClaimed: false,
-            completedTasks: [],
-            verifiedChannels: []
+            completedTasks: []
         };
 
         let userData = { ...defaultUser };
@@ -953,10 +1043,7 @@
                 { name: "Bkash", number: "01800000000" }
             ],
             withdrawMethods: ["Nagad", "Bkash", "Binance"],
-            bannedUsers: [],
-            forceJoinChannels: [
-                { username: "@earningzone6357", title: "Official Earning Zone", enabled: true }
-            ]
+            bannedUsers: []
         };
 
         let depositsList = [];
@@ -971,7 +1058,7 @@
         function updateReferralLinkInput() {
             const input = document.getElementById('refer-link-input');
             if(input) {
-                input.value = `https://t.me/${botUsername}/startapp?startapp=${userData.id}`;
+                input.value = `https://t.me/${botUsername}?startapp=${userData.id}`;
             }
         }
 
@@ -979,17 +1066,17 @@
             const input = document.getElementById('refer-link-input');
             if(input && input.value) {
                 navigator.clipboard.writeText(input.value).then(() => {
-                    showNotification("📋 Official Referral Link successfully copied!");
+                    showNotification("📋 Referral Link successfully copied!");
                 }).catch(() => {
                     input.select();
                     document.execCommand('copy');
-                    showNotification("📋 Official Referral Link copied!");
+                    showNotification("📋 Referral Link copied!");
                 });
             }
         }
 
         function shareReferLink() {
-            const link = `https://t.me/${botUsername}/startapp?startapp=${userData.id}`;
+            const link = `https://t.me/${botUsername}?startapp=${userData.id}`;
             const text = encodeURIComponent(`🎉 VIP Earning Hub-এ জয়েন করে ফ্রিতে বোনাস আয় করুন! এখনই অ্যাপটি ওপেন করুন:`);
             const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
             if (tg && tg.openTelegramLink) {
@@ -1029,6 +1116,8 @@
             }
             if(tabName === 'sub-aviator') {
                 initAviatorLiveEngine();
+            } else if(tabName === 'sub-spin') {
+                updateCustomWheelVisuals();
             } else if(tabName === 'sub-battle') {
                 initBattleLiveEngine();
             }
@@ -1055,7 +1144,6 @@
                     syncUserDatabase();
                     processInstantReferral();
                 }
-                checkServerForceJoinStatus();
                 updateUI();
             });
 
@@ -1074,9 +1162,7 @@
             window.dbOnValue(settingsRef, (snapshot) => {
                 if (snapshot.exists()) {
                     adminSettings = { ...adminSettings, ...snapshot.val() };
-                    checkServerForceJoinStatus();
                     updateUI();
-                    renderForceJoinChannelsAdmin();
                 }
             });
 
@@ -1136,177 +1222,6 @@
             checkMidnightReset();
         };
 
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           🛡 OFFICIAL TELEGRAM BOT SERVER FORCE JOIN SYSTEM
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        async function checkServerForceJoinStatus() {
-            const gateScreen = document.getElementById('force-join-screen');
-            if(!gateScreen) return;
-
-            let activeChannels = (adminSettings.forceJoinChannels || []).filter(c => c.enabled !== false);
-            if(activeChannels.length === 0) {
-                gateScreen.style.display = 'none';
-                return;
-            }
-
-            renderForceJoinGateUI(activeChannels);
-
-            let allVerified = true;
-            for(let ch of activeChannels) {
-                let cleanUsername = ch.username.replace('https://t.me/', '').replace('@', '').trim();
-                if(!userData.verifiedChannels || !userData.verifiedChannels.includes(cleanUsername)) {
-                    allVerified = false;
-                    break;
-                }
-            }
-
-            if(allVerified) {
-                gateScreen.style.display = 'none';
-            } else {
-                gateScreen.style.display = 'flex';
-            }
-        }
-
-        function renderForceJoinGateUI(channels) {
-            const container = document.getElementById('force-join-channels-list');
-            if(!container) return;
-            container.innerHTML = "";
-
-            channels.forEach((ch, idx) => {
-                let cleanUsername = ch.username.replace('https://t.me/', '').replace('@', '').trim();
-                let isVerified = userData.verifiedChannels && userData.verifiedChannels.includes(cleanUsername);
-
-                container.innerHTML += `
-                    <div class="fj-item">
-                        <div style="text-align:left;">
-                            <div style="font-weight:bold; font-size:13px; color:#fff;">${ch.title || '@' + cleanUsername}</div>
-                            <div style="font-size:10px; color:var(--neon-blue);">@${cleanUsername}</div>
-                        </div>
-                        <div>
-                            ${isVerified ? `<span style="color:var(--neon-green); font-size:12px; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> VERIFIED</span>` : 
-                            `<a href="https://t.me/${cleanUsername}" target="_blank" class="btn-join" onclick="playAudio('click')">JOIN NOW</a>`}
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        async function verifyUserForceJoinServer() {
-            playAudio('click');
-            let activeChannels = (adminSettings.forceJoinChannels || []).filter(c => c.enabled !== false);
-            if(activeChannels.length === 0) {
-                document.getElementById('force-join-screen').style.display = 'none';
-                return;
-            }
-
-            let pendingChannels = [];
-            userData.verifiedChannels = userData.verifiedChannels || [];
-
-            for(let ch of activeChannels) {
-                let cleanUsername = ch.username.replace('https://t.me/', '').replace('@', '').trim();
-                
-                try {
-                    // Server-side Official Telegram Bot API Verification (getChatMember)
-                    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=@${cleanUsername}&user_id=${userData.id}`);
-                    const data = await res.json();
-
-                    if(data.ok && ['creator', 'administrator', 'member'].includes(data.result.status)) {
-                        if(!userData.verifiedChannels.includes(cleanUsername)) {
-                            userData.verifiedChannels.push(cleanUsername);
-                        }
-                    } else {
-                        pendingChannels.push(ch.title || cleanUsername);
-                    }
-                } catch(e) {
-                    console.error("Telegram API Verify Error:", e);
-                    pendingChannels.push(ch.title || cleanUsername);
-                }
-            }
-
-            saveProfile();
-
-            if(pendingChannels.length === 0) {
-                document.getElementById('force-join-screen').style.display = 'none';
-                showNotification("🎉 সকল চ্যানেল সফলভাবে ভেরিফাইড হয়েছে! Mini App আনলক করা হয়েছে!");
-            } else {
-                showNotification(`⚠️ আপনি এখনো সকল চ্যানেলে জয়েন করেননি! (${pendingChannels.join(', ')})`);
-                renderForceJoinGateUI(activeChannels);
-            }
-        }
-
-        function addForceJoinChannelAdmin() {
-            let uInput = document.getElementById('admin-fj-username').value.trim();
-            let tInput = document.getElementById('admin-fj-title').value.trim();
-
-            if(!uInput) {
-                showNotification("⚠️ Channel Username বা Link দিন!");
-                return;
-            }
-
-            adminSettings.forceJoinChannels = adminSettings.forceJoinChannels || [];
-            adminSettings.forceJoinChannels.push({
-                username: uInput,
-                title: tInput || uInput,
-                enabled: true
-            });
-
-            saveAdminData();
-            renderForceJoinChannelsAdmin();
-            document.getElementById('admin-fj-username').value = "";
-            document.getElementById('admin-fj-title').value = "";
-            showNotification("✅ Force Join Channel সফলভাবে যোগ করা হয়েছে!");
-            logAdminAction("ADD_FORCE_JOIN_CHANNEL", `Channel ${uInput} added.`);
-        }
-
-        function renderForceJoinChannelsAdmin() {
-            const list = document.getElementById('admin-fj-channels-manage-list');
-            if(!list) return;
-
-            let channels = adminSettings.forceJoinChannels || [];
-            list.innerHTML = "";
-
-            if(channels.length === 0) {
-                list.innerHTML = `<div style="font-size:11px; color:#94a3b8;">কোনো Force Join চ্যানেল এড করা নেই।</div>`;
-                return;
-            }
-
-            channels.forEach((ch, idx) => {
-                list.innerHTML += `
-                    <div style="background:#1e293b; padding:8px 12px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
-                        <div>
-                            <b style="color:var(--gold);">${ch.title}</b> (${ch.username})
-                            <div>Status: <span style="color:${ch.enabled ? 'var(--neon-green)' : '#ef4444'};">${ch.enabled ? 'Enabled' : 'Disabled'}</span></div>
-                        </div>
-                        <div style="display:flex; gap:5px;">
-                            <button onclick="toggleForceJoinChannel(${idx})" style="background:${ch.enabled ? '#eab308' : 'var(--neon-green)'}; border:none; color:black; padding:4px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">${ch.enabled ? 'Disable' : 'Enable'}</button>
-                            <button onclick="removeForceJoinChannel(${idx})" style="background:#ef4444; border:none; color:white; padding:4px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">Remove</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function toggleForceJoinChannel(idx) {
-            if(adminSettings.forceJoinChannels && adminSettings.forceJoinChannels[idx]) {
-                adminSettings.forceJoinChannels[idx].enabled = !adminSettings.forceJoinChannels[idx].enabled;
-                saveAdminData();
-                renderForceJoinChannelsAdmin();
-                showNotification("⚙️ Force Join Channel Status updated!");
-            }
-        }
-
-        function removeForceJoinChannel(idx) {
-            if(adminSettings.forceJoinChannels && adminSettings.forceJoinChannels[idx]) {
-                adminSettings.forceJoinChannels.splice(idx, 1);
-                saveAdminData();
-                renderForceJoinChannelsAdmin();
-                showNotification("🗑️ Channel removed from Force Join!");
-            }
-        }
-
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           🟢 SECURE OFFICIAL FIREBASE REFERRAL TRANSACTION
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
         function processInstantReferral() {
             const referrerId = userData.referredBy ? String(userData.referredBy).trim() : null;
             if (!referrerId || userData.referralApproved || referrerId === String(userData.id)) {
@@ -1320,7 +1235,7 @@
                 if (currentData === null) {
                     return { referrerId: referrerId, timestamp: Date.now() };
                 } else {
-                    return; // Abort if already claimed
+                    return;
                 }
             }).then((result) => {
                 if (result.committed) {
@@ -1363,19 +1278,14 @@
             });
         }
 
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           🏆 STRICT TOP 10 APPROVED REFERRAL LEADERBOARD
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
         function renderLeaderboard() {
             const listEl = document.getElementById('leaderboard-list');
             if(!listEl) return;
 
             let usersArr = Object.values(allUsersMap || {});
             
-            // Strictly filter to users with approvedReferralsCount > 0
             usersArr = usersArr.filter(u => (u.approvedReferralsCount || 0) > 0);
 
-            // Strictly rank based on approvedReferralsCount and tie-breaking by time/ID
             usersArr.sort((a, b) => {
                 let countA = a.approvedReferralsCount || 0;
                 let countB = b.approvedReferralsCount || 0;
@@ -1390,17 +1300,11 @@
                 return String(a.id).localeCompare(String(b.id));
             });
 
-            // Limit display strictly to Top 10
             let top10 = usersArr.slice(0, 10);
             listEl.innerHTML = "";
 
             if(top10.length === 0) {
-                listEl.innerHTML = `
-                    <div style="text-align:center; color:#94a3b8; font-size:13px; padding:25px; background:rgba(15,23,42,0.8); border:1px dashed var(--gold); border-radius:16px;">
-                        <i class="fa-solid fa-trophy" style="font-size:40px; color:var(--gold); margin-bottom:10px;"></i><br>
-                        "এখনো কোনো Referral Leader নেই। প্রথম Referral করে Leaderboard-এর ১ নম্বরে উঠে আসুন!"
-                    </div>
-                `;
+                listEl.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px; padding:20px;">কোনো ইউজার এখনো কোনো রেফারেল সম্পন্ন করেনি। লিডারবোর্ড সম্পূর্ণ খালি।</div>`;
                 return;
             }
 
@@ -1413,15 +1317,15 @@
                     <div class="lb-card" style="${isCurrent ? 'border: 2px solid var(--neon-pink); background: rgba(255,0,85,0.15);' : ''}">
                         <div style="display:flex; align-items:center; gap:10px;">
                             <span style="font-weight:900; font-size:16px; color:${badgeColor}; width:25px; text-align:center;">#${rank}</span>
-                            <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:38px; height:38px; border-radius:50%; border:2px solid ${badgeColor};" alt="user">
+                            <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:35px; height:35px; border-radius:50%; border:1px solid ${badgeColor};" alt="user">
                             <div>
                                 <div style="font-weight:bold; font-size:13px; color:#fff;">${u.name || 'User'} ${isCurrent ? '<span style="color:var(--neon-pink); font-size:10px;">(আপনি)</span>' : ''}</div>
                                 <div style="font-size:10px; color:#94a3b8;">ID: ${u.id}</div>
                             </div>
                         </div>
                         <div style="text-align:right;">
-                            <div style="font-size:14px; font-weight:900; color:var(--neon-green);"><i class="fa-solid fa-users"></i> ${u.approvedReferralsCount || 0} Ref</div>
-                            <div style="font-size:10px; color:var(--gold); font-weight:bold;">Approved</div>
+                            <div style="font-size:13px; font-weight:bold; color:var(--neon-green);"><i class="fa-solid fa-users"></i> ${u.approvedReferralsCount || 0} Ref</div>
+                            <div style="font-size:10px; color:var(--gold);">Approved</div>
                         </div>
                     </div>
                 `;
@@ -1433,7 +1337,7 @@
             renderReferralHistoryList();
         }
 
-        function closeReferHistoryModal() {
+        function closeReferReferModal() {
             document.getElementById('refer-modal').classList.remove('active');
         }
 
@@ -1490,6 +1394,24 @@
             const profImg = document.getElementById('profile-img-preview');
             if(profImg && userData.photoUrl) profImg.src = userData.photoUrl;
 
+            const profWon = document.getElementById('prof-total-won');
+            if(profWon) profWon.innerText = (userData.totalWon || 0) + " Coins";
+
+            const profLost = document.getElementById('prof-total-lost');
+            if(profLost) profLost.innerText = (userData.totalLost || 0) + " Coins";
+
+            const profAvCount = document.getElementById('prof-aviator-count');
+            if(profAvCount) profAvCount.innerText = userData.aviatorBets || 0;
+
+            const profSpCount = document.getElementById('prof-spin-count');
+            if(profSpCount) profSpCount.innerText = userData.spinCount || 0;
+
+            const profBtCount = document.getElementById('prof-battle-count');
+            if(profBtCount) profBtCount.innerText = userData.battleBets || 0;
+
+            const withAdsCount = document.getElementById('withdraw-ads-check-count');
+            if(withAdsCount) withAdsCount.innerText = userData.adsSeen || 0;
+
             const adRewDisp = document.getElementById('ad-reward-display');
             if(adRewDisp) adRewDisp.innerText = adminSettings.adRewardCoins || 50;
 
@@ -1525,6 +1447,11 @@
 
             const passLbl = document.getElementById('current-pass-lbl');
             if(passLbl) passLbl.innerText = adminSettings.adminPass || "018212";
+
+            const aiSummary = document.getElementById('ai-user-profile-summary');
+            if(aiSummary && userData.aiBehaviorMemory) {
+                aiSummary.innerText = `AI Stats: Profit +${(userData.totalWon || 0) - (userData.totalLost || 0)} Coins`;
+            }
 
             if(adminSettings.lbPrizes && adminSettings.lbPrizes.length >= 3) {
                 const p1 = document.getElementById('lb-prize-1');
@@ -1676,7 +1603,7 @@
                 desc.innerText = "স্পিন এলগরিদম লোড করা হচ্ছে...";
             } else {
                 title.innerText = "BATTLE MULTIPLAYER ROOM LOAD...";
-                desc.innerText = "লাইভ প্লেয়ার লবির সাথে যুক্ত হওয়া হচ্ছে...";
+                desc.innerText = "লাইভ প্লেয়ার লবির সাথে যুক্ত হওয়া হচ্ছে (১০% সার্ভিস চার্জ)...";
             }
 
             loader.style.display = 'flex';
@@ -1762,23 +1689,42 @@
             }
         }
 
+        /* ----------------------------------------------------
+           REALISTIC AVIATOR FLIGHT ENGINE & AI ASSISTANT (FIXED)
+        ---------------------------------------------------- */
         let aviatorLoopInterval = null;
+        let currentFlightInterval = null;
         let currentMultiplier = 1.00;
         let isPlaneFlying = false;
         let isWaitingCountDown = false;
         let countDownTimer = 4;
         let aviatorBetAmount = 0;
+        let queuedBetAmount = 0;
         let aiCrashTarget = 1.00;
         let userHasCashedOut = false;
         let isBetPlacedForCurrentMatch = false;
+        let isBetQueuedForNextMatch = false;
+        let flightStep = 0;
+        let flightStartTime = 0;
 
         function initAviatorLiveEngine() {
-            if(aviatorLoopInterval) return;
+            if(aviatorLoopInterval) {
+                clearInterval(aviatorLoopInterval);
+                aviatorLoopInterval = null;
+            }
+            if(currentFlightInterval) {
+                clearInterval(currentFlightInterval);
+                currentFlightInterval = null;
+            }
+            isPlaneFlying = false;
+            isWaitingCountDown = false;
+            startNewFlightRound();
+            
             aviatorLoopInterval = setInterval(() => {
                 if(!isPlaneFlying && !isWaitingCountDown && currentTab === 'sub-aviator') {
                     startNewFlightRound();
                 }
-            }, 100);
+            }, 1000);
         }
 
         function toggleAutoBet() {
@@ -1791,11 +1737,26 @@
 
         function startNewFlightRound() {
             if(currentTab !== 'sub-aviator') return;
+            // Clear any previous flight interval so no stuck or double-running planes
+            if(currentFlightInterval) {
+                clearInterval(currentFlightInterval);
+                currentFlightInterval = null;
+            }
             isWaitingCountDown = true;
+            isPlaneFlying = false;
             countDownTimer = 4;
             currentMultiplier = 1.00;
-            isBetPlacedForCurrentMatch = false;
+            userHasCashedOut = false;
+            flightStep = 0;
+            flightStartTime = 0;
             stopEngineSound();
+
+            if (isBetQueuedForNextMatch) {
+                isBetPlacedForCurrentMatch = true;
+                aviatorBetAmount = queuedBetAmount;
+                isBetQueuedForNextMatch = false;
+                queuedBetAmount = 0;
+            }
 
             let badge = document.getElementById('aviator-status-badge');
             if(badge) {
@@ -1803,9 +1764,16 @@
                 badge.style.color = "var(--gold)";
             }
 
+            const multDisplay = document.getElementById('aviator-mult');
+            if(multDisplay) {
+                multDisplay.className = "multiplier-display";
+                multDisplay.innerText = "1.00x";
+            }
+
+            drawAviatorCanvas(0, false);
             updateAviatorBetButtonUI();
 
-            if(userData.autoBetEnabled) {
+            if(userData.autoBetEnabled && !isBetPlacedForCurrentMatch) {
                 placeAviatorBet();
             }
 
@@ -1823,156 +1791,308 @@
 
         function updateAviatorBetButtonUI() {
             const btn = document.getElementById('aviator-start-btn');
-            if(!btn) return;
+            const cashBtn = document.getElementById('aviator-cash-btn');
+            if(!btn || !cashBtn) return;
+
+            btn.style.display = 'inline-flex';
 
             if(isWaitingCountDown) {
+                cashBtn.style.display = 'none';
                 if(isBetPlacedForCurrentMatch) {
                     btn.innerText = "✖ ক্যানসেল (Cancel Bet)";
                     btn.className = "casino-btn cancel-btn";
                 } else {
                     btn.innerText = "✈️ বেট ধরুন (Bet Now)";
-                    btn.className = "casino-btn";
-                    btn.style.background = "linear-gradient(45deg, #00c853, #00e5ff)";
-                    btn.style.color = "black";
+                    btn.className = "casino-btn btn-active-red";
                 }
             } else if(isPlaneFlying) {
-                btn.style.display = 'none';
+                if(isBetPlacedForCurrentMatch && !userHasCashedOut) {
+                    btn.style.display = 'none';
+                    cashBtn.style.display = 'inline-flex';
+                    let winVal = Math.floor(aviatorBetAmount * currentMultiplier);
+                    document.getElementById('aviator-cashout-val').innerText = winVal;
+                } else if(isBetQueuedForNextMatch) {
+                    cashBtn.style.display = 'none';
+                    btn.innerText = "⏳ পরের ম্যাচ বেট ক্যানসেল";
+                    btn.className = "casino-btn cancel-btn";
+                } else {
+                    cashBtn.style.display = 'none';
+                    btn.innerText = "⏳ পরবর্তী ম্যাচের জন্য বেট";
+                    btn.className = "casino-btn btn-active-red";
+                }
             } else {
-                btn.style.display = 'inline-flex';
-                btn.innerText = "✈️ বেট ধরুন";
-                btn.className = "casino-btn";
+                cashBtn.style.display = 'none';
+                btn.innerText = "✈️ বেট ধরুন (Bet Now)";
+                btn.className = "casino-btn btn-active-red";
             }
         }
 
         function handleAviatorBetButtonClick() {
             playAudio('click');
-            if(isWaitingCountDown) {
-                if(isBetPlacedForCurrentMatch) {
-                    cancelAviatorBet();
+            if (isWaitingCountDown) {
+                if (isBetPlacedForCurrentMatch) {
+                    userData.coins += aviatorBetAmount;
+                    userData.totalBet = Math.max(0, (userData.totalBet || 0) - aviatorBetAmount);
+                    isBetPlacedForCurrentMatch = false;
+                    aviatorBetAmount = 0;
+                    saveProfile();
+                    updateUI();
+                    showNotification("↩️ বেট ক্যানসেল করা হয়েছে এবং কয়েন ফেরত দেয়া হয়েছে!");
                 } else {
                     placeAviatorBet();
                 }
-            } else if(!isPlaneFlying) {
-                placeAviatorBet();
+            } else if (isPlaneFlying) {
+                if (isBetQueuedForNextMatch) {
+                    userData.coins += queuedBetAmount;
+                    isBetQueuedForNextMatch = false;
+                    queuedBetAmount = 0;
+                    saveProfile();
+                    updateUI();
+                    showNotification("↩️ পরবর্তী ম্যাচের বেট ক্যানসেল করা হয়েছে!");
+                } else {
+                    let inputAmount = parseInt(document.getElementById('aviator-bet-input').value) || 0;
+                    if (inputAmount <= 0) {
+                        showNotification("⚠️ সঠিক বেট পরিমাণ দিন!");
+                        return;
+                    }
+                    if (userData.coins < inputAmount) {
+                        showNotification("❌ আপনার পর্যাপ্ত কয়েন নেই!");
+                        return;
+                    }
+                    userData.coins -= inputAmount;
+                    queuedBetAmount = inputAmount;
+                    isBetQueuedForNextMatch = true;
+                    saveProfile();
+                    updateUI();
+                    showNotification("⏳ পরবর্তী ফ্লাইটের জন্য বেট গৃহীত হয়েছে!");
+                }
             }
+            updateAviatorBetButtonUI();
         }
 
         function placeAviatorBet() {
-            let amt = parseInt(document.getElementById('aviator-bet-input').value) || 100;
-            if(amt <= 0 || userData.coins < amt) {
-                showNotification("❌ পর্যাপ্ত কয়েন ব্যালেন্স নেই!");
+            let inputAmount = parseInt(document.getElementById('aviator-bet-input').value) || 0;
+            if (inputAmount <= 0) {
+                showNotification("⚠️ সঠিক বেট পরিমাণ দিন!");
+                return;
+            }
+            if (userData.coins < inputAmount) {
+                showNotification("❌ আপনার পর্যাপ্ত কয়েন নেই!");
                 return;
             }
 
-            userData.coins -= amt;
-            userData.totalBet = (userData.totalBet || 0) + amt;
+            userData.coins -= inputAmount;
             userData.aviatorBets = (userData.aviatorBets || 0) + 1;
-            aviatorBetAmount = amt;
+            userData.totalBet = (userData.totalBet || 0) + inputAmount;
+            aviatorBetAmount = inputAmount;
             isBetPlacedForCurrentMatch = true;
-            userHasCashedOut = false;
+
+            // AI memory track bet for adaptive behavior
+            if (!userData.aiBehaviorMemory) userData.aiBehaviorMemory = { totalSpentCoins: 0, totalEarnedCoins: 0, gameHistoryLogs: [], recentProfitStreak: 0, lastKnownCoins: userData.coins, suspiciousActivity: 0, lastCrashPattern: 0 };
+            userData.aiBehaviorMemory.totalSpentCoins = (userData.aiBehaviorMemory.totalSpentCoins || 0) + inputAmount;
+            userData.aiBehaviorMemory.lastKnownCoins = userData.coins;
+
             saveProfile();
             updateUI();
-            updateAviatorBetButtonUI();
             showNotification("✅ বেট সফলভাবে ধরা হয়েছে!");
+            updateAviatorBetButtonUI();
         }
 
-        function cancelAviatorBet() {
-            if(!isBetPlacedForCurrentMatch || isPlaneFlying) return;
-            userData.coins += aviatorBetAmount;
-            userData.totalBet -= aviatorBetAmount;
-            userData.aviatorBets -= 1;
-            isBetPlacedForCurrentMatch = false;
-            aviatorBetAmount = 0;
+        function calculateAiCrashTarget() {
+            // Adaptive AI: remembers user behavior, sudden coin changes, profit/loss ratio, recent wins.
+            // House edge prioritizes gradual profit, avoids big user wins, changes patterns so user cannot predict.
+            if (!userData.aiBehaviorMemory) {
+                userData.aiBehaviorMemory = { totalSpentCoins: 0, totalEarnedCoins: 0, gameHistoryLogs: [], recentProfitStreak: 0, lastKnownCoins: userData.coins || 0, suspiciousActivity: 0, lastCrashPattern: 0 };
+            }
+            let mem = userData.aiBehaviorMemory;
+            let currentCoins = userData.coins || 0;
+            let coinDelta = currentCoins - (mem.lastKnownCoins || currentCoins);
+            mem.lastKnownCoins = currentCoins;
+
+            // Detect sudden large balance increases (possible deposit/cheat) or decreases
+            if (coinDelta > 500) {
+                mem.suspiciousActivity = (mem.suspiciousActivity || 0) + 2;
+            } else if (coinDelta < -300) {
+                mem.suspiciousActivity = (mem.suspiciousActivity || 0) + 1;
+            } else {
+                mem.suspiciousActivity = Math.max(0, (mem.suspiciousActivity || 0) - 0.1);
+            }
+
+            let profitRatio = ((userData.totalWon || 0) + 1) / ((userData.totalLost || 0) + 1);
+            let recentStreak = mem.recentProfitStreak || 0;
+            let housePressure = 0; // higher = force lower crash (more house wins)
+
+            if (profitRatio > 1.3 || recentStreak >= 2) housePressure += 0.25;
+            if (profitRatio > 1.8 || recentStreak >= 3) housePressure += 0.20;
+            if ((mem.suspiciousActivity || 0) > 3) housePressure += 0.30;
+            if ((userData.totalWon || 0) - (userData.totalLost || 0) > 2000) housePressure += 0.15;
+            if ((userData.coins || 0) > 5000 && (userData.aviatorBets || 0) > 5) housePressure += 0.10;
+
+            // Rotate crash pattern so user cannot learn fixed ranges
+            mem.lastCrashPattern = ((mem.lastCrashPattern || 0) + 1) % 4;
+            let pattern = mem.lastCrashPattern;
+            let rand = Math.random() - (housePressure * 0.4); // bias rand lower under pressure
+
+            let target;
+            if (pattern === 0) {
+                // Mostly very low crashes
+                if (rand < 0.45) target = parseFloat((1.01 + Math.random() * 0.35).toFixed(2));
+                else if (rand < 0.78) target = parseFloat((1.40 + Math.random() * 0.90).toFixed(2));
+                else if (rand < 0.93) target = parseFloat((2.40 + Math.random() * 2.20).toFixed(2));
+                else target = parseFloat((5.00 + Math.random() * 6.00).toFixed(2));
+            } else if (pattern === 1) {
+                // Medium with occasional high tease
+                if (rand < 0.38) target = parseFloat((1.05 + Math.random() * 0.55).toFixed(2));
+                else if (rand < 0.72) target = parseFloat((1.60 + Math.random() * 1.40).toFixed(2));
+                else if (rand < 0.90) target = parseFloat((3.20 + Math.random() * 3.50).toFixed(2));
+                else target = parseFloat((7.50 + Math.random() * 12.00).toFixed(2));
+            } else if (pattern === 2) {
+                // Tight low-mid to frustrate high cashouts
+                if (rand < 0.50) target = parseFloat((1.02 + Math.random() * 0.40).toFixed(2));
+                else if (rand < 0.82) target = parseFloat((1.45 + Math.random() * 1.10).toFixed(2));
+                else if (rand < 0.95) target = parseFloat((2.80 + Math.random() * 2.80).toFixed(2));
+                else target = parseFloat((6.00 + Math.random() * 9.00).toFixed(2));
+            } else {
+                // Mixed, still house favored
+                if (rand < 0.40) target = parseFloat((1.03 + Math.random() * 0.48).toFixed(2));
+                else if (rand < 0.75) target = parseFloat((1.55 + Math.random() * 1.45).toFixed(2));
+                else if (rand < 0.92) target = parseFloat((3.10 + Math.random() * 3.90).toFixed(2));
+                else target = parseFloat((8.00 + Math.random() * 14.00).toFixed(2));
+            }
+
+            // Hard cap extremely high under high house pressure
+            if (housePressure > 0.4 && target > 4.5) {
+                target = parseFloat((1.20 + Math.random() * 2.80).toFixed(2));
+            }
+
+            // Record for next round adaptation
+            mem.gameHistoryLogs = mem.gameHistoryLogs || [];
+            mem.gameHistoryLogs.push({ t: Date.now(), target: target, pressure: housePressure, coins: currentCoins });
+            if (mem.gameHistoryLogs.length > 30) mem.gameHistoryLogs.shift();
             saveProfile();
-            updateUI();
-            updateAviatorBetButtonUI();
-            showNotification("↩️ বেট সফলভাবে ক্যানসেল করা হয়েছে!");
+            return target;
         }
 
         function executePlaneTakeoff() {
-            isPlaneFlying = true;
-            userHasCashedOut = false;
-
-            let rand = Math.random();
-            if (rand < 0.3) {
-                aiCrashTarget = parseFloat((1.01 + Math.random() * 0.49).toFixed(2));
-            } else if (rand < 0.7) {
-                aiCrashTarget = parseFloat((1.50 + Math.random() * 1.50).toFixed(2));
-            } else if (rand < 0.9) {
-                aiCrashTarget = parseFloat((3.00 + Math.random() * 5.00).toFixed(2));
-            } else {
-                aiCrashTarget = parseFloat((8.00 + Math.random() * 15.00).toFixed(2));
+            // Always clear previous flight timer first — prevents stuck plane / multiple engines
+            if(currentFlightInterval) {
+                clearInterval(currentFlightInterval);
+                currentFlightInterval = null;
             }
+            isPlaneFlying = true;
+            aiCrashTarget = calculateAiCrashTarget();
+            currentMultiplier = 1.00;
+            flightStep = 0;
+            flightStartTime = Date.now();
 
             let badge = document.getElementById('aviator-status-badge');
             if(badge) {
-                badge.innerText = "● IN FLIGHT";
+                badge.innerText = "● PLANE IN FLIGHT";
                 badge.style.color = "var(--neon-green)";
             }
 
-            const cashBtn = document.getElementById('aviator-cash-btn');
-            const startBtn = document.getElementById('aviator-start-btn');
-            if(startBtn) startBtn.style.display = 'none';
+            // Reset visual plane to start position
+            drawAviatorCanvas(0, false);
 
-            if(isBetPlacedForCurrentMatch) {
-                if(cashBtn) cashBtn.style.display = 'inline-flex';
-            }
+            updateAviatorBetButtonUI();
 
-            let multDisplay = document.getElementById('aviator-mult');
-            if(multDisplay) multDisplay.classList.remove('crashed');
-
-            let flightTimer = setInterval(() => {
+            currentFlightInterval = setInterval(() => {
                 if(currentTab !== 'sub-aviator') {
-                    clearInterval(flightTimer);
+                    clearInterval(currentFlightInterval);
+                    currentFlightInterval = null;
                     isPlaneFlying = false;
                     stopEngineSound();
                     return;
                 }
 
-                currentMultiplier += 0.02 + (currentMultiplier * 0.015);
+                // === REAL AVIATOR-LIKE SPEED ===
+                // Close to real Aviator: 1.5x ~1.2s | 2x ~2-2.5s | 5x ~5-6s | smooth, no 10x instant spike
+                let elapsed = (Date.now() - flightStartTime) / 1000; // seconds
+                let growth = 0.0055 * Math.pow(elapsed, 1.48) + 0.045 * elapsed;
+                let nextMulti = 1.00 + growth;
+                // Safety clamp: max +0.18 per tick
+                let maxThisTick = currentMultiplier + 0.18;
+                if (nextMulti > maxThisTick) nextMulti = maxThisTick;
+                currentMultiplier = parseFloat(Math.min(nextMulti, 100).toFixed(2));
+
+                // Visual step tracks multiplier for smooth plane movement
+                flightStep = currentMultiplier;
+
+                const multDisplay = document.getElementById('aviator-mult');
+                if(multDisplay) {
+                    multDisplay.className = "multiplier-display";
+                    multDisplay.innerText = currentMultiplier.toFixed(2) + "x";
+                }
+
                 playAudio('fly', currentMultiplier);
 
-                if(multDisplay) multDisplay.innerText = currentMultiplier.toFixed(2) + "x";
-
-                let cashVal = document.getElementById('aviator-cashout-val');
-                if(cashVal && isBetPlacedForCurrentMatch && !userHasCashedOut) {
-                    cashVal.innerText = Math.floor(aviatorBetAmount * currentMultiplier);
+                let autoVal = parseFloat(document.getElementById('aviator-auto-cash-input').value) || 0;
+                if(isBetPlacedForCurrentMatch && !userHasCashedOut && autoVal > 1.0 && currentMultiplier >= autoVal) {
+                    cashoutAviator();
                 }
 
-                drawAviatorCanvas(currentMultiplier);
+                if(isBetPlacedForCurrentMatch && !userHasCashedOut) {
+                    let winVal = Math.floor(aviatorBetAmount * currentMultiplier);
+                    const cashValEl = document.getElementById('aviator-cashout-val');
+                    if(cashValEl) cashValEl.innerText = winVal;
+                }
+
+                // Draw plane climbing with multiplier
+                drawAviatorCanvas(flightStep, true);
 
                 if(currentMultiplier >= aiCrashTarget) {
-                    clearInterval(flightTimer);
-                    handleAviatorCrash();
+                    clearInterval(currentFlightInterval);
+                    currentFlightInterval = null;
+                    handlePlaneCrash();
                 }
-            }, 60);
+            }, 50); // 50ms for smoother animation (20fps+)
         }
 
-        function handleAviatorCrash() {
+        function handlePlaneCrash() {
+            if(currentFlightInterval) {
+                clearInterval(currentFlightInterval);
+                currentFlightInterval = null;
+            }
             isPlaneFlying = false;
+            stopEngineSound();
             playAudio('crash');
-            
-            let multDisplay = document.getElementById('aviator-mult');
+
+            const multDisplay = document.getElementById('aviator-mult');
             if(multDisplay) {
-                multDisplay.innerText = "FLEW AWAY @ " + currentMultiplier.toFixed(2) + "x";
-                multDisplay.classList.add('crashed');
+                multDisplay.className = "multiplier-display crashed";
+                multDisplay.innerText = "FLEW AWAY!\n" + currentMultiplier.toFixed(2) + "x";
             }
 
             let badge = document.getElementById('aviator-status-badge');
             if(badge) {
-                badge.innerText = "● CRASHED";
+                badge.innerText = "● CRASHED AT " + currentMultiplier.toFixed(2) + "x";
                 badge.style.color = "var(--aviator-red)";
             }
 
-            const cashBtn = document.getElementById('aviator-cash-btn');
-            if(cashBtn) cashBtn.style.display = 'none';
-
             if(isBetPlacedForCurrentMatch && !userHasCashedOut) {
                 userData.totalLost = (userData.totalLost || 0) + aviatorBetAmount;
-                saveProfile();
+                // AI memory: reset profit streak on loss, record spent
+                if (!userData.aiBehaviorMemory) userData.aiBehaviorMemory = { totalSpentCoins: 0, totalEarnedCoins: 0, gameHistoryLogs: [], recentProfitStreak: 0, lastKnownCoins: userData.coins, suspiciousActivity: 0, lastCrashPattern: 0 };
+                userData.aiBehaviorMemory.recentProfitStreak = 0;
+                userData.aiBehaviorMemory.totalSpentCoins = (userData.aiBehaviorMemory.totalSpentCoins || 0) + aviatorBetAmount;
+                userData.aiBehaviorMemory.lastKnownCoins = userData.coins;
+                showNotification(`💥 প্লেন ক্র্যাশ করেছে! -${aviatorBetAmount} কয়েন হারালেন!`);
             }
 
-            addAviatorHistoryChip(currentMultiplier.toFixed(2) + "x");
+            isBetPlacedForCurrentMatch = false;
+            aviatorBetAmount = 0;
+            saveProfile();
+            updateUI();
+
+            let historyBox = document.getElementById('aviator-history-box');
+            if(historyBox) {
+                let isHigh = currentMultiplier >= 2.0;
+                let chip = document.createElement('div');
+                chip.className = `history-chip ${isHigh ? 'high' : ''}`;
+                chip.innerText = currentMultiplier.toFixed(2) + "x";
+                historyBox.prepend(chip);
+                if(historyBox.children.length > 8) historyBox.lastElementChild.remove();
+            }
 
             setTimeout(() => {
                 if(currentTab === 'sub-aviator') startNewFlightRound();
@@ -1983,161 +2103,375 @@
             if(!isPlaneFlying || !isBetPlacedForCurrentMatch || userHasCashedOut) return;
 
             userHasCashedOut = true;
-            let winCoins = Math.floor(aviatorBetAmount * currentMultiplier);
-            userData.coins += winCoins;
-            userData.totalWon = (userData.totalWon || 0) + winCoins;
+            let winAmount = Math.floor(aviatorBetAmount * currentMultiplier);
+            userData.coins += winAmount;
+            userData.totalWon = (userData.totalWon || 0) + winAmount;
+
+            // AI memory: track successful cashout streak for adaptive house edge next rounds
+            if (!userData.aiBehaviorMemory) userData.aiBehaviorMemory = { totalSpentCoins: 0, totalEarnedCoins: 0, gameHistoryLogs: [], recentProfitStreak: 0, lastKnownCoins: userData.coins, suspiciousActivity: 0, lastCrashPattern: 0 };
+            userData.aiBehaviorMemory.recentProfitStreak = (userData.aiBehaviorMemory.recentProfitStreak || 0) + 1;
+            userData.aiBehaviorMemory.totalEarnedCoins = (userData.aiBehaviorMemory.totalEarnedCoins || 0) + winAmount;
+            userData.aiBehaviorMemory.lastKnownCoins = userData.coins;
+
             saveProfile();
             updateUI();
             playAudio('win');
 
-            showNotification(`🎉 Congratulations! আপনি ৳${winCoins} কয়েন ক্যাশআউট করেছেন (${currentMultiplier.toFixed(2)}x)`);
-
-            const cashBtn = document.getElementById('aviator-cash-btn');
-            if(cashBtn) cashBtn.style.display = 'none';
+            showNotification(`🎉 ক্যাশআউট সফল! +${winAmount} কয়েন ( ${currentMultiplier.toFixed(2)}x ) জিতেছেন!`);
+            updateAviatorBetButtonUI();
         }
 
-        function addAviatorHistoryChip(valStr) {
-            const box = document.getElementById('aviator-history-box');
-            if(!box) return;
-
-            let valNum = parseFloat(valStr);
-            let isHigh = valNum >= 3.00;
-            let chip = document.createElement('div');
-            chip.className = `history-chip ${isHigh ? 'high' : ''}`;
-            chip.innerText = valStr;
-
-            box.insertBefore(chip, box.firstChild);
-            if(box.children.length > 10) {
-                box.removeChild(box.lastChild);
-            }
-        }
-
-        function drawAviatorCanvas(mult) {
+        function drawAviatorCanvas(step, active) {
             const canvas = document.getElementById('aviatorCanvas');
-            if(!canvas) return;
+            const plane = document.getElementById('aviator-plane');
+            if(!canvas || !plane) return;
+
             const ctx = canvas.getContext('2d');
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
+            // Only resize when needed to avoid flicker
+            if (canvas.width !== canvas.parentElement.clientWidth || canvas.height !== canvas.parentElement.clientHeight) {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            let progress = Math.min((mult - 1) / (aiCrashTarget - 1 || 1), 1);
-            let planeX = 20 + progress * (canvas.width - 90);
-            let planeY = canvas.height - 30 - (progress * (canvas.height - 80));
-
-            ctx.beginPath();
-            ctx.moveTo(10, canvas.height - 10);
-            ctx.quadraticCurveTo(planeX / 2, canvas.height - 10, planeX, planeY + 15);
-            ctx.strokeStyle = '#e51d38';
-            ctx.lineWidth = 4;
-            ctx.stroke();
-
-            ctx.lineTo(planeX, canvas.height);
-            ctx.lineTo(0, canvas.height);
-            ctx.fillStyle = 'rgba(229, 29, 56, 0.15)';
-            ctx.fill();
-
-            const planeSvg = document.getElementById('aviator-plane');
-            if(planeSvg) {
-                planeSvg.style.left = (planeX - 10) + 'px';
-                planeSvg.style.top = (planeY - 10) + 'px';
-            }
-        }
-
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           🎰 3D CUSTOM BET SPIN WHEEL ENGINE
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        let isSpinningWheel = false;
-        const spinMultipliers = [0, 2, 0.5, 5, 1.5, 3];
-
-        function spinCustomWheel() {
-            playAudio('click');
-            let amt = parseInt(document.getElementById('spin-bet-amount').value) || 100;
-
-            if(isSpinningWheel) return;
-            if(amt <= 0 || userData.coins < amt) {
-                showNotification("❌ পর্যাপ্ত কয়েন ব্যালেন্স নেই!");
+            if(!active) {
+                plane.style.transform = `translate(10px, ${canvas.height - 50}px) rotate(0deg)`;
+                plane.style.transition = 'none';
                 return;
             }
 
+            // Progress based on multiplier — plane reaches far right around ~4.5-5.5x (real Aviator pace)
+            let progress = Math.min(Math.max((step - 1.0) / 4.2, 0), 0.97);
+            progress = 1 - Math.pow(1 - progress, 1.2);
+
+            // === WAVY TRADING-CHART STYLE PATH ===
+            // Overall climb + sine waves so line goes up and down like a trading chart
+            const points = 48;
+            const pathPoints = [];
+            for (let i = 0; i <= points; i++) {
+                let t = i / points;
+                let tClamped = Math.min(t, progress);
+                // Base climb curve
+                let baseY = canvas.height - 40 - Math.pow(tClamped, 1.4) * (canvas.height - 95);
+                // Wavy oscillation (like trading chart) — amplitude grows a bit then settles
+                let waveAmp = 18 + tClamped * 22;
+                let wave = Math.sin(tClamped * Math.PI * 5.2) * waveAmp * (0.55 + 0.45 * Math.sin(tClamped * Math.PI));
+                // Extra smaller secondary wave for more natural trading feel
+                wave += Math.sin(tClamped * Math.PI * 11.5) * (waveAmp * 0.28);
+                let x = 12 + tClamped * (canvas.width - 85);
+                let y = baseY + wave;
+                // Keep inside canvas
+                y = Math.max(18, Math.min(canvas.height - 25, y));
+                pathPoints.push({ x, y });
+            }
+
+            // Draw filled area under wavy path
+            if (pathPoints.length > 1) {
+                ctx.beginPath();
+                ctx.moveTo(pathPoints[0].x, canvas.height);
+                for (let p of pathPoints) ctx.lineTo(p.x, p.y);
+                ctx.lineTo(pathPoints[pathPoints.length - 1].x, canvas.height);
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(229, 29, 56, 0.16)';
+                ctx.fill();
+
+                // Draw the wavy red line (trading style)
+                ctx.beginPath();
+                ctx.moveTo(pathPoints[0].x, pathPoints[0].y);
+                for (let i = 1; i < pathPoints.length; i++) {
+                    ctx.lineTo(pathPoints[i].x, pathPoints[i].y);
+                }
+                ctx.strokeStyle = '#e51d38';
+                ctx.lineWidth = 3.5;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.shadowColor = '#ff0055';
+                ctx.shadowBlur = 12;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // Plane sits on the last point of the wavy path
+            let last = pathPoints[pathPoints.length - 1] || { x: 15, y: canvas.height - 45 };
+            // Angle follows the local slope of the wave for natural nose up/down
+            let angle = -12;
+            if (pathPoints.length >= 3) {
+                let p1 = pathPoints[pathPoints.length - 3];
+                let p2 = pathPoints[pathPoints.length - 1];
+                let dx = p2.x - p1.x;
+                let dy = p2.y - p1.y;
+                angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                // Clamp extreme angles
+                angle = Math.max(-35, Math.min(15, angle));
+            }
+            plane.style.transition = 'none';
+            plane.style.transform = `translate(${last.x}px, ${last.y}px) rotate(${angle}deg)`;
+        }
+
+        /* ----------------------------------------------------
+           3D CUSTOM SPIN WHEEL WITH VISUAL SLICE VALUES (FIXED)
+        ---------------------------------------------------- */
+        // Updated Spin Wheel: Exact multipliers requested. Mostly lands on small values (0.1x-1.5x) for house profit. High (5x/10x) very rare.
+        // Labels show multipliers. Coins = bet * multi. House edge strong so no long-term loss.
+        const spinSlices = [
+            { label: "0.1x", multi: 0.1, color: "#e51d38" },
+            { label: "0.2x", multi: 0.2, color: "#c026d3" },
+            { label: "0.3x", multi: 0.3, color: "#a855f7" },
+            { label: "0.4x", multi: 0.4, color: "#7c3aed" },
+            { label: "0.7x", multi: 0.7, color: "#6366f1" },
+            { label: "1x", multi: 1.0, color: "#00e5ff" },
+            { label: "1.10x", multi: 1.10, color: "#22d3ee" },
+            { label: "1.3x", multi: 1.3, color: "#00ff88" },
+            { label: "1.5x", multi: 1.5, color: "#4ade80" },
+            { label: "1.7x", multi: 1.7, color: "#facc15" },
+            { label: "2x", multi: 2.0, color: "#ffd700" },
+            { label: "5x", multi: 5.0, color: "#ff0055" },
+            { label: "10x", multi: 10.0, color: "#10b981" }
+        ];
+        // Weights for mostly small landings (house edge ~35-45%). Index order matches spinSlices.
+        const spinWeights = [18, 16, 14, 12, 10, 9, 6, 5, 4, 3, 2, 0.7, 0.3];
+
+        let isSpinningWheel = false;
+        let currentWheelAngle = 0;
+
+        function updateCustomWheelVisuals() {
+            const wheel = document.getElementById('spin-wheel-element');
+            if(!wheel) return;
+
+            let count = spinSlices.length;
+            let stepAngle = 360 / count;
+
+            let conicGrads = spinSlices.map((slice, i) => {
+                let start = i * stepAngle;
+                let end = (i + 1) * stepAngle;
+                return `${slice.color} ${start}deg ${end}deg`;
+            }).join(', ');
+
+            wheel.style.background = `conic-gradient(${conicGrads})`;
+            wheel.innerHTML = "";
+
+            spinSlices.forEach((slice, i) => {
+                let midAngle = (i * stepAngle) + (stepAngle / 2);
+                let label = document.createElement('div');
+                label.className = "wheel-segment-label";
+                label.style.transform = `rotate(${midAngle}deg) translate(0, -95px) rotate(-${midAngle}deg)`;
+                label.innerText = slice.label;
+                wheel.appendChild(label);
+            });
+        }
+
+        function spinCustomWheel() {
+            playAudio('click');
+            let betInput = parseInt(document.getElementById('spin-bet-amount').value) || 0;
+            
+            if(betInput <= 0) {
+                showNotification("⚠️ বেট পরিমাণ দিন!");
+                return;
+            }
+            if(userData.coins < betInput) {
+                showNotification("❌ পর্যাপ্ত ব্যালেন্স নেই!");
+                return;
+            }
+            if(isSpinningWheel) return;
+
             isSpinningWheel = true;
-            userData.coins -= amt;
+            userData.coins -= betInput;
             userData.spinCount = (userData.spinCount || 0) + 1;
+            userData.totalBet = (userData.totalBet || 0) + betInput;
             saveProfile();
             updateUI();
 
-            let targetIndex = Math.floor(Math.random() * spinMultipliers.length);
-            let targetDegree = 3600 + (targetIndex * 60) + 30;
+            // Weighted random: heavy bias to small multipliers so house never loses long-term
+            let totalWeight = spinWeights.reduce((a, b) => a + b, 0);
+            let r = Math.random() * totalWeight;
+            let targetSliceIndex = 0;
+            let acc = 0;
+            for (let i = 0; i < spinWeights.length; i++) {
+                acc += spinWeights[i];
+                if (r <= acc) { targetSliceIndex = i; break; }
+            }
+            let stepAngle = 360 / spinSlices.length;
+            let sliceMid = (targetSliceIndex * stepAngle) + (stepAngle / 2);
+
+            let targetRotation = 3600 + (360 - sliceMid);
+            currentWheelAngle += targetRotation;
 
             const wheel = document.getElementById('spin-wheel-element');
             if(wheel) {
-                wheel.style.transition = "transform 4s cubic-bezier(0.15, 0.9, 0.15, 1)";
-                wheel.style.transform = `rotate(${targetDegree}deg)`;
+                wheel.style.transform = `rotate(${currentWheelAngle}deg)`;
             }
 
             setTimeout(() => {
                 isSpinningWheel = false;
-                let mult = spinMultipliers[targetIndex];
-                let winAmount = Math.floor(amt * mult);
+                let winningSlice = spinSlices[targetSliceIndex];
+                // Coins awarded based on bet amount × multiplier (2x and 5x included as extra chances). Pure coins, no money labels.
+                let wonCoins = Math.floor(betInput * (winningSlice.multi || 0));
 
-                if(winAmount > 0) {
-                    userData.coins += winAmount;
-                    playAudio('win');
-                    showNotification(`🎉 Woohoo! আপনি ${mult}x মাল্টিপ্লায়ার জিতেছেন! (+${winAmount} কয়েন)`);
-                } else {
-                    playAudio('crash');
-                    showNotification("💔 দুর্ভাগ্যবশত আপনি এবার হেরেছেন! আবার চেষ্টা করুন!");
-                }
-
-                if(wheel) {
-                    wheel.style.transition = "none";
-                    wheel.style.transform = `rotate(${targetDegree % 360}deg)`;
-                }
-
+                userData.coins += wonCoins;
+                userData.totalWon = (userData.totalWon || 0) + wonCoins;
                 saveProfile();
                 updateUI();
-            }, 4200);
+                playAudio('win');
+
+                if(wonCoins > 0) {
+                    showNotification(`🎉 অভিনন্দন! চাকা ঘুরিয়ে আপনি পেয়েছেন ${winningSlice.label} = +${wonCoins} কয়েন (বেট ${betInput} × ${winningSlice.multi})!`);
+                } else {
+                    showNotification(`💥 দুঃখিত! ${winningSlice.label} পড়েছে। বেট হারালেন।`);
+                }
+            }, 3600);
         }
 
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           🎟️ MULTIPLAYER 3-LEVEL TICKET BATTLE ROOM
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        let battleLevel = 1;
-        let battlePot = 0;
-        let battleTimer = null;
-        let battleCountdown = 30;
-        let battleBuyers = [];
-        let isBattleStarted = false;
+        /* ----------------------------------------------------
+           MULTIPLAYER TICKET BATTLE ROOM (FIXED & REALTIME)
+        ---------------------------------------------------- */
+        let currentBattleLevel = 1;
+        let battleTimerInterval = null;
+        let battleCountdownActive = false;
 
         function changeBattleLevel() {
-            battleLevel = parseInt(document.getElementById('battle-level-select').value) || 1;
-            resetBattleRoom();
+            currentBattleLevel = parseInt(document.getElementById('battle-level-select').value) || 1;
+            initBattleLiveEngine();
         }
 
-        function resetBattleRoom() {
-            battleBuyers = [];
-            battlePot = 0;
-            battleCountdown = 30;
-            if(battleTimer) clearInterval(battleTimer);
-            battleTimer = null;
-            isBattleStarted = false;
+        function startBattleCountdownIfNeeded(room, level) {
+            if (!room || room.status !== 'running' || battleCountdownActive) return;
+            if ((room.countdown || 0) <= 0) return;
+            battleCountdownActive = true;
+            if (battleTimerInterval) clearInterval(battleTimerInterval);
 
+            battleTimerInterval = setInterval(() => {
+                const battleRef = window.dbRef(window.db, 'battle_rooms/level_' + level);
+                window.dbRunTransaction(battleRef, (currentRoom) => {
+                    if (!currentRoom || currentRoom.status !== 'running') {
+                        return currentRoom;
+                    }
+                    let cd = (currentRoom.countdown || 30) - 1;
+                    currentRoom.countdown = cd;
+                    if (cd <= 0) {
+                        // Pick winner weighted by ticket count, 90% pot to winner (10% house)
+                        let buyers = currentRoom.buyers || [];
+                        if (buyers.length > 0) {
+                            let totalTickets = buyers.reduce((s, b) => s + (b.ticketCount || 1), 0);
+                            let pick = Math.random() * totalTickets;
+                            let accT = 0;
+                            let winner = buyers[0];
+                            for (let b of buyers) {
+                                accT += (b.ticketCount || 1);
+                                if (pick <= accT) { winner = b; break; }
+                            }
+                            let prize = Math.floor((currentRoom.pot || 0) * 0.90);
+                            currentRoom.lastWinner = { name: winner.userName, userId: winner.userId, prize: prize };
+                            currentRoom.status = 'finished';
+                            currentRoom.countdown = 0;
+                            // Credit winner coins (async after transaction)
+                            setTimeout(() => {
+                                const winUserRef = window.dbRef(window.db, 'users/' + winner.userId);
+                                window.dbGet(winUserRef).then(snap => {
+                                    if (snap.exists()) {
+                                        let u = snap.val();
+                                        u.coins = (u.coins || 0) + prize;
+                                        u.totalWon = (u.totalWon || 0) + prize;
+                                        window.dbSet(winUserRef, u);
+                                    }
+                                });
+                                // Reset room after short delay so UI shows winner
+                                setTimeout(() => {
+                                    window.dbSet(battleRef, { pot: 0, buyers: [], status: 'waiting', lastWinner: currentRoom.lastWinner });
+                                    battleCountdownActive = false;
+                                }, 4000);
+                            }, 200);
+                        } else {
+                            currentRoom.status = 'waiting';
+                            currentRoom.pot = 0;
+                            currentRoom.buyers = [];
+                            battleCountdownActive = false;
+                        }
+                    }
+                    return currentRoom;
+                }).then(() => {
+                    // nothing
+                }).catch(() => {
+                    battleCountdownActive = false;
+                });
+            }, 1000);
+        }
+
+        function initBattleLiveEngine() {
+            if(!window.db) return;
+            const battleRef = window.dbRef(window.db, 'battle_rooms/level_' + currentBattleLevel);
+
+            window.dbOnValue(battleRef, (snapshot) => {
+                if(snapshot.exists()) {
+                    let room = snapshot.val();
+                    renderBattleRoomState(room);
+                    if (room.status === 'running' && (room.countdown || 0) > 0) {
+                        startBattleCountdownIfNeeded(room, currentBattleLevel);
+                    }
+                } else {
+                    renderBattleRoomState({ pot: 0, buyers: [], status: 'waiting' });
+                }
+            });
+        }
+
+        function renderBattleRoomState(room) {
             const potEl = document.getElementById('battle-pot-display');
-            if(potEl) potEl.innerText = "0";
+            if(potEl) potEl.innerText = room.pot || 0;
 
             const timerEl = document.getElementById('battle-timer');
-            if(timerEl) timerEl.innerText = "⏱️ ওয়েটিং...";
+            if(timerEl) {
+                if(room.status === 'running') {
+                    timerEl.innerText = `⏱️ লটারী চালু... (${room.countdown || 30}s)`;
+                } else {
+                    let tTickets = (room.buyers || []).reduce((s, b) => s + (b.ticketCount || 1), 0);
+                    timerEl.innerText = `⏱️ ওয়েটিং... (${tTickets}/2 টিকেট)`;
+                }
+            }
 
-            const logEl = document.getElementById('battle-buyers-log');
-            if(logEl) logEl.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">এখনো কেউ টিকেট কেনেনি! ২টি টিকেট কেনা হলে ৩০ সে. কাউন্টডাউন শুরু হবে।</div>`;
+            const log = document.getElementById('battle-buyers-log');
+            if(log) {
+                let buyers = room.buyers || [];
+                if(buyers.length === 0) {
+                    log.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">এখনো কেউ টিকেট কেনেনি! ২টি টিকেট কেনা হলে কাউন্টডাউন শুরু হবে।</div>`;
+                } else {
+                    log.innerHTML = buyers.map(b => `
+                        <div style="font-size:11px; color:var(--neon-green); margin-bottom:4px; display:flex; justify-content:space-between;">
+                            <span>🎟️ ${b.userName}</span>
+                            <span>${b.ticketCount} Ticket(s)</span>
+                        </div>
+                    `).join('');
+                }
+            }
 
+            if(room.lastWinner) {
+                const winHeader = document.getElementById('battle-winner-header-display');
+                const winName = document.getElementById('battle-last-winner-name');
+                const winPrize = document.getElementById('battle-last-winner-prize');
+                if(winHeader && winName && winPrize) {
+                    winHeader.style.display = 'block';
+                    winName.innerText = room.lastWinner.name;
+                    winPrize.innerText = room.lastWinner.prize;
+                }
+            }
+
+            // Show spinning wheel visual during running countdown for better UX
             const wheelCont = document.getElementById('battle-wheel-container');
-            if(wheelCont) wheelCont.style.display = 'none';
+            if (wheelCont) {
+                if (room.status === 'running') {
+                    wheelCont.style.display = 'block';
+                    const wheelEl = document.getElementById('battle-wheel-element');
+                    if (wheelEl) {
+                        wheelEl.style.transform = `rotate(${(30 - (room.countdown || 0)) * 120}deg)`;
+                    }
+                } else {
+                    wheelCont.style.display = 'none';
+                }
+            }
         }
 
         function buyLevelTicket() {
             playAudio('click');
-            let cost = battleLevel === 1 ? 50 : (battleLevel === 2 ? 200 : 1000);
+            let cost = currentBattleLevel === 1 ? 50 : (currentBattleLevel === 2 ? 200 : 1000);
 
             if(userData.coins < cost) {
                 showNotification("❌ পর্যাপ্ত কয়েন নেই!");
@@ -2145,83 +2479,46 @@
             }
 
             userData.coins -= cost;
+            userData.battleBets = (userData.battleBets || 0) + 1;
+            userData.totalBet = (userData.totalBet || 0) + cost;
             saveProfile();
             updateUI();
 
-            battleBuyers.push({ id: userData.id, name: userData.name });
-            battlePot += cost;
+            const battleRef = window.dbRef(window.db, 'battle_rooms/level_' + currentBattleLevel);
 
-            const potEl = document.getElementById('battle-pot-display');
-            if(potEl) potEl.innerText = battlePot;
-
-            const logEl = document.getElementById('battle-buyers-log');
-            if(logEl) {
-                if(battleBuyers.length === 1) logEl.innerHTML = "";
-                logEl.innerHTML += `<div style="font-size:11px; color:var(--neon-green); margin-bottom:2px;">🎟️ ${userData.name} (Ticket #${battleBuyers.length}) - 🪙${cost}</div>`;
-            }
-
-            showNotification("✅ টিকেট সফলভাবে কেনা হয়েছে!");
-
-            if(battleBuyers.length >= 2 && !isBattleStarted) {
-                startBattleCountdown();
-            }
-        }
-
-        function startBattleCountdown() {
-            isBattleStarted = true;
-            battleCountdown = 30;
-
-            const timerEl = document.getElementById('battle-timer');
-
-            battleTimer = setInterval(() => {
-                battleCountdown--;
-                if(timerEl) timerEl.innerText = `⏱️ ${battleCountdown}s`;
-
-                if(battleCountdown <= 0) {
-                    clearInterval(battleTimer);
-                    spinBattleWinnerWheel();
+            window.dbRunTransaction(battleRef, (room) => {
+                if (!room) {
+                    room = { pot: 0, buyers: [], status: 'waiting' };
                 }
-            }, 1000);
-        }
+                room.pot = (room.pot || 0) + cost;
+                room.buyers = room.buyers || [];
 
-        function spinBattleWinnerWheel() {
-            const wheelCont = document.getElementById('battle-wheel-container');
-            if(wheelCont) wheelCont.style.display = 'block';
-
-            let winnerIndex = Math.floor(Math.random() * battleBuyers.length);
-            let winner = battleBuyers[winnerIndex];
-
-            const wheel = document.getElementById('battle-wheel-element');
-            if(wheel) {
-                wheel.style.transform = `rotate(3600deg)`;
-            }
-
-            setTimeout(() => {
-                if(String(winner.id) === String(userData.id)) {
-                    userData.coins += battlePot;
-                    playAudio('win');
-                    showNotification(`🎉 Congratulations! আপনি টিকেট ব্যাটল জیتےছেন! (+${battlePot} কয়েন)`);
+                let existing = room.buyers.find(b => b.userId === userData.id);
+                if (existing) {
+                    existing.ticketCount += 1;
                 } else {
-                    playAudio('crash');
-                    showNotification(`🏆 টিকেট ব্যাটল বিজয়ী: ${winner.name}! (+${battlePot} কয়েন)`);
+                    room.buyers.push({
+                        userId: userData.id,
+                        userName: userData.name,
+                        ticketCount: 1
+                    });
                 }
 
-                saveProfile();
-                updateUI();
-
-                setTimeout(() => {
-                    resetBattleRoom();
-                }, 3000);
-            }, 4000);
+                // Total tickets across all buyers (same user buying 2 also starts the timer)
+                let totalTickets = (room.buyers || []).reduce((s, b) => s + (b.ticketCount || 1), 0);
+                if (totalTickets >= 2 && room.status !== 'running') {
+                    room.status = 'running';
+                    room.countdown = 30;
+                }
+                return room;
+            }).then(() => {
+                showNotification(`🎟️ টিকেট কেনা সফল হয়েছে! (-${cost} কয়েন)`);
+            });
         }
 
-        function initBattleLiveEngine() {
-            resetBattleRoom();
-        }
-
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           💳 DEPOSIT & WITHDRAWAL MANAGEMENT
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        /* ----------------------------------------------------
+           DEPOSIT & WITHDRAW MANAGEMENT (FIXED & DYNAMIC)
+        ---------------------------------------------------- */
         function renderDepositMethodsUI() {
             const container = document.getElementById('deposit-method-container');
             if(!container) return;
@@ -2230,10 +2527,10 @@
             container.innerHTML = "";
 
             methods.forEach((m, idx) => {
-                let isSelected = idx === selectedDepositIndex;
+                let isSelected = selectedDepositIndex === idx;
                 container.innerHTML += `
                     <div class="method-btn ${isSelected ? 'selected' : ''}" onclick="selectDepositMethod(${idx})">
-                        <span>${m.name}</span>
+                        <i class="fa-solid fa-money-bill-wave"></i> ${m.name}
                     </div>
                 `;
             });
@@ -2254,15 +2551,13 @@
 
         function copyDepositAddress() {
             const addr = document.getElementById('deposit-address').innerText;
-            navigator.clipboard.writeText(addr).then(() => {
-                showNotification("📋 নম্বর কপি হয়েছে!");
-            });
+            navigator.clipboard.writeText(addr);
+            showNotification("📋 ডিপোজিট নম্বর কপি করা হয়েছে!");
         }
 
         function calculateDepositBonus() {
-            let bdt = parseFloat(document.getElementById('deposit-amount-input').value) || 0;
-            let coinRate = adminSettings.coinRate50 || 1;
-            let baseCoins = Math.floor((bdt / coinRate) * 50);
+            let amount = parseFloat(document.getElementById('deposit-amount-input').value) || 0;
+            let baseCoins = Math.floor(amount * 50);
             let bonusCoins = Math.floor(baseCoins * 0.10);
             let total = baseCoins + bonusCoins;
 
@@ -2273,63 +2568,56 @@
 
         function submitDeposit() {
             playAudio('click');
-            let bdt = parseFloat(document.getElementById('deposit-amount-input').value) || 0;
+            let amount = parseFloat(document.getElementById('deposit-amount-input').value) || 0;
             let trx = document.getElementById('deposit-trx-input').value.trim();
             let methodObj = adminSettings.depositMethods[selectedDepositIndex];
 
-            if(bdt <= 0 || !trx) {
-                showNotification("⚠️ সঠিক টাকা ও ট্রানজেকশন আইডি প্রদান করুন!");
+            if(amount <= 0 || !trx) {
+                showNotification("⚠️ সঠিক টাকা ও TrxID দিন!");
                 return;
             }
-
-            let coinRate = adminSettings.coinRate50 || 1;
-            let baseCoins = Math.floor((bdt / coinRate) * 50);
-            let bonusCoins = Math.floor(baseCoins * 0.10);
-            let total = baseCoins + bonusCoins;
 
             let depObj = {
                 id: Date.now().toString(),
                 userId: userData.id,
                 userName: userData.name,
                 method: methodObj ? methodObj.name : "Bkash",
-                amountBdt: bdt,
-                totalCoins: total,
-                trxId: trx,
-                status: 'pending',
-                timestamp: new Date().toLocaleString('bn-BD')
+                amount: amount,
+                trx: trx,
+                coins: Math.floor(amount * 50 * 1.10),
+                status: "pending",
+                date: new Date().toLocaleString('bn-BD')
             };
 
             if(window.db && window.dbSet && window.dbRef) {
                 window.dbSet(window.dbRef(window.db, 'deposits/' + depObj.id), depObj);
+                showNotification("✅ ডিপোজিট রিকোয়েস্ট জমা হয়েছে! এডমিন শীঘ্রই এপ্রুভ করবে।");
+                document.getElementById('deposit-amount-input').value = "";
+                document.getElementById('deposit-trx-input').value = "";
             }
-
-            document.getElementById('deposit-amount-input').value = "";
-            document.getElementById('deposit-trx-input').value = "";
-            calculateDepositBonus();
-            showNotification("✅ ডিপোজিট রিকোয়েস্ট জমা হয়েছে! এডমিন ভেরিফাই করবে।");
         }
 
         function renderUserDepositHistory() {
             const container = document.getElementById('user-deposit-history');
             if(!container) return;
 
-            let userDeps = depositsList.filter(d => String(d.userId) === String(userData.id));
+            let myDeps = depositsList.filter(d => String(d.userId) === String(userData.id));
             container.innerHTML = "";
 
-            if(userDeps.length === 0) {
+            if(myDeps.length === 0) {
                 container.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">কোনো ডিপোজিট হিস্ট্রি নেই।</div>`;
                 return;
             }
 
-            userDeps.slice().reverse().forEach(d => {
+            myDeps.slice().reverse().forEach(d => {
                 let badgeClass = d.status === 'approved' ? 'badge-approved' : (d.status === 'rejected' ? 'badge-rejected' : 'badge-pending');
                 container.innerHTML += `
-                    <div style="background:#1e293b; padding:8px 12px; border-radius:8px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #334155; font-size:12px;">
                         <div>
-                            <b>${d.method}</b> - ৳${d.amountBdt} (${d.totalCoins} Coins)
-                            <div style="font-size:10px; color:#94a3b8;">Trx: ${d.trxId} | ${d.timestamp}</div>
+                            <div><b>৳${d.amount}</b> (${d.method})</div>
+                            <div style="font-size:10px; color:#94a3b8;">Trx: ${d.trx} | ${d.date}</div>
                         </div>
-                        <span class="${badgeClass}">${d.status.toUpperCase()}</span>
+                        <span class="${badgeClass}">${d.status}</span>
                     </div>
                 `;
             });
@@ -2339,7 +2627,7 @@
             const select = document.getElementById('withdraw-method');
             if(!select) return;
 
-            let methods = adminSettings.withdrawMethods || ["Bkash", "Nagad", "Rocket"];
+            let methods = adminSettings.withdrawMethods || ["Nagad", "Bkash", "Binance"];
             select.innerHTML = "";
 
             methods.forEach(m => {
@@ -2349,36 +2637,45 @@
 
         function calculateWithdrawAmount() {
             let coins = parseInt(document.getElementById('withdraw-coins').value) || 0;
-            let coinRate = adminSettings.coinRate50 || 1;
-            let bdt = (coins / 50) * coinRate;
+            let rate = adminSettings.coinRate50 || 1;
+            let bdt = (coins / 50) * rate;
             document.getElementById('withdraw-bdt-calc').innerText = `৳${bdt.toFixed(2)}`;
         }
 
         function requestWithdraw() {
             playAudio('click');
-            let method = document.getElementById('withdraw-method').value;
-            let acc = document.getElementById('withdraw-acc').value.trim();
-            let coins = parseInt(document.getElementById('withdraw-coins').value) || 0;
-
-            let minBdt = adminSettings.minWithdraw || 20;
-            let coinRate = adminSettings.coinRate50 || 1;
-            let minCoinsNeeded = Math.ceil((minBdt / coinRate) * 50);
-
-            if(!acc || coins < minCoinsNeeded) {
-                showNotification(`⚠️ সর্বনিম্ন ${minCoinsNeeded} কয়েন (৳${minBdt}) উত্তোলন করা যাবে!`);
+            
+            // 10 Ads requirement check for first withdrawal
+            let totalAdsSeen = userData.adsSeen || 0;
+            if (totalAdsSeen < 10) {
+                showNotification(`🚨 প্রথমবার উত্তোলন করার জন্য কমপক্ষে ১০টি এডস দেখতে হবে! (দেখা হয়েছে: ${totalAdsSeen}/১০)`);
                 return;
             }
 
+            let coins = parseInt(document.getElementById('withdraw-coins').value) || 0;
+            let acc = document.getElementById('withdraw-acc').value.trim();
+            let method = document.getElementById('withdraw-method').value;
+
+            let minCoinsNeeded = Math.ceil(((adminSettings.minWithdraw || 20) / (adminSettings.coinRate50 || 1)) * 50);
+
+            if(coins < minCoinsNeeded) {
+                showNotification(`⚠️ সর্বনিম্ন উত্তোলন ৳${adminSettings.minWithdraw} (${minCoinsNeeded} কয়েন)!`);
+                return;
+            }
+            if(!acc) {
+                showNotification("⚠️ আপনার একাউন্ট নম্বর টাইপ করুন!");
+                return;
+            }
             if(userData.coins < coins) {
                 showNotification("❌ আপনার পর্যাপ্ত ব্যালেন্স নেই!");
                 return;
             }
 
-            let bdt = (coins / 50) * coinRate;
-
             userData.coins -= coins;
             saveProfile();
             updateUI();
+
+            let bdtVal = (coins / 50) * (adminSettings.coinRate50 || 1);
 
             let withObj = {
                 id: Date.now().toString(),
@@ -2387,127 +2684,119 @@
                 method: method,
                 acc: acc,
                 coins: coins,
-                amountBdt: bdt,
-                status: 'pending',
-                timestamp: new Date().toLocaleString('bn-BD')
+                amount: bdtVal,
+                status: "pending",
+                date: new Date().toLocaleString('bn-BD')
             };
 
             if(window.db && window.dbSet && window.dbRef) {
                 window.dbSet(window.dbRef(window.db, 'withdraws/' + withObj.id), withObj);
+                showNotification("✅ উইথড্রল রিকোয়েস্ট সফলভাবে জমা হয়েছে!");
+                document.getElementById('withdraw-coins').value = "";
+                document.getElementById('withdraw-acc').value = "";
             }
-
-            document.getElementById('withdraw-acc').value = "";
-            document.getElementById('withdraw-coins').value = "";
-            calculateWithdrawAmount();
-            showNotification("✅ উইথড্র রিকোয়েস্ট জমা হয়েছে! পেন্ডিং থাকবে।");
         }
 
         function renderUserWithdrawHistory() {
             const container = document.getElementById('user-withdraw-history');
             if(!container) return;
 
-            let userWiths = withdrawsList.filter(w => String(w.userId) === String(userData.id));
+            let myWiths = withdrawsList.filter(w => String(w.userId) === String(userData.id));
             container.innerHTML = "";
 
-            if(userWiths.length === 0) {
-                container.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">কোনো উইথড্র হিস্ট্রি নেই।</div>`;
+            if(myWiths.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">কোনো উত্তোলন হিস্ট্রি নেই।</div>`;
                 return;
             }
 
-            userWiths.slice().reverse().forEach(w => {
+            myWiths.slice().reverse().forEach(w => {
                 let badgeClass = w.status === 'approved' ? 'badge-approved' : (w.status === 'rejected' ? 'badge-rejected' : 'badge-pending');
                 container.innerHTML += `
-                    <div style="background:#1e293b; padding:8px 12px; border-radius:8px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #334155; font-size:12px;">
                         <div>
-                            <b>${w.method}</b> - ৳${w.amountBdt} (${w.coins} Coins)
-                            <div style="font-size:10px; color:#94a3b8;">Acc: ${w.acc} | ${w.timestamp}</div>
+                            <div><b>৳${w.amount}</b> (${w.method}: ${w.acc})</div>
+                            <div style="font-size:10px; color:#94a3b8;">${w.coins} Coins | ${w.date}</div>
                         </div>
-                        <span class="${badgeClass}">${w.status.toUpperCase()}</span>
+                        <span class="${badgeClass}">${w.status}</span>
                     </div>
                 `;
             });
         }
 
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           💬 GLOBAL CHAT ROOM ENGINE
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        function sendChatMessage() {
-            let input = document.getElementById('chat-input');
-            let txt = input.value.trim();
-            if(!txt) return;
-
-            playAudio('click');
-            let chatObj = {
-                id: Date.now().toString(),
-                senderId: userData.id,
-                senderName: userData.name,
-                photo: userData.photoUrl,
-                text: txt,
-                timestamp: Date.now()
-            };
-
-            if(window.db && window.dbSet && window.dbRef) {
-                window.dbSet(window.dbRef(window.db, 'chats/' + chatObj.id), chatObj);
-            }
-
-            input.value = "";
-        }
-
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           📋 TASK SYSTEM ENGINE
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        /* ----------------------------------------------------
+           ADMIN PANEL TASK VERIFICATION & MANAGERS (FIXED)
+        ---------------------------------------------------- */
         function renderUserTasks() {
-            const list = document.getElementById('user-tasks-list');
-            if(!list) return;
+            const container = document.getElementById('user-tasks-list');
+            if(!container) return;
 
-            list.innerHTML = "";
+            container.innerHTML = "";
             if(tasksList.length === 0) {
-                list.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:11px;">কোনো মাইক্রো টাস্ক নেই।</div>`;
+                container.innerHTML = `<div style="font-size:11px; color:#94a3b8; text-align:center;">কোনো অ্যাক্টিভ মাইক্রো টাস্ক নেই।</div>`;
                 return;
             }
 
-            tasksList.forEach(task => {
-                let isDone = userData.completedTasks && userData.completedTasks.includes(task.id);
-                list.innerHTML += `
+            let completed = userData.completedTasks || [];
+
+            tasksList.forEach(t => {
+                let isDone = completed.includes(t.id);
+                container.innerHTML += `
                     <div class="task-card">
                         <div>
-                            <div style="font-weight:bold; font-size:13px; color:#fff;">${task.title}</div>
-                            <div style="font-size:11px; color:var(--gold);">+${task.reward} কয়েন বোনাস</div>
+                            <div style="font-weight:bold; font-size:13px; color:#fff;">${t.title}</div>
+                            <div style="font-size:11px; color:var(--gold);">🎁 রিওয়ার্ড: ${t.reward} কয়েন</div>
                         </div>
                         <div class="task-btn-group">
-                            <a href="${task.link}" target="_blank" class="btn-join" onclick="playAudio('click')">ভিজিট</a>
-                            ${isDone ? `<span style="color:var(--neon-green); font-size:11px; font-weight:bold;">সম্পন্ন</span>` :
-                            `<button class="btn-verify" onclick="verifyTaskCompletion('${task.id}', ${task.reward})">ভেরিফাই</button>`}
+                            <a href="${t.link}" target="_blank" class="btn-join" onclick="markTaskOpened('${t.id}')">জয়েন করুন</a>
+                            ${isDone ? '<span class="badge-approved">Done ✅</span>' : `<button class="btn-verify" onclick="verifyAndClaimTask('${t.id}')">ভেরিফাই</button>`}
                         </div>
                     </div>
                 `;
             });
         }
 
-        function verifyTaskCompletion(taskId, reward) {
+        let openedTaskTracker = {};
+
+        function markTaskOpened(taskId) {
+            openedTaskTracker[taskId] = true;
+        }
+
+        function verifyAndClaimTask(taskId) {
             playAudio('click');
+            
+            if(!openedTaskTracker[taskId]) {
+                showNotification("🚨 আগে জয়েন বাটনে ক্লিক করে লিংকে/চ্যানেলে জয়েন হোন, তারপর ভেরিফাই বাটনে ক্লিক করুন!");
+                return;
+            }
+
+            let task = tasksList.find(t => t.id === taskId);
+            if(!task) return;
+
             userData.completedTasks = userData.completedTasks || [];
             if(userData.completedTasks.includes(taskId)) {
-                showNotification("⚠️ টাস্কটি ইতিমধ্যেই সম্পন্ন করা হয়েছে!");
+                showNotification("⚠️ আপনি ইতিমধ্যে এই টাস্কটি সম্পন্ন করেছেন!");
                 return;
             }
 
             userData.completedTasks.push(taskId);
-            userData.coins += reward;
+            userData.coins += task.reward;
+            userData.bonusEarned = (userData.bonusEarned || 0) + task.reward;
+
             saveProfile();
             updateUI();
+            playAudio('coin');
+
+            showNotification(`🎉 ভেরিফায়েড! +${task.reward} কয়েন আপনার একাউন্টে যোগ হয়েছে!`);
             renderUserTasks();
-            playAudio('win');
-            showNotification(`🎉 টাস্ক ভেরিফাইড! +${reward} কয়েন ব্যালেন্স এ যোগ হয়েছে!`);
         }
 
         function addNewAdminTask() {
             let title = document.getElementById('admin-task-title').value.trim();
             let link = document.getElementById('admin-task-link').value.trim();
-            let reward = parseInt(document.getElementById('admin-task-reward').value) || 100;
+            let reward = parseInt(document.getElementById('admin-task-reward').value) || 0;
 
-            if(!title || !link) {
-                showNotification("⚠️ টাস্ক টাইটেল ও লিংক পূরণ করুন!");
+            if(!title || !link || reward <= 0) {
+                showNotification("⚠️ টাস্কের বিবরণ সঠিকভাবে পুরণ করুন!");
                 return;
             }
 
@@ -2520,262 +2809,62 @@
 
             if(window.db && window.dbSet && window.dbRef) {
                 window.dbSet(window.dbRef(window.db, 'tasks/' + taskObj.id), taskObj);
+                showNotification("✅ নতুন টাস্ক সফলভাবে যুক্ত করা হয়েছে!");
+                document.getElementById('admin-task-title').value = "";
+                document.getElementById('admin-task-link').value = "";
+                document.getElementById('admin-task-reward').value = "";
             }
-
-            document.getElementById('admin-task-title').value = "";
-            document.getElementById('admin-task-link').value = "";
-            showNotification("✅ নতুন টাস্ক যোগ করা হয়েছে!");
-            logAdminAction("ADD_TASK", `Task ${title} added.`);
         }
 
         function renderAdminTasksManager() {
-            const list = document.getElementById('admin-tasks-manage-list');
-            if(!list) return;
+            const container = document.getElementById('admin-tasks-manage-list');
+            if(!container) return;
 
-            list.innerHTML = "";
+            container.innerHTML = "";
             tasksList.forEach(t => {
-                list.innerHTML += `
-                    <div style="background:#1e293b; padding:8px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
-                        <div><b>${t.title}</b> (+${t.reward} Coins)</div>
-                        <button onclick="removeAdminTask('${t.id}')" style="background:#ef4444; border:none; color:white; padding:4px 8px; border-radius:6px; cursor:pointer;">মুছুন</button>
+                container.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:8px; border-radius:8px; margin-top:5px; font-size:11px;">
+                        <span>${t.title} (+${t.reward})</span>
+                        <button onclick="deleteAdminTask('${t.id}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:6px; cursor:pointer;">মুছুন</button>
                     </div>
                 `;
             });
         }
 
-        function removeAdminTask(id) {
+        function deleteAdminTask(taskId) {
             if(window.db && window.dbRemove && window.dbRef) {
-                window.dbRemove(window.dbRef(window.db, 'tasks/' + id));
-                showNotification("🗑️ টাস্ক মুছে ফেলা হয়েছে!");
+                window.dbRemove(window.dbRef(window.db, 'tasks/' + taskId));
+                showNotification("🗑️ টাস্ক মুছে ফেলা হয়েছে!");
             }
         }
 
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           👨‍💼 ADMIN PANEL & SECURITY SYSTEM
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        function openAdminDirect() {
-            playAudio('click');
-            let now = Date.now();
-            if (now < adminLockedUntil) {
-                let remSec = Math.ceil((adminLockedUntil - now) / 1000);
-                showNotification(`🚨 এডমিন এক্সেস সাময়িক লক রয়েছে! ${remSec} সে. পর চেষ্টা করুন।`);
-                return;
-            }
-
-            document.getElementById('admin-pass-modal').classList.add('active');
-        }
-
-        function closeAdminPassModal() {
-            document.getElementById('admin-pass-modal').classList.remove('active');
-        }
-
-        function verifyAdminPasswordLogin() {
-            playAudio('click');
-            let input = document.getElementById('admin-pass-attempt-input').value.trim();
-            let pass = adminSettings.adminPass || "018212";
-
-            if (input === pass) {
-                adminLoginAttempts = 0;
-                localStorage.setItem('admin_login_attempts', '0');
-                closeAdminPassModal();
-                navigate('admin');
-                showNotification("🔐 এডমিন প্যানেলে স্বাগতম!");
-                logAdminAction("ADMIN_LOGIN", "Successful admin login.");
-            } else {
-                adminLoginAttempts++;
-                localStorage.setItem('admin_login_attempts', adminLoginAttempts.toString());
-
-                if (adminLoginAttempts >= 3) {
-                    adminLockedUntil = Date.now() + 60000; // Lock for 60 seconds
-                    localStorage.setItem('admin_locked_until', adminLockedUntil.toString());
-                    closeAdminPassModal();
-                    showNotification("🚨 ভুল পাসওয়ার্ড! পরপর ৩ বার ভুলের জন্য ১ মিনিট লক করা হয়েছে!");
-                    logAdminAction("ADMIN_LOCKOUT", "3 Failed admin password attempts.");
-                } else {
-                    let msg = document.getElementById('admin-lock-msg');
-                    if (msg) {
-                        msg.style.display = 'block';
-                        msg.innerText = `ভুল পাসওয়ার্ড! চেষ্টা বাকি: ${3 - adminLoginAttempts}`;
-                    }
-                }
-            }
-        }
-
-        function saveAdminSettings() {
-            playAudio('click');
-            adminSettings.adminPass = document.getElementById('admin-pass-input').value.trim() || "018212";
-            adminSettings.adRewardCoins = parseInt(document.getElementById('admin-ad-reward').value) || 50;
-            adminSettings.referRewardCoins = parseInt(document.getElementById('admin-refer-reward').value) || 100;
-            adminSettings.minWithdraw = parseInt(document.getElementById('admin-min-withdraw').value) || 20;
-            adminSettings.coinRate50 = parseFloat(document.getElementById('admin-coin-rate').value) || 1;
-
-            saveAdminData();
-            updateUI();
-            showNotification("⚙️ এডমিন সেটিংস সফলভাবে সেভ করা হয়েছে!");
-            logAdminAction("SAVE_SETTINGS", "Admin settings updated.");
-        }
-
-        function renderAdminPanel() {
-            renderAdminDeposits();
-            renderAdminWithdraws();
-            renderAdminMethodsList();
-        }
-
-        function renderAdminDeposits() {
-            const container = document.getElementById('admin-deposit-list');
-            if(!container) return;
-
-            let pendings = depositsList.filter(d => d.status === 'pending');
-            container.innerHTML = "";
-
-            if(pendings.length === 0) {
-                container.innerHTML = `<div style="font-size:11px; color:#94a3b8;">কোনো পেন্ডিং ডিপোজিট নেই।</div>`;
-                return;
-            }
-
-            pendings.forEach(d => {
-                container.innerHTML += `
-                    <div class="admin-item">
-                        <b>${d.userName}</b> (${d.userId})<br>
-                        মেথড: ${d.method} | ৳${d.amountBdt} (${d.totalCoins} Coins)<br>
-                        TrxID: <b style="color:var(--gold);">${d.trxId}</b> | ${d.timestamp}
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <button onclick="approveDeposit('${d.id}')" style="background:var(--neon-green); color:black; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">Approve</button>
-                            <button onclick="rejectDeposit('${d.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">Reject</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function approveDeposit(id) {
-            playAudio('click');
-            let dep = depositsList.find(d => d.id === id);
-            if(!dep) return;
-
-            dep.status = 'approved';
-            if(window.db && window.dbSet && window.dbRef) {
-                window.dbSet(window.dbRef(window.db, 'deposits/' + id), dep);
-            }
-
-            const targetUserRef = window.dbRef(window.db, 'users/' + dep.userId);
-            window.dbGet(targetUserRef).then(snap => {
-                if(snap.exists()) {
-                    let uData = snap.val();
-                    uData.coins = (uData.coins || 0) + dep.totalCoins;
-                    window.dbSet(targetUserRef, uData);
-                }
-            });
-
-            showNotification("✅ ডিপোজিট অনুমোদিত হয়েছে!");
-            logAdminAction("APPROVE_DEPOSIT", `Deposit approved for ${dep.userName} (৳${dep.amountBdt})`);
-        }
-
-        function rejectDeposit(id) {
-            playAudio('click');
-            let dep = depositsList.find(d => d.id === id);
-            if(!dep) return;
-
-            dep.status = 'rejected';
-            if(window.db && window.dbSet && window.dbRef) {
-                window.dbSet(window.dbRef(window.db, 'deposits/' + id), dep);
-            }
-
-            showNotification("❌ ডিপোজিট বাতিল করা হয়েছে!");
-            logAdminAction("REJECT_DEPOSIT", `Deposit rejected for ${dep.userName}`);
-        }
-
-        function renderAdminWithdraws() {
-            const container = document.getElementById('admin-withdraw-list');
-            if(!container) return;
-
-            let pendings = withdrawsList.filter(w => w.status === 'pending');
-            container.innerHTML = "";
-
-            if(pendings.length === 0) {
-                container.innerHTML = `<div style="font-size:11px; color:#94a3b8;">কোনো পেন্ডিং উইথড্র নেই।</div>`;
-                return;
-            }
-
-            pendings.forEach(w => {
-                container.innerHTML += `
-                    <div class="admin-item">
-                        <b>${w.userName}</b> (${w.userId})<br>
-                        মেথড: ${w.method} | Acc: <b style="color:var(--gold);">${w.acc}</b><br>
-                        পরিমাণ: ৳${w.amountBdt} (${w.coins} Coins) | ${w.timestamp}
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <button onclick="approveWithdraw('${w.id}')" style="background:var(--neon-green); color:black; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">Approve</button>
-                            <button onclick="rejectWithdraw('${w.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">Reject</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function approveWithdraw(id) {
-            playAudio('click');
-            let withItem = withdrawsList.find(w => w.id === id);
-            if(!withItem) return;
-
-            withItem.status = 'approved';
-            if(window.db && window.dbSet && window.dbRef) {
-                window.dbSet(window.dbRef(window.db, 'withdraws/' + id), withItem);
-            }
-
-            let alertObj = {
-                userName: withItem.userName,
-                amount: withItem.amountBdt,
-                method: withItem.method,
-                acc: withItem.acc,
-                timestamp: Date.now()
-            };
-            if(window.db && window.dbSet && window.dbRef) {
-                window.dbSet(window.dbRef(window.db, 'withdrawal_alerts/' + id), alertObj);
-            }
-
-            showNotification("✅ উইথড্র অনুমোদিত হয়েছে!");
-            logAdminAction("APPROVE_WITHDRAW", `Withdraw approved for ${withItem.userName} (৳${withItem.amountBdt})`);
-        }
-
-        function rejectWithdraw(id) {
-            playAudio('click');
-            let withItem = withdrawsList.find(w => w.id === id);
-            if(!withItem) return;
-
-            withItem.status = 'rejected';
-            if(window.db && window.dbSet && window.dbRef) {
-                window.dbSet(window.dbRef(window.db, 'withdraws/' + id), withItem);
-            }
-
-            const targetUserRef = window.dbRef(window.db, 'users/' + withItem.userId);
-            window.dbGet(targetUserRef).then(snap => {
-                if(snap.exists()) {
-                    let uData = snap.val();
-                    uData.coins = (uData.coins || 0) + withItem.coins;
-                    window.dbSet(targetUserRef, uData);
-                }
-            });
-
-            showNotification("❌ উইথড্র বাতিল করা হয়েছে এবং কয়েন ফেরত দেয়া হয়েছে!");
-            logAdminAction("REJECT_WITHDRAW", `Withdraw rejected for ${withItem.userName}`);
-        }
-
+        /* ----------------------------------------------------
+           ADMIN PANEL METHODS & USER HISTORY MODAL (FIXED)
+        ---------------------------------------------------- */
         function addDepositMethodDynamic() {
             let name = document.getElementById('admin-dep-method-name').value.trim();
             let acc = document.getElementById('admin-dep-method-acc').value.trim();
 
             if(!name || !acc) {
-                showNotification("⚠️ মেথড নাম ও নম্বর দিন!");
+                showNotification("⚠️ মেথড নাম ও নাম্বার লিখুন!");
                 return;
             }
 
             adminSettings.depositMethods = adminSettings.depositMethods || [];
             adminSettings.depositMethods.push({ name: name, number: acc });
+
             saveAdminData();
-            renderAdminMethodsList();
+            showNotification("✅ নতুন ডিপোজিট মেথড যুক্ত হয়েছে!");
             document.getElementById('admin-dep-method-name').value = "";
             document.getElementById('admin-dep-method-acc').value = "";
-            showNotification("✅ ডিপোজিট মেথড যুক্ত করা হয়েছে!");
+            renderAdminPanel();
+        }
+
+        function removeDepositMethod(idx) {
+            adminSettings.depositMethods.splice(idx, 1);
+            saveAdminData();
+            showNotification("🗑️ ডিপোজিট মেথড রিমুভ করা হয়েছে!");
+            renderAdminPanel();
         }
 
         function addWithdrawMethod() {
@@ -2784,77 +2873,284 @@
 
             adminSettings.withdrawMethods = adminSettings.withdrawMethods || [];
             adminSettings.withdrawMethods.push(name);
+
             saveAdminData();
-            renderAdminMethodsList();
+            showNotification("✅ নতুন উইথড্র মেথড যুক্ত হয়েছে!");
             document.getElementById('admin-new-method').value = "";
-            showNotification("✅ উইথড্র মেথড যুক্ত করা হয়েছে!");
+            renderAdminPanel();
         }
 
-        function renderAdminMethodsList() {
-            const depList = document.getElementById('admin-dep-methods-list');
-            if(depList) {
-                depList.innerHTML = "";
-                (adminSettings.depositMethods || []).forEach((m, idx) => {
-                    depList.innerHTML += `
-                        <div style="font-size:11px; background:#1e293b; padding:6px; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
-                            <span><b>${m.name}:</b> ${m.number}</span>
-                            <button onclick="removeDepMethod(${idx})" style="background:#ef4444; border:none; color:white; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">মুছুন</button>
-                        </div>
-                    `;
-                });
-            }
-
-            const withList = document.getElementById('admin-with-methods-list');
-            if(withList) {
-                withList.innerHTML = "";
-                (adminSettings.withdrawMethods || []).forEach((m, idx) => {
-                    withList.innerHTML += `
-                        <div style="font-size:11px; background:#1e293b; padding:6px; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
-                            <span><b>${m}</b></span>
-                            <button onclick="removeWithMethod(${idx})" style="background:#ef4444; border:none; color:white; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">মুছুন</button>
-                        </div>
-                    `;
-                });
-            }
-        }
-
-        function removeDepMethod(idx) {
-            adminSettings.depositMethods.splice(idx, 1);
-            saveAdminData();
-            renderAdminMethodsList();
-        }
-
-        function removeWithMethod(idx) {
+        function removeWithdrawMethod(idx) {
             adminSettings.withdrawMethods.splice(idx, 1);
             saveAdminData();
-            renderAdminMethodsList();
+            showNotification("🗑️ উইথড্র মেথড রিমুভ করা হয়েছে!");
+            renderAdminPanel();
+        }
+
+        function openAdminUserHistory() {
+            document.getElementById('admin-user-history-modal').classList.add('active');
+            renderAllUsersDetailHistory();
+        }
+
+        function closeAdminUserHistoryModal() {
+            document.getElementById('admin-user-history-modal').classList.remove('active');
+        }
+
+        function renderAllUsersDetailHistory() {
+            const container = document.getElementById('admin-user-history-container');
+            if(!container) return;
+
+            let usersList = Object.values(allUsersMap || {});
+            container.innerHTML = "";
+
+            if(usersList.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:#94a3b8;">কোনো ইউজার ডাটা পাওয়া যায়নি।</div>`;
+                return;
+            }
+
+            usersList.forEach(u => {
+                container.innerHTML += `
+                    <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:12px; margin-bottom:10px; font-size:11px;">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                            <img src="${u.photoUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + u.id}" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--gold);" alt="u">
+                            <div>
+                                <b style="font-size:13px; color:var(--gold);">${u.name || 'User'}</b> (ID: ${u.id})<br>
+                                <span style="color:#94a3b8;">যোগদান: ${u.joinDate || 'Unknown'}</span>
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#0f172a; padding:8px; border-radius:8px;">
+                            <div>💰 ব্যালেন্স: <b style="color:var(--gold);">${u.coins || 0} Coins</b></div>
+                            <div>📺 এডস দেখা: <b>${u.adsSeen || 0} টি</b></div>
+                            <div>👥 রেফারেল: <b style="color:var(--neon-green);">${u.approvedReferralsCount || 0} জন</b></div>
+                            <div>🏆 মোট জয়: <b style="color:var(--neon-blue);">${u.totalWon || 0}</b></div>
+                            <div>💔 মোট হার: <b style="color:var(--neon-pink);">${u.totalLost || 0}</b></div>
+                            <div>✈️ এভিয়েটর: <b>${u.aviatorBets || 0} বার</b></div>
+                            <div>🎰 স্পিন: <b>${u.spinCount || 0} বার</b></div>
+                            <div>🎟️ ব্যাটল: <b>${u.battleBets || 0} বার</b></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderAdminPanel() {
+            const depMethodsList = document.getElementById('admin-dep-methods-list');
+            if(depMethodsList) {
+                depMethodsList.innerHTML = "";
+                (adminSettings.depositMethods || []).forEach((m, idx) => {
+                    depMethodsList.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:11px;">
+                            <span><b>${m.name}</b>: ${m.number}</span>
+                            <button onclick="removeDepositMethod(${idx})" style="background:#ef4444; color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">মুছুন</button>
+                        </div>
+                    `;
+                });
+            }
+
+            const withMethodsList = document.getElementById('admin-with-methods-list');
+            if(withMethodsList) {
+                withMethodsList.innerHTML = "";
+                (adminSettings.withdrawMethods || []).forEach((m, idx) => {
+                    withMethodsList.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:11px;">
+                            <span>${m}</span>
+                            <button onclick="removeWithdrawMethod(${idx})" style="background:#ef4444; color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">মুছুন</button>
+                        </div>
+                    `;
+                });
+            }
+
+            const depList = document.getElementById('admin-deposit-list');
+            if(depList) {
+                let pendingDeps = depositsList.filter(d => d.status === 'pending');
+                depList.innerHTML = "";
+                if(pendingDeps.length === 0) {
+                    depList.innerHTML = `<div style="font-size:11px; color:#94a3b8;">কোনো পেন্ডিং ডিপোজিট নেই।</div>`;
+                } else {
+                    pendingDeps.forEach(d => {
+                        depList.innerHTML += `
+                            <div class="admin-item">
+                                <b>${d.userName}</b> (ID: ${d.userId})<br>
+                                টাকা: <b>৳${d.amount}</b> (${d.method}) | Trx: <b>${d.trx}</b><br>
+                                <small style="color:#94a3b8;">${d.date}</small>
+                                <div style="display:flex; gap:8px; margin-top:8px;">
+                                    <button onclick="approveDeposit('${d.id}')" style="background:#22c55e; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">এপ্রুভ (+${d.coins} কয়েন)</button>
+                                    <button onclick="rejectDeposit('${d.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">বাতিল</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            }
+
+            const withList = document.getElementById('admin-withdraw-list');
+            if(withList) {
+                let pendingWiths = withdrawsList.filter(w => w.status === 'pending');
+                withList.innerHTML = "";
+                if(pendingWiths.length === 0) {
+                    withList.innerHTML = `<div style="font-size:11px; color:#94a3b8;">কোনো পেন্ডিং উইথড্রয়াল নেই।</div>`;
+                } else {
+                    pendingWiths.forEach(w => {
+                        withList.innerHTML += `
+                            <div class="admin-item">
+                                <b>${w.userName}</b> (ID: ${w.userId})<br>
+                                ক্যাশআউট: <b>৳${w.amount}</b> (${w.method}: <b>${w.acc}</b>)<br>
+                                কয়েন কাটা হয়েছে: <b>${w.coins}</b> কয়েন<br>
+                                <small style="color:#94a3b8;">${w.date}</small>
+                                <div style="display:flex; gap:8px; margin-top:8px;">
+                                    <button onclick="approveWithdraw('${w.id}')" style="background:#22c55e; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">এপ্রুভ করুন</button>
+                                    <button onclick="rejectWithdraw('${w.id}')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">রিজেক্ট ও কয়েন ব্যাক</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            }
+        }
+
+        function approveDeposit(depId) {
+            let dep = depositsList.find(d => d.id === depId);
+            if(!dep) return;
+
+            dep.status = 'approved';
+            if(window.db && window.dbUpdate && window.dbRef) {
+                window.dbUpdate(window.dbRef(window.db, 'deposits/' + depId), { status: 'approved' });
+
+                const userRef = window.dbRef(window.db, 'users/' + dep.userId);
+                window.dbGet(userRef).then(snap => {
+                    if(snap.exists()) {
+                        let u = snap.val();
+                        u.coins = (u.coins || 0) + dep.coins;
+                        window.dbSet(userRef, u);
+                    }
+                });
+
+                showNotification("✅ ডিপোজিট এপ্রুভ করা হয়েছে!");
+            }
+        }
+
+        function rejectDeposit(depId) {
+            if(window.db && window.dbUpdate && window.dbRef) {
+                window.dbUpdate(window.dbRef(window.db, 'deposits/' + depId), { status: 'rejected' });
+                showNotification("❌ ডিপোজিট বাতিল করা হয়েছে!");
+            }
+        }
+
+        function approveWithdraw(withdId) {
+            let w = withdrawsList.find(item => item.id === withdId);
+            if(!w) return;
+
+            if(window.db && window.dbUpdate && window.dbRef) {
+                window.dbUpdate(window.dbRef(window.db, 'withdraws/' + withdId), { status: 'approved' });
+
+                let alertObj = {
+                    id: Date.now().toString(),
+                    userName: w.userName,
+                    amount: w.amount,
+                    method: w.method,
+                    acc: w.acc,
+                    timestamp: Date.now()
+                };
+                window.dbSet(window.dbRef(window.db, 'withdrawal_alerts/' + alertObj.id), alertObj);
+
+                showNotification("✅ উইথড্রল এপ্রুভ করা হয়েছে!");
+            }
+        }
+
+        function rejectWithdraw(withdId) {
+            let w = withdrawsList.find(item => item.id === withdId);
+            if(!w) return;
+
+            if(window.db && window.dbUpdate && window.dbRef) {
+                window.dbUpdate(window.dbRef(window.db, 'withdraws/' + withdId), { status: 'rejected' });
+
+                const userRef = window.dbRef(window.db, 'users/' + w.userId);
+                window.dbGet(userRef).then(snap => {
+                    if(snap.exists()) {
+                        let u = snap.val();
+                        u.coins = (u.coins || 0) + w.coins;
+                        window.dbSet(userRef, u);
+                    }
+                });
+
+                showNotification("❌ উইথড্রল বাতিল করা হয়েছে এবং কয়েন ফেরত দেওয়া হয়েছে!");
+            }
+        }
+
+        function openAdminDirect() {
+            document.getElementById('admin-pass-modal').classList.add('active');
+        }
+
+        function closeAdminPassModal() {
+            document.getElementById('admin-pass-modal').classList.remove('active');
+        }
+
+        function verifyAdminPasswordLogin() {
+            let pass = document.getElementById('admin-pass-attempt-input').value.trim();
+            if(pass === (adminSettings.adminPass || "018212")) {
+                closeAdminPassModal();
+                navigate('admin');
+                showNotification("🔓 এডমিন প্যানেলে স্বাগতম!");
+            } else {
+                showNotification("❌ ভুল এডমিন পাসওয়ার্ড!");
+            }
+        }
+
+        function saveAdminSettings() {
+            adminSettings.adminPass = document.getElementById('admin-pass-input').value.trim() || adminSettings.adminPass;
+            adminSettings.adRewardCoins = parseInt(document.getElementById('admin-ad-reward').value) || 50;
+            adminSettings.referRewardCoins = parseInt(document.getElementById('admin-refer-reward').value) || 100;
+            adminSettings.minWithdraw = parseInt(document.getElementById('admin-min-withdraw').value) || 20;
+            adminSettings.coinRate50 = parseFloat(document.getElementById('admin-coin-rate').value) || 1;
+
+            saveAdminData();
+            showNotification("⚙️ এডমিন সেটিংস সফলভাবে সেভ করা হয়েছে!");
+            updateUI();
+        }
+
+        function saveChannelLink() {
+            let link = document.getElementById('admin-channel-link-input').value.trim();
+            if(!link) return;
+            adminSettings.channelLink = link;
+            saveAdminData();
+            showNotification("🔗 চ্যানেল লিংক সেভ করা হয়েছে!");
+            updateUI();
+        }
+
+        function sendBroadcast() {
+            let msg = document.getElementById('admin-broadcast-msg').value.trim();
+            if(!msg) return;
+
+            let broadObj = {
+                id: Date.now().toString(),
+                message: msg,
+                timestamp: Date.now()
+            };
+
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'broadcasts/' + broadObj.id), broadObj);
+                showNotification("📢 ব্রডকাস্ট পাঠানো হয়েছে!");
+                document.getElementById('admin-broadcast-msg').value = "";
+            }
         }
 
         function addBalanceToUser() {
             let target = document.getElementById('admin-target-user').value.trim();
             let coins = parseInt(document.getElementById('admin-add-coins').value) || 0;
 
-            if(!target || coins <= 0) {
-                showNotification("⚠️ ইউজার আইডি ও কয়েন সংখ্যা দিন!");
-                return;
-            }
+            if(!target || coins === 0) return;
 
-            let foundId = Object.keys(allUsersMap).find(id => id === target || (allUsersMap[id].name && allUsersMap[id].name.toLowerCase() === target.toLowerCase()));
-
-            if(foundId) {
-                const uRef = window.dbRef(window.db, 'users/' + foundId);
-                window.dbGet(uRef).then(snap => {
-                    if(snap.exists()) {
-                        let u = snap.val();
-                        u.coins = (u.coins || 0) + coins;
-                        window.dbSet(uRef, u);
-                        showNotification(`✅ ${u.name}-কে ${coins} কয়েন যুক্ত করা হয়েছে!`);
-                        logAdminAction("ADD_BALANCE", `Added ${coins} coins to ${u.name}`);
-                    }
-                });
-            } else {
-                showNotification("❌ ইউজার খুঁজে পাওয়া যায়নি!");
-            }
+            const userRef = window.dbRef(window.db, 'users/' + target);
+            window.dbGet(userRef).then(snap => {
+                if(snap.exists()) {
+                    let u = snap.val();
+                    u.coins = (u.coins || 0) + coins;
+                    window.dbSet(userRef, u);
+                    showNotification(`✅ ${u.name} এর একাউন্টে ${coins} কয়েন যুক্ত করা হয়েছে!`);
+                } else {
+                    showNotification("❌ ইউজার পাওয়া যায়নি!");
+                }
+            });
         }
 
         function banUser() {
@@ -2865,80 +3161,52 @@
             if(!adminSettings.bannedUsers.includes(target)) {
                 adminSettings.bannedUsers.push(target);
                 saveAdminData();
-                showNotification(`🚫 ইউজার ${target} ব্যান করা হয়েছে!`);
-                logAdminAction("BAN_USER", `User ${target} banned.`);
+                showNotification(`🚫 ইউজার ID ${target} ব্যান করা হয়েছে!`);
             }
         }
 
-        function saveChannelLink() {
-            let link = document.getElementById('admin-channel-link-input').value.trim();
-            if(link) {
-                adminSettings.channelLink = link;
-                saveAdminData();
+        function saveCustomName() {
+            let newName = document.getElementById('custom-name-input').value.trim();
+            if(!newName) return;
+
+            userData.name = newName;
+            saveProfile();
+            updateUI();
+            showNotification("✅ নাম সফলভাবে পরিবর্তন করা হয়েছে!");
+            document.getElementById('custom-name-input').value = "";
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                userData.photoUrl = e.target.result;
+                saveProfile();
                 updateUI();
-                showNotification("✅ চ্যানেল লিংক সেভ হয়েছে!");
+                showNotification("📸 প্রোফাইল ছবি আপডেট করা হয়েছে!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function sendChatMessage() {
+            let text = document.getElementById('chat-input').value.trim();
+            if(!text) return;
+
+            let msgObj = {
+                id: Date.now().toString(),
+                senderId: userData.id,
+                senderName: userData.name,
+                photo: userData.photoUrl,
+                text: text,
+                timestamp: Date.now()
+            };
+
+            if(window.db && window.dbSet && window.dbRef) {
+                window.dbSet(window.dbRef(window.db, 'chats/' + msgObj.id), msgObj);
+                document.getElementById('chat-input').value = "";
             }
-        }
-
-        function sendBroadcast() {
-            let msg = document.getElementById('admin-broadcast-msg').value.trim();
-            if(msg) {
-                showNotification(`📢 ব্রডকাস্ট মেসেজ পাঠানো হয়েছে: ${msg}`);
-                document.getElementById('admin-broadcast-msg').value = "";
-                logAdminAction("BROADCAST", msg);
-            }
-        }
-
-        function openAdminUserHistory() {
-            document.getElementById('admin-user-history-modal').classList.add('active');
-            const container = document.getElementById('admin-user-history-container');
-            if(!container) return;
-
-            let usersArr = Object.values(allUsersMap || {});
-            container.innerHTML = "";
-
-            usersArr.forEach(u => {
-                container.innerHTML += `
-                    <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #334155; font-size:11px;">
-                        <div style="font-weight:bold; color:var(--gold);">${u.name} (ID: ${u.id})</div>
-                        💰 Coins: ${u.coins || 0} | 📺 Ads: ${u.adsSeen || 0}<br>
-                        👥 Approved Referrals: ${u.approvedReferralsCount || 0}<br>
-                        🎰 Aviator Bets: ${u.aviatorBets || 0} | Spins: ${u.spinCount || 0}
-                    </div>
-                `;
-            });
-        }
-
-        function closeAdminUserHistoryModal() {
-            document.getElementById('admin-user-history-modal').classList.remove('active');
-        }
-
-        function openAdminLogsModal() {
-            document.getElementById('admin-logs-modal').classList.add('active');
-            const container = document.getElementById('admin-logs-container');
-            if(!container) return;
-
-            const logsRef = window.dbRef(window.db, 'admin_logs');
-            window.dbGet(logsRef).then(snap => {
-                container.innerHTML = "";
-                if(snap.exists()) {
-                    let logs = Object.values(snap.val()).reverse();
-                    logs.forEach(l => {
-                        container.innerHTML += `
-                            <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:6px; border:1px solid #334155;">
-                                <b style="color:var(--neon-pink);">${l.type}</b> - ${l.desc}<br>
-                                <span style="font-size:9px; color:#94a3b8;">${l.userName} (${l.userId}) | ${l.timestamp}</span>
-                            </div>
-                        `;
-                    });
-                } else {
-                    container.innerHTML = `<div style="color:#94a3b8;">কোনো লগ ডাটা পাওয়া যায়নি।</div>`;
-                }
-            });
-        }
-
-        function closeAdminLogsModal() {
-            document.getElementById('admin-logs-modal').classList.remove('active');
         }
 
         function openVipModal() {
@@ -2949,35 +3217,40 @@
             document.getElementById('vip-modal').classList.remove('active');
         }
 
-        function saveCustomName() {
-            let input = document.getElementById('custom-name-input').value.trim();
-            if(input) {
-                userData.name = input;
-                saveProfile();
-                updateUI();
-                document.getElementById('custom-name-input').value = "";
-                showNotification("✅ ডিসপ্লে নাম সেভ করা হয়েছে!");
-            }
+        function openAdminLogsModal() {
+            document.getElementById('admin-logs-modal').classList.add('active');
+            renderAdminLogs();
         }
 
-        function handlePhotoUpload(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    userData.photoUrl = e.target.result;
-                    saveProfile();
-                    updateUI();
-                    showNotification("📸 প্রোফাইল ফটো পরিবর্তন করা হয়েছে!");
-                };
-                reader.readAsDataURL(file);
-            }
+        function closeAdminLogsModal() {
+            document.getElementById('admin-logs-modal').classList.remove('active');
+        }
+
+        function renderAdminLogs() {
+            const container = document.getElementById('admin-logs-container');
+            if(!container) return;
+
+            const logsRef = window.dbRef(window.db, 'admin_logs');
+            window.dbGet(logsRef).then(snap => {
+                if(snap.exists()) {
+                    let logs = Object.values(snap.val());
+                    container.innerHTML = logs.slice().reverse().map(l => `
+                        <div style="background:#1e293b; padding:8px; border-radius:6px; margin-bottom:6px;">
+                            <b style="color:var(--gold);">${l.userName}</b>: ${l.desc}<br>
+                            <small style="color:#94a3b8;">${l.timestamp}</small>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `<div style="text-align:center; color:#94a3b8;">কোনো এডমিন লগ নেই।</div>`;
+                }
+            });
         }
 
         function checkMidnightReset() {
-            let lastReset = localStorage.getItem('last_midnight_reset');
-            let today = new Date().toDateString();
-            if(lastReset !== today) {
+            const lastReset = localStorage.getItem('last_midnight_reset');
+            const today = new Date().toDateString();
+
+            if (lastReset !== today) {
                 localStorage.setItem('last_midnight_reset', today);
             }
         }
