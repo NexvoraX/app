@@ -764,10 +764,10 @@
                     <span style="color:#94a3b8;">📅 Join Date:</span> <b id="prof-join-date" style="color:#cbd5e1;">Today</b>
                 </div>
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
-                    <span style="color:#94a3b8;">🏆 মোট জিতেছে:</span> <b id="prof-total-won" style="color:var(--neon-green);">0 Coins</b>
+                    <span style="color:#94a3b8;">🏆 মোট লাভ (৳):</span> <b id="prof-total-won" style="color:var(--neon-green);">৳0</b>
                 </div>
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155;">
-                    <span style="color:#94a3b8;">💔 মোট হেরেছে:</span> <b id="prof-total-lost" style="color:var(--neon-pink);">0 Coins</b>
+                    <span style="color:#94a3b8;">💔 মোট লস (৳):</span> <b id="prof-total-lost" style="color:var(--neon-pink);">৳0</b>
                 </div>
                 <div style="background:#0f172a; padding:10px; border-radius:8px; border:1px solid #334155; grid-column: span 2;">
                     <span style="color:#cbd5e1; font-weight:bold;">🎮 গেম স্ট্যাটস (খেলেছেন):</span><br>
@@ -1058,7 +1058,9 @@
         function updateReferralLinkInput() {
             const input = document.getElementById('refer-link-input');
             if(input) {
-                input.value = `https://t.me/${botUsername}?startapp=${userData.id}`;
+                // Direct Mini App deep-link: https://t.me/BotUsername/?startapp=USER_ID
+                // Opens Mini App immediately on click and passes startapp for 100% referral credit
+                input.value = `https://t.me/${botUsername}/?startapp=${userData.id}`;
             }
         }
 
@@ -1076,7 +1078,8 @@
         }
 
         function shareReferLink() {
-            const link = `https://t.me/${botUsername}?startapp=${userData.id}`;
+            // Same direct Mini App format so share also opens app + credits referrer
+            const link = `https://t.me/${botUsername}/?startapp=${userData.id}`;
             const text = encodeURIComponent(`🎉 VIP Earning Hub-এ জয়েন করে ফ্রিতে বোনাস আয় করুন! এখনই অ্যাপটি ওপেন করুন:`);
             const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
             if (tg && tg.openTelegramLink) {
@@ -1312,7 +1315,7 @@
                 let rank = index + 1;
                 let badgeColor = rank === 1 ? "var(--gold)" : (rank === 2 ? "#c0c0c0" : (rank === 3 ? "#cd7f32" : "var(--neon-blue)"));
                 let isCurrent = String(u.id) === String(userData.id);
-                
+                // Leaderboard shows name, photo, referral count, total balance (coins) and ads watched for ranked referrers only
                 listEl.innerHTML += `
                     <div class="lb-card" style="${isCurrent ? 'border: 2px solid var(--neon-pink); background: rgba(255,0,85,0.15);' : ''}">
                         <div style="display:flex; align-items:center; gap:10px;">
@@ -1321,6 +1324,7 @@
                             <div>
                                 <div style="font-weight:bold; font-size:13px; color:#fff;">${u.name || 'User'} ${isCurrent ? '<span style="color:var(--neon-pink); font-size:10px;">(আপনি)</span>' : ''}</div>
                                 <div style="font-size:10px; color:#94a3b8;">ID: ${u.id}</div>
+                                <div style="font-size:10px; color:var(--gold); margin-top:2px;"><i class="fa-solid fa-coins"></i> ব্যালেন্স: ${u.coins || 0} | <i class="fa-solid fa-tv"></i> এডস: ${u.adsSeen || 0}</div>
                             </div>
                         </div>
                         <div style="text-align:right;">
@@ -1394,11 +1398,22 @@
             const profImg = document.getElementById('profile-img-preview');
             if(profImg && userData.photoUrl) profImg.src = userData.photoUrl;
 
+            // Net profit/loss in BDT using current coin rate (50 coins = coinRate50 BDT).
+            // Includes all game wins + ads/bonus earnings as profit side; exclusive: if net profit show loss=0, if net loss show profit=0.
+            const rate = adminSettings.coinRate50 || 1;
+            const totalEarnedCoins = (userData.totalWon || 0) + (userData.bonusEarned || 0) + ((userData.adsSeen || 0) * (adminSettings.adRewardCoins || 50));
+            const totalLostCoins = (userData.totalLost || 0);
+            const netCoins = totalEarnedCoins - totalLostCoins;
+            const netBdt = (netCoins / 50) * rate;
             const profWon = document.getElementById('prof-total-won');
-            if(profWon) profWon.innerText = (userData.totalWon || 0) + " Coins";
-
             const profLost = document.getElementById('prof-total-lost');
-            if(profLost) profLost.innerText = (userData.totalLost || 0) + " Coins";
+            if (netCoins >= 0) {
+                if(profWon) profWon.innerText = "৳" + Math.abs(netBdt).toFixed(2);
+                if(profLost) profLost.innerText = "৳0";
+            } else {
+                if(profWon) profWon.innerText = "৳0";
+                if(profLost) profLost.innerText = "৳" + Math.abs(netBdt).toFixed(2);
+            }
 
             const profAvCount = document.getElementById('prof-aviator-count');
             if(profAvCount) profAvCount.innerText = userData.aviatorBets || 0;
