@@ -609,7 +609,10 @@
             <h3>ইনস্ট্যান্ট রেফারেল প্রোগ্রাম</h3>
             <div style="background:rgba(0,255,136,0.1); border:1px solid var(--neon-green); padding:10px; border-radius:12px; margin-bottom:12px;">
                 <p style="font-size:13px; color:var(--neon-green); margin:0; font-weight:bold; line-height:1.5;">
-                    📌 নিয়ম: নতুন ইউজার আপনার রেফারেল লিংক দিয়ে Mini App-এ প্রথমবার প্রবেশ করলেই রেফার কাউন্ট ও বোনাস যুক্ত হবে!
+                    📌 নিয়ম: নতুন ইউজার আপনার রেফারেল লিংক দিয়ে Mini App-এ <b>প্রথমবার ওপেন</b> করলেই সাথে সাথে অ্যাকাউন্ট তৈরি হবে এবং রেফার কাউন্ট + বোনাস <b>ইনস্ট্যান্ট</b> যুক্ত হবে!
+                </p>
+                <p style="font-size:12px; color:#00e5ff; margin:6px 0 0 0; font-weight:bold;">
+                    ✅ কোনো শর্ত নেই — এড দেখা, ডিপোজিট বা টাস্ক করার দরকার নেই। লিংক থেকে ঢুকলেই কাউন্ট!
                 </p>
                 <p style="font-size:12px; color:var(--gold); margin:5px 0 0 0;">
                     প্রতি রেফারে বোনাস: <b id="refer-bonus-display">100</b> কয়েন!
@@ -720,7 +723,8 @@
                 📌 <b>উত্তোলন নিয়মকানুন:</b><br>
                 ১. সর্বনিম্ন উত্তোলন ৳<span id="rule-min-bdt">20</span>।<br>
                 ২. প্রথমবার উত্তোলনের জন্য আপনাকে অবশ্যই <b>কমপক্ষে ১০টি এড</b> দেখতে হবে। (আপনার বর্তমান এড দেখা: <b id="withdraw-ads-check-count" style="color:var(--gold);">0</b>/১০)<br>
-                ৩. ভুল তথ্য বা কম কয়েনে উত্তোলন রিকোয়েস্ট করলে টাকা ফেরত দেওয়া হবে না।
+                ৩. উত্তোলনের জন্য কমপক্ষে <b id="rule-min-referrals">0</b>টি <b>অ্যাপ্রুভড রেফার</b> থাকতে হবে। (আপনার বর্তমান রেফার: <b id="withdraw-refer-check-count" style="color:var(--gold);">0</b>/<span id="withdraw-refer-need-count">0</span>)<br>
+                ৪. ভুল তথ্য বা কম কয়েনে উত্তোলন রিকোয়েস্ট করলে টাকা ফেরত দেওয়া হবে না।
             </div>
 
             <label style="font-size:11px; color:#94a3b8;">মেথড সিলেক্ট করুন</label>
@@ -855,6 +859,9 @@
                 <input type="number" id="admin-min-withdraw" class="input-box" value="20">
                 <label style="font-size:11px; color:#cbd5e1;">৫০ কয়েনের দাম (টাকা ৳):</label>
                 <input type="number" id="admin-coin-rate" class="input-box" value="1">
+                <label style="font-size:11px; color:var(--neon-pink); font-weight:bold;">👥 রেফার উইথড্র লক — উত্তোলন করতে কতটি অ্যাপ্রুভড রেফার লাগবে (0 = অফ):</label>
+                <input type="number" id="admin-min-referrals-withdraw" class="input-box" value="0" min="0" placeholder="যেমন: 3">
+                <p style="font-size:10px; color:#94a3b8; margin:0 0 10px 0;">এখানে যত সংখ্যা দিবেন, ইউজার ততটি সফল রেফার না করলে উইথড্র বাটন কাজ করবে না। 0 দিলে রেফার শর্ত বন্ধ থাকবে।</p>
                 <button class="casino-btn" style="padding:10px; font-size:12px; background:var(--neon-blue); color:black;" onclick="saveAdminSettings()"><i class="fa-solid fa-floppy-disk"></i> সেটিংস ও পাসওয়ার্ড সেভ করুন</button>
             </div>
             <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:15px;">
@@ -954,6 +961,23 @@
         if(tg) {
             tg.expand();
             tg.ready();
+            // Late start_param recovery (multiple tries): some Telegram clients populate initData after ready()
+            // Instant referral = no conditions — just open from link once and count+bonus apply immediately
+            try {
+                function tryCaptureAndProcessReferral() {
+                    if (!userData || userData.referralApproved) return;
+                    const lateParam = getTelegramStartParam();
+                    if (!lateParam) return;
+                    if (!userData.referredBy) {
+                        userData.referredBy = String(lateParam).trim();
+                        if (typeof saveProfile === 'function') saveProfile();
+                    }
+                    if (typeof processInstantReferral === 'function') processInstantReferral();
+                }
+                setTimeout(tryCaptureAndProcessReferral, 400);
+                setTimeout(tryCaptureAndProcessReferral, 1200);
+                setTimeout(tryCaptureAndProcessReferral, 2500);
+            } catch (e) {}
         }
 
         let currentTab = 'earn';
@@ -980,12 +1004,36 @@
         }
 
         function getTelegramStartParam() {
-            if (tg?.initDataUnsafe?.start_param) {
-                return String(tg.initDataUnsafe.start_param).trim();
-            }
-            const urlParams = new URLSearchParams(window.location.search);
-            const param = urlParams.get('startapp') || urlParams.get('start') || urlParams.get('tgWebAppStartParam');
-            return param ? String(param).trim() : null;
+            // 1) Official Mini App start_param from Telegram WebApp
+            try {
+                if (tg?.initDataUnsafe?.start_param) {
+                    const sp = String(tg.initDataUnsafe.start_param).trim();
+                    if (sp) return sp;
+                }
+            } catch (e) {}
+            // 2) Query string variants used by Telegram Mini App deep links
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const param = urlParams.get('startapp') || urlParams.get('start') || urlParams.get('tgWebAppStartParam') || urlParams.get('start_param');
+                if (param) return String(param).trim();
+            } catch (e) {}
+            // 3) Hash fragment (some Telegram clients put params in hash)
+            try {
+                const hash = (window.location.hash || "").replace(/^#/, "");
+                if (hash) {
+                    const hashParams = new URLSearchParams(hash.includes("=") ? hash : hash.replace(/^\?/, ""));
+                    const hp = hashParams.get('startapp') || hashParams.get('start') || hashParams.get('tgWebAppStartParam') || hashParams.get('start_param');
+                    if (hp) return String(hp).trim();
+                }
+            } catch (e) {}
+            // 4) tgWebAppStartParam sometimes exposed on window
+            try {
+                if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
+                    const sp2 = String(window.Telegram.WebApp.initDataUnsafe.start_param).trim();
+                    if (sp2) return sp2;
+                }
+            } catch (e) {}
+            return null;
         }
 
         const telegramUser = tg?.initDataUnsafe?.user;
@@ -1036,6 +1084,7 @@
             adRewardCoins: 50,
             referRewardCoins: 100,
             minWithdraw: 20,
+            minReferralsForWithdraw: 0,
             lbPrizes: [100, 50, 30, 20, 15, 10, 10, 10, 5, 5],
             coinRate50: 1,
             channelLink: "https://t.me/earningzone6357",
@@ -1149,10 +1198,26 @@
 
             const rtdbUserRef = window.dbRef(window.db, 'users/' + userData.id);
             window.dbOnValue(rtdbUserRef, (snapshot) => {
+                // Capture start_param every time (Telegram may populate initData slightly after first paint)
+                const liveStartParam = getTelegramStartParam();
                 if (snapshot.exists()) {
                     let remoteData = snapshot.val();
+                    // Preserve local/start_param referredBy if remote has none (so referral is never lost on merge)
+                    const prevReferredBy = userData.referredBy || liveStartParam || null;
                     userData = { ...userData, ...remoteData };
+                    if (!userData.referredBy && prevReferredBy) {
+                        userData.referredBy = String(prevReferredBy).trim();
+                    }
+                    // If still not referral-approved and we have a valid referrer, process now
+                    // (fixes: referral only ran on first-create path before, so count/bonus/history/leaderboard never updated)
+                    if (!userData.referralApproved && userData.referredBy && String(userData.referredBy) !== String(userData.id)) {
+                        processInstantReferral();
+                    }
                 } else {
+                    // Brand-new user: ensure referredBy is taken from live start_param
+                    if (!userData.referredBy && liveStartParam) {
+                        userData.referredBy = String(liveStartParam).trim();
+                    }
                     if(!userData.welcomeBonusClaimed) {
                         userData.coins = 100;
                         userData.welcomeBonusClaimed = true;
@@ -1249,55 +1314,167 @@
         };
 
         function processInstantReferral() {
+            // INSTANT referral — ZERO conditions (no ads, no deposit, no task).
+            // New user opens Mini App via refer link once → account created + referrer count/bonus immediately.
             const referrerId = userData.referredBy ? String(userData.referredBy).trim() : null;
             if (!referrerId || userData.referralApproved || referrerId === String(userData.id)) {
                 return;
             }
+            if (!window.db || !window.dbRef) {
+                // Firebase not ready yet — retry shortly (still no user-facing conditions)
+                setTimeout(function() { try { processInstantReferral(); } catch(e) {} }, 800);
+                return;
+            }
 
             const refClaimRef = window.dbRef(window.db, 'referral_claims/' + userData.id);
-            if(!window.dbRunTransaction) return;
+            if(!window.dbRunTransaction) {
+                setTimeout(function() { try { processInstantReferral(); } catch(e) {} }, 800);
+                return;
+            }
 
             window.dbRunTransaction(refClaimRef, (currentData) => {
                 if (currentData === null) {
                     return { referrerId: referrerId, timestamp: Date.now() };
                 } else {
-                    return;
+                    return; // already claimed — abort
                 }
             }).then((result) => {
+                // If claim already existed (committed=false), still mark this user as referralApproved
+                // so we stop retrying and UI stays consistent (referrer was already credited earlier)
+                if (!result.committed) {
+                    userData.referralApproved = true;
+                    if (!userData.referredBy) userData.referredBy = referrerId;
+                    if (!userData.referralApprovedDate) userData.referralApprovedDate = new Date().toLocaleString('bn-BD');
+                    saveProfile();
+                    return;
+                }
                 if (result.committed) {
                     userData.referralApproved = true;
                     userData.referralApprovedDate = new Date().toLocaleString('bn-BD');
+                    // Keep referredBy stored so history/debug remains consistent
+                    if (!userData.referredBy) userData.referredBy = referrerId;
                     saveProfile();
 
                     const referrerRef = window.dbRef(window.db, 'users/' + referrerId);
-                    window.dbGet(referrerRef).then((snap) => {
-                        if (snap.exists()) {
-                            let referrerData = snap.val();
-                            let reward = adminSettings.referRewardCoins || 100;
+                    let reward = adminSettings.referRewardCoins || 100;
+                    const referredName = userData.name || 'VIP Member';
+                    const referredId = userData.id;
+
+                    // Atomic update so concurrent referrals never lose count/bonus/history
+                    if (window.dbRunTransaction) {
+                        window.dbRunTransaction(referrerRef, (referrerData) => {
+                            if (!referrerData) return;
                             referrerData.coins = (referrerData.coins || 0) + reward;
                             referrerData.bonusEarned = (referrerData.bonusEarned || 0) + reward;
                             referrerData.approvedReferralsCount = (referrerData.approvedReferralsCount || 0) + 1;
-                            if(!referrerData.firstReferralTime) {
+                            if (!referrerData.firstReferralTime) {
                                 referrerData.firstReferralTime = Date.now();
                             }
                             referrerData.lastReferralTime = Date.now();
                             referrerData.referralBonusHistory = referrerData.referralBonusHistory || [];
-                            referrerData.referralBonusHistory.push({
-                                referredUserId: userData.id,
-                                referredUserName: userData.name,
-                                bonusAmount: reward,
-                                approvedDate: new Date().toLocaleString('bn-BD')
+                            // Avoid duplicate history entry for same referred user
+                            const already = referrerData.referralBonusHistory.some(h => String(h.referredUserId) === String(referredId));
+                            if (!already) {
+                                referrerData.referralBonusHistory.push({
+                                    referredUserId: referredId,
+                                    referredUserName: referredName,
+                                    bonusAmount: reward,
+                                    approvedDate: new Date().toLocaleString('bn-BD')
+                                });
+                            }
+                            return referrerData;
+                        }).then((txResult) => {
+                            if (txResult && txResult.committed) {
+                                let notifyRef = window.dbRef(window.db, 'notifications/' + referrerId + '_' + Date.now());
+                                window.dbSet(notifyRef, {
+                                    message: `🎉 নতুন ইউজার ${referredName} জয়েন করেছে! +${reward} কয়েন বোনাস যুক্ত হয়েছে!`,
+                                    type: 'referral_approved',
+                                    timestamp: Date.now()
+                                });
+                            } else {
+                                // Fallback non-transaction credit if transaction did not commit
+                                window.dbGet(referrerRef).then((snap) => {
+                                    if (snap.exists()) {
+                                        let referrerData = snap.val();
+                                        referrerData.coins = (referrerData.coins || 0) + reward;
+                                        referrerData.bonusEarned = (referrerData.bonusEarned || 0) + reward;
+                                        referrerData.approvedReferralsCount = (referrerData.approvedReferralsCount || 0) + 1;
+                                        if (!referrerData.firstReferralTime) referrerData.firstReferralTime = Date.now();
+                                        referrerData.lastReferralTime = Date.now();
+                                        referrerData.referralBonusHistory = referrerData.referralBonusHistory || [];
+                                        const already = referrerData.referralBonusHistory.some(h => String(h.referredUserId) === String(referredId));
+                                        if (!already) {
+                                            referrerData.referralBonusHistory.push({
+                                                referredUserId: referredId,
+                                                referredUserName: referredName,
+                                                bonusAmount: reward,
+                                                approvedDate: new Date().toLocaleString('bn-BD')
+                                            });
+                                        }
+                                        window.dbSet(referrerRef, referrerData);
+                                        let notifyRef = window.dbRef(window.db, 'notifications/' + referrerId + '_' + Date.now());
+                                        window.dbSet(notifyRef, {
+                                            message: `🎉 নতুন ইউজার ${referredName} জয়েন করেছে! +${reward} কয়েন বোনাস যুক্ত হয়েছে!`,
+                                            type: 'referral_approved',
+                                            timestamp: Date.now()
+                                        });
+                                    }
+                                });
+                            }
+                        }).catch((e) => {
+                            console.error("Referrer credit transaction error:", e);
+                            // Last-resort fallback
+                            window.dbGet(referrerRef).then((snap) => {
+                                if (snap.exists()) {
+                                    let referrerData = snap.val();
+                                    referrerData.coins = (referrerData.coins || 0) + reward;
+                                    referrerData.bonusEarned = (referrerData.bonusEarned || 0) + reward;
+                                    referrerData.approvedReferralsCount = (referrerData.approvedReferralsCount || 0) + 1;
+                                    if (!referrerData.firstReferralTime) referrerData.firstReferralTime = Date.now();
+                                    referrerData.lastReferralTime = Date.now();
+                                    referrerData.referralBonusHistory = referrerData.referralBonusHistory || [];
+                                    const already = referrerData.referralBonusHistory.some(h => String(h.referredUserId) === String(referredId));
+                                    if (!already) {
+                                        referrerData.referralBonusHistory.push({
+                                            referredUserId: referredId,
+                                            referredUserName: referredName,
+                                            bonusAmount: reward,
+                                            approvedDate: new Date().toLocaleString('bn-BD')
+                                        });
+                                    }
+                                    window.dbSet(referrerRef, referrerData);
+                                }
                             });
-                            window.dbSet(referrerRef, referrerData);
+                        });
+                    } else {
+                        window.dbGet(referrerRef).then((snap) => {
+                            if (snap.exists()) {
+                                let referrerData = snap.val();
+                                referrerData.coins = (referrerData.coins || 0) + reward;
+                                referrerData.bonusEarned = (referrerData.bonusEarned || 0) + reward;
+                                referrerData.approvedReferralsCount = (referrerData.approvedReferralsCount || 0) + 1;
+                                if(!referrerData.firstReferralTime) {
+                                    referrerData.firstReferralTime = Date.now();
+                                }
+                                referrerData.lastReferralTime = Date.now();
+                                referrerData.referralBonusHistory = referrerData.referralBonusHistory || [];
+                                referrerData.referralBonusHistory.push({
+                                    referredUserId: referredId,
+                                    referredUserName: referredName,
+                                    bonusAmount: reward,
+                                    approvedDate: new Date().toLocaleString('bn-BD')
+                                });
+                                window.dbSet(referrerRef, referrerData);
 
-                            let notifyRef = window.dbRef(window.db, 'notifications/' + referrerData.id + '_' + Date.now());
-                            window.dbSet(notifyRef, {
-                                message: `🎉 নতুন ইউজার ${userData.name} জয়েন করেছে! +${reward} কয়েন বোনাস যুক্ত হয়েছে!`,
-                                type: 'referral_approved',
-                                timestamp: Date.now()
-                            });
-                        }
-                    });
+                                let notifyRef = window.dbRef(window.db, 'notifications/' + referrerData.id + '_' + Date.now());
+                                window.dbSet(notifyRef, {
+                                    message: `🎉 নতুন ইউজার ${referredName} জয়েন করেছে! +${reward} কয়েন বোনাস যুক্ত হয়েছে!`,
+                                    type: 'referral_approved',
+                                    timestamp: Date.now()
+                                });
+                            }
+                        });
+                    }
                 }
             }).catch((e) => {
                 console.error("Referral transaction error:", e);
@@ -1482,6 +1659,16 @@
 
             const ruleMin = document.getElementById('rule-min-bdt');
             if(ruleMin) ruleMin.innerText = adminSettings.minWithdraw || 20;
+
+            // Referral requirement for withdraw (admin-controlled)
+            const minRefsNeeded = parseInt(adminSettings.minReferralsForWithdraw) || 0;
+            const userRefsCount = userData.approvedReferralsCount || 0;
+            const ruleMinRefs = document.getElementById('rule-min-referrals');
+            if (ruleMinRefs) ruleMinRefs.innerText = minRefsNeeded;
+            const withRefCount = document.getElementById('withdraw-refer-check-count');
+            if (withRefCount) withRefCount.innerText = userRefsCount;
+            const withRefNeed = document.getElementById('withdraw-refer-need-count');
+            if (withRefNeed) withRefNeed.innerText = minRefsNeeded;
 
             const passLbl = document.getElementById('current-pass-lbl');
             if(passLbl) passLbl.innerText = adminSettings.adminPass || "018212";
@@ -2888,6 +3075,15 @@
                 return;
             }
 
+            // Admin-controlled minimum approved referrals required to withdraw
+            let minRefsForWithdraw = parseInt(adminSettings.minReferralsForWithdraw);
+            if (isNaN(minRefsForWithdraw) || minRefsForWithdraw < 0) minRefsForWithdraw = 0;
+            let userApprovedRefs = userData.approvedReferralsCount || 0;
+            if (minRefsForWithdraw > 0 && userApprovedRefs < minRefsForWithdraw) {
+                showNotification(`🚨 উত্তোলন করতে কমপক্ষে ${minRefsForWithdraw}টি অ্যাপ্রুভড রেফার লাগবে! (আপনার রেফার: ${userApprovedRefs}/${minRefsForWithdraw})`);
+                return;
+            }
+
             let coins = parseInt(document.getElementById('withdraw-coins').value) || 0;
             let acc = document.getElementById('withdraw-acc').value.trim();
             let method = document.getElementById('withdraw-method').value;
@@ -3468,6 +3664,8 @@
                 if (minW) minW.value = adminSettings.minWithdraw || 20;
                 const coinR = document.getElementById('admin-coin-rate');
                 if (coinR) coinR.value = adminSettings.coinRate50 || 1;
+                const minRefsW = document.getElementById('admin-min-referrals-withdraw');
+                if (minRefsW) minRefsW.value = (adminSettings.minReferralsForWithdraw !== undefined && adminSettings.minReferralsForWithdraw !== null) ? adminSettings.minReferralsForWithdraw : 0;
                 const chLink = document.getElementById('admin-channel-link-input');
                 if (chLink) chLink.value = adminSettings.channelLink || "";
                 let prizes = adminSettings.lbPrizes || [100, 50, 30, 20, 15, 10, 10, 10, 5, 5];
@@ -3487,6 +3685,9 @@
             adminSettings.referRewardCoins = parseInt(document.getElementById('admin-refer-reward').value) || 100;
             adminSettings.minWithdraw = parseInt(document.getElementById('admin-min-withdraw').value) || 20;
             adminSettings.coinRate50 = parseFloat(document.getElementById('admin-coin-rate').value) || 1;
+            let minRefsVal = parseInt(document.getElementById('admin-min-referrals-withdraw').value);
+            if (isNaN(minRefsVal) || minRefsVal < 0) minRefsVal = 0;
+            adminSettings.minReferralsForWithdraw = minRefsVal;
 
             // Save leaderboard prizes 1-10
             let prizes = [];
