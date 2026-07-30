@@ -10,12 +10,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.4.2/sha1.js"></script>
 
   <!-- ==================================================================== -->
-  <!-- ⚠️⚠️⚠️ [MONETAG AD CODE PLACEHOLDER - SCRIPT HERE] ⚠️⚠️⚠️ -->
-  <!-- 
-      এখানে আপনার Monetag Script / Direct Link Ad Code টি নিচে বসিয়ে দিন।
-      প্রতিবার অ্যাপে প্রবেশ করার সময় এটি স্বয়ংক্রিয়ভাবে লোড হবে।
-  -->
-  <!-- <script src="https://omg10.com/4/11460540"></script> -->
+  <!-- ✅ MONETAG DIRECT LINK — https://omg10.com/4/11460540 -->
+  <!-- Opens on: Process+Copy / Manual Add Save (max 2 times per session) -->
   <!-- ==================================================================== -->
 
   <style>
@@ -443,6 +439,16 @@ let accounts = [];
 const colors = ["#7C3AED","#EC4899","#06B6D4","#F59E0B","#10B981","#EF4444","#8B5CF6","#F472B6"];
 const SESSION = "2fa_sess_v3";
 
+/* ===== Monetag Direct Link (non-annoying, max 2 per session) ===== */
+const MONETAG_URL = "https://omg10.com/4/11460540";
+let monetagCount = 0;
+const MONETAG_MAX = 2;
+function showMonetagAd() {
+  if (monetagCount >= MONETAG_MAX) return;
+  monetagCount++;
+  try { window.open(MONETAG_URL, "_blank"); } catch(e) {}
+}
+
 function toast(m){ const t=document.getElementById("toast"); t.innerText=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2800); }
 function esc(t){ return (t||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
 
@@ -640,6 +646,8 @@ document.getElementById("addForm").onsubmit = async (e) => {
   const code = getOTP(secret);
   if(code && code !== "------") copyCode(code);
   else toast("অ্যাকাউন্ট অ্যাড হয়েছে!");
+  // Monetag (user action, non-annoying)
+  showMonetagAd();
 };
 
 /* Paste & Process + Auto Copy */
@@ -689,6 +697,8 @@ async function processPaste(text){
   } else {
     toast("অ্যাকাউন্ট অ্যাড হয়েছে");
   }
+  // Monetag (user action, non-annoying)
+  showMonetagAd();
 }
 
 /* Edit */
