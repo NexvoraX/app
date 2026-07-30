@@ -2,12 +2,14 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>2FA Authenticator Premium</title>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
   <!-- TOTP Engine Library for Instant & Accurate 2FA Code Generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.4.2/sha1.js"></script>
+  <!-- QR Code Scanner (Camera + Gallery) -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <!-- ==================================================================== -->
   <!-- ✅ MONETAG DIRECT LINK — https://omg10.com/4/11460540 -->
@@ -28,7 +30,9 @@
       --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; transition: background .35s ease, color .35s ease; }
+    /* Theme smooth transitions for surfaces & cards */
+    /* transitions reduced for Android stability */
 
     /* Splash */
     #splash {
@@ -44,7 +48,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 34px; font-weight: 900; color: #fff;
       box-shadow: 0 0 40px rgba(124,58,237,.55);
-      animation: glow 2s ease-in-out infinite;
+      
     }
     @keyframes glow {
       0%,100% { transform: scale(1); box-shadow: 0 0 30px rgba(124,58,237,.5); }
@@ -67,7 +71,7 @@
     .auth-screen.active { display: flex; }
     .auth-card {
       width: 100%; max-width: 380px;
-      background: rgba(28,20,54,.92); backdrop-filter: blur(16px);
+      background: #1C1436; 
       border: 1px solid rgba(124,58,237,.35); border-radius: 22px; padding: 26px 22px;
       box-shadow: 0 20px 50px rgba(0,0,0,.45);
     }
@@ -81,7 +85,8 @@
     .auth-sub { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 20px; }
     .auth-input {
       width: 100%; padding: 13px 15px; margin-bottom: 12px; border-radius: 12px;
-      border: 1px solid var(--border); background: rgba(11,6,24,.7); color: #fff; font-size: 15px; outline: none;
+      border: 1px solid var(--border); background: #0B0618; color: #fff; font-size: 16px; outline: none;
+      min-height: 48px; -webkit-appearance: none;
     }
     .auth-input:focus { border-color: var(--primary); }
     .auth-btn {
@@ -101,13 +106,13 @@
 
     .join-banner {
       background: linear-gradient(90deg,#7C3AED,#EC4899,#F59E0B,#06B6D4,#7C3AED);
-      background-size: 300% 100%; animation: move 7s linear infinite;
+      background-size: 100% 100%;
       padding: 11px 14px; text-align: center; position: sticky; top: 0; z-index: 30;
     }
     @keyframes move { to { background-position: 300% 50%; } }
     .join-btn {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(0,0,0,.38); backdrop-filter: blur(6px);
+      background: rgba(0,0,0,.55);
       color: #fff; font-weight: 700; font-size: 13px;
       padding: 9px 20px; border-radius: 40px; text-decoration: none;
       border: 1px solid rgba(255,255,255,.22);
@@ -137,12 +142,13 @@
     .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); }
     .search-input {
       width: 100%; padding: 12px 14px 12px 40px; border-radius: 12px;
-      border: 1px solid var(--border); background: rgba(11,6,24,.6); color: #fff; font-size: 14px; outline: none;
+      border: 1px solid var(--border); background: #0B0618; color: #fff; font-size: 16px; outline: none;
+      min-height: 46px; -webkit-appearance: none;
     }
     .search-input:focus { border-color: var(--primary); }
 
     .totp-list { flex: 1; padding: 6px 14px 110px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-    .empty { text-align: center; padding: 50px 16px; color: var(--muted); }
+    .empty { text-align: center; padding: 48px 16px; color: #A78BFA; min-height: 180px; }
     .empty-icon { font-size: 44px; margin-bottom: 8px; }
 
     .totp-card {
@@ -164,7 +170,7 @@
       font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
       background: linear-gradient(90deg, var(--acc,#A78BFA), #F472B6);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      animation: hue 5s ease-in-out infinite alternate;
+      
     }
     @keyframes hue { to { filter: hue-rotate(50deg); } }
     .totp-label { font-size: 14px; font-weight: 600; color: #E2E8F0; margin-top: 2px; }
@@ -200,23 +206,26 @@
     }
 
     .modal-bg {
-      position: fixed; inset: 0; background: rgba(5,2,15,.88); backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center; padding: 18px;
-      z-index: 2000; opacity: 0; pointer-events: none; transition: opacity .25s;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5,2,15,.92);
+      display: none; align-items: flex-start; justify-content: center;
+      padding: 18px; padding-top: 40px; z-index: 2000;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
     }
-    .modal-bg.active { opacity: 1; pointer-events: auto; }
+    .modal-bg.active { display: flex; }
     .modal {
       background: #1C1436; width: 100%; max-width: 400px; border-radius: 20px;
       padding: 22px; border: 1px solid rgba(124,58,237,.3);
-      box-shadow: 0 20px 45px rgba(0,0,0,.5); transform: translateY(20px); transition: transform .25s;
+      box-shadow: 0 20px 45px rgba(0,0,0,.5);
+      max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
     }
-    .modal-bg.active .modal { transform: translateY(0); }
     .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
     .fg { margin-bottom: 12px; }
     .fl { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
     .fi {
       width: 100%; padding: 12px 13px; border-radius: 11px;
-      border: 1px solid var(--border); background: rgba(11,6,24,.7); color: #fff; font-size: 14px; outline: none;
+      border: 1px solid var(--border); background: #0B0618; color: #fff; font-size: 16px; outline: none;
+      min-height: 46px; -webkit-appearance: none;
     }
     .fi:focus { border-color: var(--primary); }
     textarea.fi { min-height: 100px; resize: vertical; font-family: monospace; }
@@ -235,6 +244,151 @@
       border: 1px solid rgba(167,139,250,.3);
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  
+    /* ===== Stable Nav + Settings + Money UI ===== */
+    .nav-tabs {
+      display: flex; gap: 8px; padding: 10px 14px; background: var(--surface);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .nav-tab {
+      flex: 1; padding: 11px 8px; text-align: center; font-size: 13px; font-weight: 700;
+      color: var(--muted); background: rgba(11,6,24,.5); border: 1px solid var(--border);
+      border-radius: 12px; cursor: pointer; transition: .2s;
+    }
+    .nav-tab.active {
+      color: #fff; background: linear-gradient(135deg, var(--primary), #EC4899);
+      border-color: transparent; box-shadow: 0 4px 14px rgba(124,58,237,.35);
+    }
+    .view-panel { display: none; width: 100%; }
+    .view-panel.active { display: block; }
+    .money-dash { padding: 12px 14px 120px; }
+    .money-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .money-stat {
+      background: var(--card); border-radius: 14px; padding: 14px;
+      border: 1px solid rgba(124,58,237,.2);
+    }
+    .money-stat.full { grid-column: 1 / -1; }
+    .money-stat-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+    .money-stat-val { font-size: 18px; font-weight: 800; margin-top: 4px; color: #fff; }
+    .money-stat-val.green { color: #34D399; }
+    .money-stat-val.red { color: #F87171; }
+    .money-actions { display: flex; gap: 10px; margin-bottom: 14px; }
+    .money-act-btn {
+      flex: 1; padding: 14px 10px; border-radius: 14px; border: none;
+      font-size: 14px; font-weight: 700; cursor: pointer; color: #fff;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .money-act-btn.income { background: linear-gradient(135deg,#059669,#10B981); }
+    .money-act-btn.expense { background: linear-gradient(135deg,#DC2626,#EF4444); }
+    .money-act-btn:active { opacity: .85; transform: scale(.97); }
+    .wallet-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 14px; background: var(--card); border-radius: 12px; margin-bottom: 8px;
+      border: 1px solid rgba(124,58,237,.15);
+    }
+    .wallet-name { font-size: 13px; font-weight: 600; }
+    .wallet-bal { font-size: 14px; font-weight: 700; color: #C4B5FD; }
+    .tx-item {
+      background: var(--card); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
+      border: 1px solid rgba(124,58,237,.15); display: flex; justify-content: space-between; align-items: center;
+    }
+    .tx-cat { font-size: 11px; color: var(--muted); font-weight: 600; }
+    .tx-note { font-size: 13px; font-weight: 600; margin-top: 2px; }
+    .tx-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .tx-amt { font-size: 15px; font-weight: 800; }
+    .tx-amt.inc { color: #34D399; }
+    .tx-amt.exp { color: #F87171; }
+    .progress-bar-wrap { height: 8px; background: #2E1065; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+    .progress-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg,var(--primary),#EC4899); }
+    .goal-card, .loan-card, .bill-card {
+      background: var(--card); border-radius: 14px; padding: 14px; margin-bottom: 10px;
+      border: 1px solid rgba(124,58,237,.2);
+    }
+    .settings-section { margin-bottom: 18px; }
+    .settings-section-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--muted); }
+    .group-chip {
+      display: inline-block; padding: 8px 14px; background: rgba(124,58,237,.2);
+      border-radius: 20px; font-size: 13px; font-weight: 600; color: #C4B5FD;
+      margin: 4px; cursor: pointer; border: 1px solid rgba(124,58,237,.3);
+    }
+    .group-acc-item { padding: 8px 10px; background: rgba(11,6,24,.5); border-radius: 8px; margin-bottom: 4px; font-size: 13px; }
+    .ai-insight {
+      background: rgba(124,58,237,.12); border: 1px solid rgba(124,58,237,.3);
+      border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font-size: 13px; line-height: 1.5;
+    }
+    .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .filter-btn {
+      padding: 7px 14px; border-radius: 16px; border: 1px solid var(--border);
+      background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .money-sub-nav {
+      display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 12px;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .money-sub-nav::-webkit-scrollbar { display: none; }
+    .money-sub-btn {
+      padding: 9px 14px; border-radius: 22px; border: 1px solid var(--border);
+      background: rgba(11,6,24,.55); color: var(--muted); font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    }
+    .money-sub-btn.active {
+      background: linear-gradient(135deg,var(--primary),#EC4899); color: #fff; border-color: transparent;
+    }
+    .select-fi {
+      width: 100%; padding: 12px 13px; border-radius: 11px;
+      border: 1px solid var(--border); background: rgba(11,6,24,.7); color: #fff; font-size: 14px; outline: none;
+    }
+    .pin-dots { display: flex; gap: 12px; justify-content: center; margin: 16px 0; }
+    .pin-dot {
+      width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); background: transparent;
+    }
+    .pin-dot.filled { background: var(--primary); border-color: var(--primary); }
+    .pin-pad {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 240px; margin: 0 auto;
+    }
+    .pin-key {
+      height: 52px; border-radius: 50%; border: 1px solid var(--border);
+      background: rgba(11,6,24,.6); color: #fff; font-size: 20px; font-weight: 700; cursor: pointer;
+    }
+    .pin-key:active { background: var(--primary); }
+
+  
+    /* Android keyboard / WebView stability */
+    input.fi, input.auth-input, input.search-input, textarea.fi, select.select-fi {
+      font-size: 16px !important;
+    }
+    .modal-bg.active {
+      display: flex;
+      align-items: flex-start;
+    }
+    html, body {
+      background-color: #0B0618;
+      overscroll-behavior: none;
+    }
+    #mainApp {
+      background-color: var(--bg);
+    }
+    /* Disable expensive filters */
+    * {
+      -webkit-backface-visibility: hidden;
+    }
+
+  
+    .group-filter-bar {
+      display: flex; gap: 8px; overflow-x: auto; padding: 8px 14px 4px;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-shrink: 0;
+    }
+    .group-filter-bar::-webkit-scrollbar { display: none; }
+    .group-filter-chip {
+      padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border);
+      background: rgba(11,6,24,.6); color: var(--muted); font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    }
+    .group-filter-chip.active {
+      background: linear-gradient(135deg, var(--primary), #EC4899); color: #fff; border-color: transparent;
+    }
+
   </style>
 </head>
 <body>
@@ -256,6 +410,8 @@
     <input class="auth-input" id="regEmail" placeholder="ইমেইল" type="email">
     <input class="auth-input" id="regPhone" placeholder="মোবাইল নাম্বার" type="tel">
     <input class="auth-input" id="regPass" placeholder="পাসওয়ার্ড" type="password">
+    <input class="auth-input" id="regRecovery" placeholder="অ্যাকাউন্ট পুনরুদ্ধার নেম (মনে রাখবেন)" type="text">
+    <p style="font-size:11px;color:var(--muted);margin:-6px 0 12px;text-align:center">পাসওয়ার্ড ভুলে গেলে এই নেম দিয়ে পুনরুদ্ধার করতে পারবেন</p>
     <button class="auth-btn" id="regBtn">অ্যাকাউন্ট তৈরি করুন</button>
     <div class="auth-switch">ইতিমধ্যে অ্যাকাউন্ট আছে? <span id="toLogin">লগইন করুন</span></div>
   </div>
@@ -271,7 +427,23 @@
     <input class="auth-input" id="loginId" placeholder="ইমেইল অথবা নাম্বার" type="text">
     <input class="auth-input" id="loginPass" placeholder="পাসওয়ার্ড" type="password">
     <button class="auth-btn" id="loginBtn">লগইন</button>
+    <div class="auth-switch" style="margin-top:12px"><span id="toForgot" style="color:#F472B6;cursor:pointer;font-weight:600">পাসওয়ার্ড ভুলে গেছেন?</span></div>
     <div class="auth-switch">নতুন ইউজার? <span id="toReg">রেজিস্টার করুন</span></div>
+  </div>
+</div>
+
+<!-- Forgot Password / Recovery -->
+<div class="auth-screen" id="forgotScreen">
+  <div class="auth-card">
+    <div class="auth-logo">2F</div>
+    <div class="auth-title">পাসওয়ার্ড পুনরুদ্ধার</div>
+    <div class="auth-sub">অ্যাকাউন্ট পুনরুদ্ধার নেম দিন</div>
+    <div class="auth-error" id="forgotError"></div>
+    <input class="auth-input" id="forgotRecovery" placeholder="অ্যাকাউন্ট পুনরুদ্ধার নেম" type="text">
+    <input class="auth-input" id="forgotNewPass" placeholder="নতুন পাসওয়ার্ড" type="password" style="display:none">
+    <input class="auth-input" id="forgotNewPass2" placeholder="নতুন পাসওয়ার্ড আবার" type="password" style="display:none">
+    <button class="auth-btn" id="forgotBtn">পুনরুদ্ধার করুন</button>
+    <div class="auth-switch">ফিরে যান? <span id="toLoginFromForgot">লগইন করুন</span></div>
   </div>
 </div>
 
@@ -287,6 +459,12 @@
       <div class="brand-title">Authenticator</div>
     </div>
     <div class="header-actions">
+      <button class="icon-btn" id="themeBtn" title="Theme / কালার চেঞ্জ">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </button>
       <button class="icon-btn" id="logoutBtn" title="Logout">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
       </button>
@@ -296,19 +474,46 @@
     </div>
   </header>
 
-  <div class="search-box">
-    <div class="search-wrap">
-      <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="searchInput" class="search-input" placeholder="Search accounts...">
+  <div class="nav-tabs" id="mainNavTabs">
+    <button type="button" class="nav-tab active" id="tabTfa" data-view="tfaView">🔐 2FA</button>
+    <button type="button" class="nav-tab" id="tabMoney" data-view="moneyView">💰 Money</button>
+  </div>
+
+  <div class="view-panel active" id="tfaView">
+    <div class="group-filter-bar" id="groupFilterBar"></div>
+    <div class="search-box">
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchInput" class="search-input" placeholder="Search accounts...">
+      </div>
+    </div>
+    <main class="totp-list" id="totpList"></main>
+  </div>
+
+  <div class="view-panel" id="moneyView">
+    <div class="money-dash" id="moneyDash">
+      <div class="money-sub-nav" id="moneySubNav">
+        <button type="button" class="money-sub-btn active" data-msub="dash" data-i18n-title="tipDash" title="সার্বিক হিসাব দেখুন">📊 <span data-i18n="dash">Dashboard</span></button>
+        <button type="button" class="money-sub-btn" data-msub="tx" data-i18n-title="tipTx" title="সব লেনদেনের ইতিহাস">📋 <span data-i18n="history">History</span></button>
+        <button type="button" class="money-sub-btn" data-msub="wallets" data-i18n-title="tipWallets" title="প্রতিটি ওয়ালেটের ব্যালেন্স">👛 <span data-i18n="wallets">Wallets</span></button>
+        <button type="button" class="money-sub-btn" data-msub="budget" data-i18n-title="tipBudget" title="মাসিক বাজেট সেট ও ট্র্যাক">📅 <span data-i18n="budget">Budget</span></button>
+        <button type="button" class="money-sub-btn" data-msub="goals" data-i18n-title="tipGoals" title="সঞ্চয়ের লক্ষ্য">🎯 <span data-i18n="goals">Goals</span></button>
+        <button type="button" class="money-sub-btn" data-msub="loans" data-i18n-title="tipLoans" title="ধার দেওয়া/নেওয়া হিসাব">🤝 <span data-i18n="loans">Loans</span></button>
+        <button type="button" class="money-sub-btn" data-msub="bills" data-i18n-title="tipBills" title="বিল রিমাইন্ডার">🔔 <span data-i18n="bills">Bills</span></button>
+        <button type="button" class="money-sub-btn" data-msub="ai" data-i18n-title="tipAi" title="খরচের পরামর্শ ও ইনসাইট">🤖 <span data-i18n="ai">AI</span></button>
+        <button type="button" class="money-sub-btn" data-msub="reports" data-i18n-title="tipReports" title="রিপোর্ট ও এক্সপোর্ট">📈 <span data-i18n="reports">Reports</span></button>
+      </div>
+      <div id="moneySectionHint" style="font-size:12px;color:var(--muted);padding:0 4px 10px;line-height:1.4"></div>
+      <div id="moneySubContent"></div>
     </div>
   </div>
 
-  <main class="totp-list" id="totpList"></main>
-
   <div class="fab-wrap">
     <div class="fab-menu" id="fabMenu">
+      <button class="fab-opt" id="qrScanBtn">📷 QR স্ক্যান</button>
       <button class="fab-opt" id="manualAddBtn">✏️ ম্যানুয়ালি যোগ করুন</button>
       <button class="fab-opt" id="paste2faBtn">📋 2FA পেস্ট</button>
+      <button class="fab-opt" id="importBtn">📥 ইমপোর্ট (JSON)</button>
     </div>
     <button class="fab" id="fabBtn">+</button>
   </div>
@@ -320,8 +525,10 @@
     <div class="modal-title">নতুন 2FA অ্যাকাউন্ট</div>
     <form id="addForm">
       <div class="fg"><label class="fl">Label</label><input class="fi" id="addLabel" required placeholder="user@gmail.com"></div>
-      <div class="fg"><label class="fl">Issuer</label><input class="fi" id="addIssuer" placeholder="Facebook, Instagram, Google..."></div>
+      <div class="fg"><label class="fl">Issuer</label><input class="fi" id="addIssuer" placeholder="পাসওয়ার্ড"></div>
       <div class="fg"><label class="fl">Secret Key (Base32)</label><input class="fi" id="addSecret" required placeholder="JBSWY3DPEHPK3PXP" style="text-transform:uppercase"></div>
+      <div class="fg"><label class="fl">গ্রুপ / ক্যাটাগরি</label><input class="fi" id="addGroup" placeholder="Social, Banking, Work, Crypto..."></div>
+      <div class="fg"><label class="fl">নোট (ঐচ্ছিক)</label><input class="fi" id="addNote" placeholder="যেকোনো নোট..."></div>
       <div class="ma">
         <button type="button" class="btn btn-s" id="closeAdd">Cancel</button>
         <button type="submit" class="btn btn-p">Save</button>
@@ -329,6 +536,23 @@
     </form>
   </div>
 </div>
+
+<!-- QR Scan Modal -->
+<div class="modal-bg" id="qrModal">
+  <div class="modal">
+    <div class="modal-title">📷 QR কোড স্ক্যান</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">ক্যামেরা দিয়ে স্ক্যান করুন অথবা গ্যালারি থেকে ছবি বেছে নিন</p>
+    <div id="qrReader" style="width:100%;border-radius:12px;overflow:hidden;margin-bottom:12px;background:#000;min-height:180px"></div>
+    <input type="file" id="qrGalleryInput" accept="image/*" style="display:none">
+    <div class="ma" style="flex-wrap:wrap">
+      <button type="button" class="btn btn-s" id="closeQr">Cancel</button>
+      <button type="button" class="btn btn-p" id="qrGalleryBtn">🖼️ গ্যালারি থেকে</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import hidden file input -->
+<input type="file" id="importFileInput" accept=".json,application/json" style="display:none">
 
 <!-- Paste Modal -->
 <div class="modal-bg" id="pasteModal">
@@ -350,6 +574,9 @@
     <input type="hidden" id="editId">
     <div class="fg"><label class="fl">Label</label><input class="fi" id="editLabel" required></div>
     <div class="fg"><label class="fl">Issuer</label><input class="fi" id="editIssuer"></div>
+    <div class="fg"><label class="fl">Secret Key (Base32)</label><input class="fi" id="editSecret" required style="text-transform:uppercase" placeholder="JBSWY3DPEHPK3PXP"></div>
+    <div class="fg"><label class="fl">গ্রুপ / ক্যাটাগরি</label><input class="fi" id="editGroup" placeholder="Social, Banking, Work..."></div>
+    <div class="fg"><label class="fl">নোট (ঐচ্ছিক)</label><input class="fi" id="editNote" placeholder="যেকোনো নোট..."></div>
     <div class="ma">
       <button class="btn btn-d" id="delBtn">Delete</button>
       <button class="btn btn-s" id="closeEdit">Cancel</button>
@@ -357,6 +584,214 @@
     </div>
   </div>
 </div>
+
+<!-- Settings Modal -->
+<div class="modal-bg" id="settingsModal">
+  <div class="modal" style="max-height:88vh;overflow-y:auto">
+    <div class="modal-title">⚙️ সেটিংস</div>
+    <div class="settings-section">
+      <div class="settings-section-title">🔐 অ্যাকাউন্ট</div>
+      <div class="fg"><label class="fl">নতুন পাসওয়ার্ড</label><input class="fi" id="setNewPass" type="password" placeholder="নতুন পাসওয়ার্ড"></div>
+      <div class="fg"><label class="fl">পাসওয়ার্ড আবার</label><input class="fi" id="setNewPass2" type="password" placeholder="কনফার্ম"></div>
+      <button type="button" class="btn btn-p" id="changePassBtn" style="width:100%;margin-bottom:12px">পাসওয়ার্ড পরিবর্তন</button>
+      <div class="fg"><label class="fl">নতুন ইমেইল</label><input class="fi" id="setNewEmail" type="email" placeholder="new@email.com"></div>
+      <button type="button" class="btn btn-p" id="changeEmailBtn" style="width:100%;margin-bottom:12px">ইমেইল পরিবর্তন</button>
+      <div class="fg"><label class="fl">পুনরুদ্ধার নেম</label><input class="fi" id="setNewRecovery" type="text" placeholder="recovery name"></div>
+      <button type="button" class="btn btn-p" id="changeRecoveryBtn" style="width:100%;margin-bottom:12px">পুনরুদ্ধার নেম পরিবর্তন</button>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">📁 গ্রুপসমূহ</div>
+      <div id="groupsList"></div>
+      <div id="groupAccountsBox" style="display:none;margin-top:10px">
+        <div class="settings-section-title" id="groupDetailTitle"></div>
+        <div id="groupAccList"></div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">🔒 PIN Lock</div>
+      <div class="fg"><label class="fl">৪ ডিজিট PIN</label><input class="fi" id="setPinInput" type="password" maxlength="4" placeholder="••••" inputmode="numeric"></div>
+      <button type="button" class="btn btn-p" id="savePinBtn" style="width:100%;margin-bottom:8px">PIN সেভ</button>
+      <button type="button" class="btn btn-s" id="clearPinBtn" style="width:100%">PIN মুছুন</button>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title" data-i18n="currency">Currency</div>
+      <div class="fg">
+        <select class="select-fi" id="currencySelect">
+          <option value="৳">৳ BDT</option>
+          <option value="$">$ USD</option>
+          <option value="₹">₹ INR</option>
+          <option value="€">€ EUR</option>
+        </select>
+      </div>
+      <button type="button" class="btn btn-p" id="saveCurrencyBtn" style="width:100%" data-i18n="save">সেভ</button>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title" data-i18n="language">🌐 ভাষা / Language</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="btn btn-p lang-btn" data-lang="bn" style="flex:1;min-width:90px">বাংলা</button>
+        <button type="button" class="btn btn-s lang-btn" data-lang="en" style="flex:1;min-width:90px">English</button>
+        <button type="button" class="btn btn-s lang-btn" data-lang="hi" style="flex:1;min-width:90px">हिंदी</button>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center" data-i18n="langHint">ভাষা বেছে নিন — পুরো অ্যাপ বদলে যাবে</p>
+    </div>
+    <div class="ma"><button type="button" class="btn btn-s" id="closeSettings" data-i18n="close">বন্ধ</button></div>
+  </div>
+</div>
+
+<!-- Income Modal -->
+<div class="modal-bg" id="incomeModal">
+  <div class="modal" style="max-height:88vh;overflow-y:auto">
+    <div class="modal-title">💰 ইনকাম যোগ</div>
+    <div class="fg"><label class="fl">Amount</label><input class="fi" id="incAmount" type="number" step="0.01" placeholder="0"></div>
+    <div class="fg"><label class="fl" data-i18n="category">Category</label>
+      <select class="select-fi" id="incCategory">
+        <option value="Salary">Salary</option><option value="Business">Business</option><option value="Freelancing">Freelancing</option>
+        <option value="Bonus">Bonus</option><option value="Investment">Investment</option><option value="Gift">Gift</option><option value="Other">Other</option>
+        <option value="__custom__">✏️ Custom / নিজে লিখুন</option>
+      </select>
+    </div>
+    <div class="fg" id="incCustomCatWrap" style="display:none"><label class="fl" data-i18n="customCategory">কাস্টম ক্যাটাগরি</label><input class="fi" id="incCustomCat" placeholder="নিজে লিখুন..."></div>
+    <div class="fg"><label class="fl">Wallet</label>
+      <select class="select-fi" id="incWallet">
+        <option>Cash</option><option>bKash</option><option>Nagad</option>
+        <option>Rocket</option><option>Bank Account</option><option>Card</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Date</label><input class="fi" id="incDate" type="date"></div>
+    <div class="fg"><label class="fl">Time</label><input class="fi" id="incTime" type="time"></div>
+    <div class="fg"><label class="fl">Note</label><input class="fi" id="incNote" placeholder="নোট..."></div>
+    <div class="ma">
+      <button type="button" class="btn btn-s" id="closeIncome">Cancel</button>
+      <button type="button" class="btn btn-p" id="saveIncome">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Expense Modal -->
+<div class="modal-bg" id="expenseModal">
+  <div class="modal" style="max-height:88vh;overflow-y:auto">
+    <div class="modal-title">💸 খরচ যোগ</div>
+    <div class="fg"><label class="fl">Amount</label><input class="fi" id="expAmount" type="number" step="0.01" placeholder="0"></div>
+    <div class="fg"><label class="fl" data-i18n="category">Category</label>
+      <select class="select-fi" id="expCategory">
+        <option value="বাজার">বাজার</option><option value="খাবার">খাবার</option><option value="বাসা ভাড়া">বাসা ভাড়া</option>
+        <option value="বিদ্যুৎ">বিদ্যুৎ</option><option value="গ্যাস">গ্যাস</option><option value="পানি">পানি</option>
+        <option value="ইন্টারনেট">ইন্টারনেট</option><option value="মোবাইল রিচার্জ">মোবাইল রিচার্জ</option><option value="চিকিৎসা">চিকিৎসা</option>
+        <option value="শিক্ষা">শিক্ষা</option><option value="যাতায়াত">যাতায়াত</option><option value="শপিং">শপিং</option>
+        <option value="বিনোদন">বিনোদন</option><option value="দান">দান</option><option value="অন্যান্য">অন্যান্য</option>
+        <option value="__custom__">✏️ Custom / নিজে লিখুন</option>
+      </select>
+    </div>
+    <div class="fg" id="expCustomCatWrap" style="display:none"><label class="fl" data-i18n="customCategory">কাস্টম ক্যাটাগরি</label><input class="fi" id="expCustomCat" placeholder="নিজে লিখুন..."></div>
+    <div class="fg"><label class="fl">Wallet</label>
+      <select class="select-fi" id="expWallet">
+        <option>Cash</option><option>bKash</option><option>Nagad</option>
+        <option>Rocket</option><option>Bank Account</option><option>Card</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Date</label><input class="fi" id="expDate" type="date"></div>
+    <div class="fg"><label class="fl">Time</label><input class="fi" id="expTime" type="time"></div>
+    <div class="fg"><label class="fl">Note</label><input class="fi" id="expNote" placeholder="নোট..."></div>
+    <div class="ma">
+      <button type="button" class="btn btn-s" id="closeExpense">Cancel</button>
+      <button type="button" class="btn btn-p" id="saveExpense">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Budget Modal -->
+<div class="modal-bg" id="budgetModal">
+  <div class="modal">
+    <div class="modal-title">📅 Monthly Budget</div>
+    <div class="fg"><label class="fl">Amount</label><input class="fi" id="budgetAmount" type="number" step="0.01" placeholder="0"></div>
+    <div class="ma">
+      <button type="button" class="btn btn-s" id="closeBudget">Cancel</button>
+      <button type="button" class="btn btn-p" id="saveBudget">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goal Modal -->
+<div class="modal-bg" id="goalModal">
+  <div class="modal">
+    <div class="modal-title">🎯 Saving Goal</div>
+    <div class="fg"><label class="fl">Goal Name</label><input class="fi" id="goalName" placeholder="Emergency Fund"></div>
+    <div class="fg"><label class="fl">Target</label><input class="fi" id="goalTarget" type="number" step="0.01"></div>
+    <div class="fg"><label class="fl">Saved</label><input class="fi" id="goalSaved" type="number" step="0.01" value="0"></div>
+    <div class="ma">
+      <button type="button" class="btn btn-s" id="closeGoal">Cancel</button>
+      <button type="button" class="btn btn-p" id="saveGoal">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loan Modal -->
+<div class="modal-bg" id="loanModal">
+  <div class="modal">
+    <div class="modal-title">🤝 Loan</div>
+    <div class="fg"><label class="fl">Type</label>
+      <select class="select-fi" id="loanType"><option value="given">দিয়েছি</option><option value="taken">নিয়েছি</option></select>
+    </div>
+    <div class="fg"><label class="fl">Person</label><input class="fi" id="loanPerson" placeholder="নাম"></div>
+    <div class="fg"><label class="fl">Amount</label><input class="fi" id="loanAmount" type="number" step="0.01"></div>
+    <div class="fg"><label class="fl">Due Date</label><input class="fi" id="loanDue" type="date"></div>
+    <div class="fg"><label class="fl">Note</label><input class="fi" id="loanNote" placeholder="নোট"></div>
+    <div class="ma">
+      <button type="button" class="btn btn-s" id="closeLoan">Cancel</button>
+      <button type="button" class="btn btn-p" id="saveLoan">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bill Modal -->
+<div class="modal-bg" id="billModal">
+  <div class="modal">
+    <div class="modal-title">🔔 Bill Reminder</div>
+    <div class="fg"><label class="fl">Type</label>
+      <select class="select-fi" id="billType">
+        <option>বিদ্যুৎ</option><option>গ্যাস</option><option>পানি</option>
+        <option>ইন্টারনেট</option><option>মোবাইল</option><option>বাসা ভাড়া</option><option>Custom</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Custom Name</label><input class="fi" id="billCustom" placeholder="কাস্টম"></div>
+    <div class="fg"><label class="fl">Amount</label><input class="fi" id="billAmount" type="number" step="0.01"></div>
+    <div class="fg"><label class="fl">Due Date</label><input class="fi" id="billDue" type="date"></div>
+    <div class="ma">
+      <button type="button" class="btn btn-s" id="closeBill">Cancel</button>
+      <button type="button" class="btn btn-p" id="saveBill">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN Screen -->
+<div class="auth-screen" id="pinScreen">
+  <div class="auth-card" style="text-align:center">
+    <div class="auth-logo">🔒</div>
+    <div class="auth-title">PIN লক</div>
+    <div class="auth-sub">আপনার PIN দিন</div>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="pin-pad" id="pinPad">
+      <button type="button" class="pin-key" data-k="1">1</button>
+      <button type="button" class="pin-key" data-k="2">2</button>
+      <button type="button" class="pin-key" data-k="3">3</button>
+      <button type="button" class="pin-key" data-k="4">4</button>
+      <button type="button" class="pin-key" data-k="5">5</button>
+      <button type="button" class="pin-key" data-k="6">6</button>
+      <button type="button" class="pin-key" data-k="7">7</button>
+      <button type="button" class="pin-key" data-k="8">8</button>
+      <button type="button" class="pin-key" data-k="9">9</button>
+      <button type="button" class="pin-key" data-k="c">C</button>
+      <button type="button" class="pin-key" data-k="0">0</button>
+      <button type="button" class="pin-key" data-k="b">⌫</button>
+    </div>
+    <div class="auth-error" id="pinError" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- Offline + Help indicator -->
+<div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:5000;background:#EF4444;color:#fff;text-align:center;padding:6px;font-size:12px;font-weight:600">📡 অফলাইন মোড — কোড জেনারেট হচ্ছে (ইন্টারনেট লাগবে না)</div>
 
 <div class="toast" id="toast"></div>
 
@@ -439,20 +874,95 @@ let accounts = [];
 const colors = ["#7C3AED","#EC4899","#06B6D4","#F59E0B","#10B981","#EF4444","#8B5CF6","#F472B6"];
 const SESSION = "2fa_sess_v3";
 
-/* ===== Monetag Direct Link (non-annoying, max 2 per session) ===== */
+/* ===== Theme System — 12 Beautiful Color Themes (cycle on button click) ===== */
+const THEME_KEY = "2fa_theme_idx_v1";
+const themes = [
+  { name:"Violet", primary:"#7C3AED", primaryHover:"#6D28D9", bg:"#0B0618", surface:"#160F2A", card:"#1C1436", muted:"#A78BFA", border:"#3B2A5E" },
+  { name:"Rose", primary:"#EC4899", primaryHover:"#DB2777", bg:"#1A0A14", surface:"#2A1220", card:"#3B1A2C", muted:"#F9A8D4", border:"#5B2A45" },
+  { name:"Cyan", primary:"#06B6D4", primaryHover:"#0891B2", bg:"#061418", surface:"#0F222A", card:"#143036", muted:"#67E8F9", border:"#1E4A55" },
+  { name:"Amber", primary:"#F59E0B", primaryHover:"#D97706", bg:"#181006", surface:"#2A1F0F", card:"#362A14", muted:"#FCD34D", border:"#5E4A1E" },
+  { name:"Emerald", primary:"#10B981", primaryHover:"#059669", bg:"#061812", surface:"#0F2A1E", card:"#14362A", muted:"#6EE7B7", border:"#1E5A45" },
+  { name:"Red", primary:"#EF4444", primaryHover:"#DC2626", bg:"#180606", surface:"#2A0F0F", card:"#361414", muted:"#FCA5A5", border:"#5E1E1E" },
+  { name:"Indigo", primary:"#6366F1", primaryHover:"#4F46E5", bg:"#0A0618", surface:"#14102A", card:"#1C1836", muted:"#A5B4FC", border:"#2A255E" },
+  { name:"Teal", primary:"#14B8A6", primaryHover:"#0D9488", bg:"#061816", surface:"#0F2A28", card:"#143634", muted:"#5EEAD4", border:"#1E5A55" },
+  { name:"Orange", primary:"#F97316", primaryHover:"#EA580C", bg:"#180E06", surface:"#2A1A0F", card:"#362414", muted:"#FDBA74", border:"#5E3A1E" },
+  { name:"Blue", primary:"#3B82F6", primaryHover:"#2563EB", bg:"#060B18", surface:"#0F1A2A", card:"#142436", muted:"#93C5FD", border:"#1E3A5E" },
+  { name:"Fuchsia", primary:"#D946EF", primaryHover:"#C026D3", bg:"#160618", surface:"#280F2A", card:"#361436", muted:"#F0ABFC", border:"#5A1E5E" },
+  { name:"Lime", primary:"#84CC16", primaryHover:"#65A30D", bg:"#0E1806", surface:"#1A2A0F", card:"#243614", muted:"#BEF264", border:"#3A5E1E" }
+];
+let themeIdx = parseInt(localStorage.getItem(THEME_KEY) || "0", 10) || 0;
+if (themeIdx < 0 || themeIdx >= themes.length) themeIdx = 0;
+
+function applyTheme(idx) {
+  const t = themes[idx];
+  if (!t) return;
+  try {
+    const root = document.documentElement;
+    root.style.setProperty("--primary", t.primary);
+    root.style.setProperty("--primary-hover", t.primaryHover);
+    root.style.setProperty("--bg", t.bg);
+    root.style.setProperty("--surface", t.surface);
+    root.style.setProperty("--card", t.card);
+    root.style.setProperty("--muted", t.muted);
+    root.style.setProperty("--border", t.border);
+    document.body.style.backgroundColor = t.bg;
+    localStorage.setItem(THEME_KEY, String(idx));
+  } catch(e){}
+}
+
+function cycleTheme() {
+  themeIdx = (themeIdx + 1) % themes.length;
+  applyTheme(themeIdx);
+  toast("🎨 " + themes[themeIdx].name + " থিম");
+}
+
+// Apply theme as early as possible for consistent UX (splash + auth screens)
+try { applyTheme(themeIdx); } catch(e) {}
+
+/* ===== Monetag Direct Link ===== */
+/* Paste = every 5th time | Manual = first 2 free PER ACCOUNT (persists after reopen) */
+/* Opens in new tab so Back/close returns to app without reload */
 const MONETAG_URL = "https://omg10.com/4/11460540";
-let monetagCount = 0;
-const MONETAG_MAX = 2;
-function showMonetagAd() {
-  if (monetagCount >= MONETAG_MAX) return;
-  monetagCount++;
-  try { window.open(MONETAG_URL, "_blank"); } catch(e) {}
+const PASTE_AD_EVERY = 5;
+const MANUAL_FREE = 2; // first 2 manual adds per account = no ad
+
+function openMonetagLink() {
+  // New tab → app stays loaded, no splash/reload on return
+  try {
+    const w = window.open(MONETAG_URL, "_blank");
+    if (!w) {
+      // Popup blocked: soft fallback same-tab (Back may use bfcache)
+      sessionStorage.setItem("mt_from_ad", "1");
+      window.location.href = MONETAG_URL;
+    }
+  } catch(e) {}
+}
+
+function showMonetagAdManual() {
+  // Per-account counter — survives app close & reopen (not reset each visit)
+  const key = currentUser ? ("mt_manual_" + currentUser.id) : "mt_manual_guest";
+  let count = parseInt(localStorage.getItem(key) || "0", 10) || 0;
+  count++;
+  localStorage.setItem(key, String(count));
+  if (count <= MANUAL_FREE) return; // only first 2 free for this account
+  openMonetagLink();
+}
+
+function showMonetagAdPaste() {
+  // Paste counter also per account (persists)
+  const key = currentUser ? ("mt_paste_" + currentUser.id) : "mt_paste_guest";
+  let count = parseInt(localStorage.getItem(key) || "0", 10) || 0;
+  count++;
+  localStorage.setItem(key, String(count));
+  if (count % PASTE_AD_EVERY === 0) {
+    openMonetagLink();
+  }
 }
 
 function toast(m){ const t=document.getElementById("toast"); t.innerText=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2800); }
 function esc(t){ return (t||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
 
-function copyCode(c){ 
+function copyCode(c, accId){ 
   if(!c||c==="------") return; 
   try {
     if(navigator.clipboard && window.isSecureContext) {
@@ -468,6 +978,21 @@ function copyCode(c){
       document.execCommand('copy');
       document.body.removeChild(input);
     }
+    // Vibration feedback (mobile)
+    try { if(navigator.vibrate) navigator.vibrate(40); } catch(e){}
+    // Soft beep feedback
+    try {
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 880; g.gain.value = 0.06;
+      o.start(); setTimeout(()=>{ o.stop(); ctx.close(); }, 80);
+    } catch(e){}
+    // Track last used for sorting
+    if(accId){
+      const a = accounts.find(x=>x.id===accId);
+      if(a){ a.lastUsed = Date.now(); saveAccountsToFirebase(); }
+    }
     toast("✅ "+c+" কপি হয়েছে!"); 
     bumpToday(); 
   } catch(err) {
@@ -481,15 +1006,61 @@ function bumpToday(){
   db.ref("stats/total2faGenerated").transaction(v => (v||0)+1);
   db.ref("stats/daily/"+d).transaction(v => (v||0)+1);
   db.ref("users/"+currentUser.id+"/genToday").transaction(v => (v||0)+1);
+  db.ref("users/"+currentUser.id+"/genLifetime").transaction(v => (v||0)+1);
 }
 
 /* ===== Render TOTP List ===== */
+let activeGroupFilter = "All";
+
+function updateGroupFilterBar(){
+  try {
+    const bar = document.getElementById("groupFilterBar");
+    if(!bar) return;
+    const groups = {};
+    (accounts||[]).forEach(a => {
+      const g = (a.group||"").trim();
+      if(g) groups[g] = (groups[g]||0)+1;
+    });
+    const keys = Object.keys(groups).sort();
+    let html = '<button type="button" class="group-filter-chip'+(activeGroupFilter==="All"?' active':'')+'" data-gf="All">All ('+(accounts||[]).length+')</button>';
+    keys.forEach(g => {
+      html += '<button type="button" class="group-filter-chip'+(activeGroupFilter===g?' active':'')+'" data-gf="'+esc(g)+'">'+esc(g)+' ('+groups[g]+')</button>';
+    });
+    // Ungrouped
+    const ungrouped = (accounts||[]).filter(a => !(a.group||"").trim()).length;
+    if(ungrouped > 0){
+      html += '<button type="button" class="group-filter-chip'+(activeGroupFilter==="__none__"?' active':'')+'" data-gf="__none__">Other ('+ungrouped+')</button>';
+    }
+    bar.innerHTML = html;
+    bar.querySelectorAll(".group-filter-chip").forEach(chip => {
+      chip.onclick = function(){
+        activeGroupFilter = chip.getAttribute("data-gf") || "All";
+        updateGroupFilterBar();
+        render();
+      };
+    });
+  } catch(e){}
+}
+
 function render(){
   const el = document.getElementById("totpList");
-  const q = (document.getElementById("searchInput").value||"").trim().toLowerCase();
-  const list = accounts.filter(a => (a.label||"").toLowerCase().includes(q) || (a.issuer||"").toLowerCase().includes(q));
+  if(!el) return;
+  updateGroupFilterBar();
+  const q = (document.getElementById("searchInput") && document.getElementById("searchInput").value||"").trim().toLowerCase();
+  let list = (accounts||[]).filter(a => {
+    if(activeGroupFilter === "All"){ /* ok */ }
+    else if(activeGroupFilter === "__none__"){ if((a.group||"").trim()) return false; }
+    else { if((a.group||"").trim() !== activeGroupFilter) return false; }
+    if(!q) return true;
+    return (a.label||"").toLowerCase().includes(q) ||
+      (a.issuer||"").toLowerCase().includes(q) ||
+      (a.group||"").toLowerCase().includes(q) ||
+      (a.note||"").toLowerCase().includes(q);
+  });
+  // Sort: recently used first, then by id
+  list = list.slice().sort((a,b) => (b.lastUsed||0) - (a.lastUsed||0));
   if(!list.length){
-    el.innerHTML = `<div class="empty"><div class="empty-icon">🔐</div><p>কোনো অ্যাকাউন্ট নেই</p><p style="font-size:12px;margin-top:5px">+ দিয়ে যোগ করুন</p></div>`;
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🔐</div><p>কোনো অ্যাকাউন্ট নেই</p><p style="font-size:12px;margin-top:5px">+ দিয়ে যোগ করুন · QR স্ক্যান করুন</p></div>`;
     return;
   }
   const now = Math.floor(Date.now()/1000);
@@ -501,10 +1072,13 @@ function render(){
     const code = getOTP(a.secret);
     const fmt = code.length===6 ? code.slice(0,3)+" "+code.slice(3) : code;
     const col = colors[i%colors.length];
-    h += `<div class="totp-card" style="--acc:${col}" onclick="copyCode('${code}')">
+    const groupTag = a.group ? `<span style="font-size:10px;background:rgba(124,58,237,.25);color:var(--muted);padding:2px 7px;border-radius:8px;margin-left:4px">${esc(a.group)}</span>` : "";
+    const noteLine = a.note ? `<div style="font-size:11px;color:var(--muted);margin-top:2px;opacity:.85">${esc(a.note)}</div>` : "";
+    h += `<div class="totp-card" style="--acc:${col}" onclick="copyCode('${code}',${a.id})">
       <div class="totp-info">
-        <div class="totp-issuer">${esc(a.issuer||"2FA")}</div>
+        <div class="totp-issuer">${esc(a.issuer||"2FA")}${groupTag}</div>
         <div class="totp-label">${esc(a.label)}</div>
+        ${noteLine}
         <div class="totp-code">${fmt}</div>
       </div>
       <div style="display:flex;align-items:center;gap:6px">
@@ -537,7 +1111,7 @@ async function loadUserAccounts(){
 function saveAccountsToFirebase(){
   if(!currentUser) return;
   const obj = {};
-  accounts.forEach(a => { obj[a.id] = { label:a.label, issuer:a.issuer, secret:a.secret }; });
+  accounts.forEach(a => { obj[a.id] = { label:a.label, issuer:a.issuer, secret:a.secret, group:a.group||"", note:a.note||"", lastUsed:a.lastUsed||0 }; });
   db.ref("users/"+currentUser.id+"/accounts").set(obj);
   db.ref("users/"+currentUser.id+"/tfaCount").set(accounts.length);
 }
@@ -546,9 +1120,11 @@ function saveAccountsToFirebase(){
 function show(screen){
   document.getElementById("regScreen").classList.remove("active");
   document.getElementById("loginScreen").classList.remove("active");
+  document.getElementById("forgotScreen").classList.remove("active");
   document.getElementById("mainApp").classList.remove("show");
   if(screen==="reg") document.getElementById("regScreen").classList.add("active");
   if(screen==="login") document.getElementById("loginScreen").classList.add("active");
+  if(screen==="forgot") document.getElementById("forgotScreen").classList.add("active");
   if(screen==="app"){ document.getElementById("mainApp").classList.add("show"); loadUserAccounts(); }
 }
 
@@ -566,22 +1142,33 @@ function getSession(){
   try { return JSON.parse(localStorage.getItem(SESSION)); } catch{ return null; }
 }
 
-/* Register */
+/* Register — with recovery name */
 document.getElementById("regBtn").onclick = async () => {
   const name = document.getElementById("regName").value.trim();
   const email = document.getElementById("regEmail").value.trim().toLowerCase();
   const phone = document.getElementById("regPhone").value.trim();
   const pass = document.getElementById("regPass").value;
+  const recovery = document.getElementById("regRecovery").value.trim();
   const err = document.getElementById("regError");
   err.style.display = "none";
-  if(!name||!email||!phone||!pass){ err.innerText="সব ফিল্ড পূরণ করুন"; err.style.display="block"; return; }
+  if(!name||!email||!phone||!pass||!recovery){ err.innerText="সব ফিল্ড পূরণ করুন (পুনরুদ্ধার নেম সহ)"; err.style.display="block"; return; }
   if(pass.length<4){ err.innerText="পাসওয়ার্ড কমপক্ষে ৪ অক্ষর"; err.style.display="block"; return; }
+  if(recovery.length<3){ err.innerText="পুনরুদ্ধার নেম কমপক্ষে ৩ অক্ষর"; err.style.display="block"; return; }
 
   const id = sanitize(email);
   const exists = await db.ref("users/"+id).once("value");
   if(exists.exists()){ err.innerText="এই ইমেইল দিয়ে অ্যাকাউন্ট আছে, লগইন করুন"; err.style.display="block"; return; }
 
-  const user = { id, name, email, phone, pass, tfaCount:0, genToday:0, createdAt: Date.now() };
+  // Check recovery name uniqueness
+  const allUsers = await db.ref("users").once("value");
+  const allData = allUsers.val()||{};
+  for(const k in allData){
+    if((allData[k].recovery||"").toLowerCase() === recovery.toLowerCase()){
+      err.innerText="এই পুনরুদ্ধার নেম ইতিমধ্যে ব্যবহৃত — অন্য নেম দিন"; err.style.display="block"; return;
+    }
+  }
+
+  const user = { id, name, email, phone, pass, recovery, tfaCount:0, genToday:0, createdAt: Date.now() };
   await db.ref("users/"+id).set(user);
   db.ref("stats/totalUsers").transaction(v => (v||0)+1);
 
@@ -619,6 +1206,59 @@ document.getElementById("loginBtn").onclick = async () => {
   show("app");
 };
 
+/* Forgot Password / Recovery flow */
+let forgotFoundUser = null;
+document.getElementById("toForgot").onclick = () => {
+  forgotFoundUser = null;
+  document.getElementById("forgotRecovery").value = "";
+  document.getElementById("forgotNewPass").value = "";
+  document.getElementById("forgotNewPass2").value = "";
+  document.getElementById("forgotNewPass").style.display = "none";
+  document.getElementById("forgotNewPass2").style.display = "none";
+  document.getElementById("forgotBtn").innerText = "পুনরুদ্ধার করুন";
+  document.getElementById("forgotError").style.display = "none";
+  show("forgot");
+};
+document.getElementById("toLoginFromForgot").onclick = () => show("login");
+
+document.getElementById("forgotBtn").onclick = async () => {
+  const err = document.getElementById("forgotError");
+  err.style.display = "none";
+  const recoveryName = document.getElementById("forgotRecovery").value.trim();
+  if(!recoveryName){ err.innerText="পুনরুদ্ধার নেম দিন"; err.style.display="block"; return; }
+
+  if(!forgotFoundUser){
+    // Step 1: find user by recovery name
+    const all = await db.ref("users").once("value");
+    const data = all.val()||{};
+    let found = null; let foundId = null;
+    for(const k in data){
+      if((data[k].recovery||"").toLowerCase() === recoveryName.toLowerCase()){
+        found = data[k]; foundId = k; break;
+      }
+    }
+    if(!found){ err.innerText="এই পুনরুদ্ধার নেম পাওয়া যায়নি"; err.style.display="block"; return; }
+    forgotFoundUser = { ...found, id: foundId };
+    document.getElementById("forgotNewPass").style.display = "block";
+    document.getElementById("forgotNewPass2").style.display = "block";
+    document.getElementById("forgotBtn").innerText = "নতুন পাসওয়ার্ড সেট করুন";
+    toast("অ্যাকাউন্ট পাওয়া গেছে — নতুন পাসওয়ার্ড দিন");
+    return;
+  }
+
+  // Step 2: set new password
+  const np = document.getElementById("forgotNewPass").value;
+  const np2 = document.getElementById("forgotNewPass2").value;
+  if(!np || np.length<4){ err.innerText="পাসওয়ার্ড কমপক্ষে ৪ অক্ষর"; err.style.display="block"; return; }
+  if(np !== np2){ err.innerText="দুই পাসওয়ার্ড মিলছে না"; err.style.display="block"; return; }
+
+  await db.ref("users/"+forgotFoundUser.id+"/pass").set(np);
+  forgotFoundUser.pass = np;
+  setSession(forgotFoundUser);
+  toast("পাসওয়ার্ড আপডেট হয়েছে — লগইন সফল!");
+  show("app");
+};
+
 document.getElementById("toLogin").onclick = () => show("login");
 document.getElementById("toReg").onclick = () => show("reg");
 document.getElementById("logoutBtn").onclick = () => { clearSession(); toast("লগআউট হয়েছে"); show("login"); };
@@ -633,10 +1273,12 @@ document.getElementById("addForm").onsubmit = async (e) => {
   e.preventDefault();
   const label = document.getElementById("addLabel").value.trim();
   const issuer = document.getElementById("addIssuer").value.trim() || "2FA";
-  let secret = document.getElementById("addSecret").value.trim().replace(/\s+/g,"").toUpperCase();
-  secret = secret.replace(/[^A-Z2-7]/gi, "");
+  // Keep secret exactly as typed (spaces preserved) — getOTP cleans for code generation
+  let secret = document.getElementById("addSecret").value.trim().toUpperCase();
+  const group = document.getElementById("addGroup").value.trim() || "";
+  const note = document.getElementById("addNote").value.trim() || "";
   const id = Date.now();
-  accounts.push({ id, label, issuer, secret });
+  accounts.push({ id, label, issuer, secret, group, note, lastUsed: 0 });
   saveAccountsToFirebase();
   document.getElementById("addForm").reset();
   document.getElementById("addModal").classList.remove("active");
@@ -646,8 +1288,8 @@ document.getElementById("addForm").onsubmit = async (e) => {
   const code = getOTP(secret);
   if(code && code !== "------") copyCode(code);
   else toast("অ্যাকাউন্ট অ্যাড হয়েছে!");
-  // Monetag (user action, non-annoying)
-  showMonetagAd();
+  // Monetag on Manual Add
+  showMonetagAdManual();
 };
 
 /* Paste & Process + Auto Copy */
@@ -681,11 +1323,12 @@ async function processPaste(text){
       if(u.searchParams.get("issuer")) issuer = u.searchParams.get("issuer");
     }catch(e){}
   }
-  if(!secret) secret = text.replace(/\s+/g,"").toUpperCase();
-  secret = secret.replace(/[^A-Z2-7]/gi, "");
+  // Keep secret as given (spaces preserved) — getOTP cleans for code generation
+  if(!secret) secret = text.trim().toUpperCase();
+  else secret = secret.trim().toUpperCase();
 
   const id = Date.now();
-  accounts.push({ id, label, issuer, secret });
+  accounts.push({ id, label, issuer, secret, group: "", note: "", lastUsed: 0 });
   saveAccountsToFirebase();
 
   render();
@@ -697,8 +1340,8 @@ async function processPaste(text){
   } else {
     toast("অ্যাকাউন্ট অ্যাড হয়েছে");
   }
-  // Monetag (user action, non-annoying)
-  showMonetagAd();
+  // Monetag on Paste — every 5th time only
+  showMonetagAdPaste();
 }
 
 /* Edit */
@@ -708,6 +1351,9 @@ function openEdit(id){
   document.getElementById("editId").value = a.id;
   document.getElementById("editLabel").value = a.label;
   document.getElementById("editIssuer").value = a.issuer||"";
+  document.getElementById("editSecret").value = a.secret||"";
+  document.getElementById("editGroup").value = a.group||"";
+  document.getElementById("editNote").value = a.note||"";
   document.getElementById("editModal").classList.add("active");
 }
 document.getElementById("closeEdit").onclick = () => document.getElementById("editModal").classList.remove("active");
@@ -717,6 +1363,11 @@ document.getElementById("saveEdit").onclick = () => {
   if(a){
     a.label = document.getElementById("editLabel").value.trim();
     a.issuer = document.getElementById("editIssuer").value.trim();
+    // Keep secret exactly as typed (spaces preserved) — getOTP cleans for code generation
+    let secret = document.getElementById("editSecret").value.trim().toUpperCase();
+    if(secret) a.secret = secret;
+    a.group = document.getElementById("editGroup").value.trim() || "";
+    a.note = document.getElementById("editNote").value.trim() || "";
     saveAccountsToFirebase();
     render();
     toast("আপডেট হয়েছে");
@@ -741,25 +1392,878 @@ document.getElementById("backupBtn").onclick = () => {
   toast("ব্যাকআপ ডাউনলোড");
 };
 
+/* Theme button — cycle through 12 colors on every click */
+document.getElementById("themeBtn").onclick = () => {
+  cycleTheme();
+};
+
+/* ===== QR Code Scanner (Camera + Gallery) ===== */
+let html5QrCode = null;
+async function stopQrScanner(){
+  try {
+    if(html5QrCode){
+      const s = html5QrCode.isScanning;
+      if(s) await html5QrCode.stop();
+      html5QrCode.clear();
+      html5QrCode = null;
+    }
+  } catch(e){}
+  const reader = document.getElementById("qrReader");
+  if(reader) reader.innerHTML = "";
+}
+
+function onQrSuccess(decodedText){
+  stopQrScanner();
+  document.getElementById("qrModal").classList.remove("active");
+  if(decodedText && decodedText.trim()){
+    processPaste(decodedText.trim());
+    toast("QR থেকে অ্যাকাউন্ট যোগ হয়েছে!");
+  }
+}
+
+document.getElementById("qrScanBtn").onclick = async () => {
+  fabMenu.classList.remove("show");
+  document.getElementById("qrModal").classList.add("active");
+  await stopQrScanner();
+  try {
+    html5QrCode = new Html5Qrcode("qrReader");
+    await html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      onQrSuccess,
+      () => {}
+    );
+  } catch(err) {
+    toast("ক্যামেরা খোলা যায়নি — গ্যালারি ব্যবহার করুন");
+  }
+};
+
+document.getElementById("closeQr").onclick = async () => {
+  await stopQrScanner();
+  document.getElementById("qrModal").classList.remove("active");
+};
+
+document.getElementById("qrGalleryBtn").onclick = () => {
+  document.getElementById("qrGalleryInput").click();
+};
+
+document.getElementById("qrGalleryInput").onchange = async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+  try {
+    await stopQrScanner();
+    html5QrCode = new Html5Qrcode("qrReader");
+    const result = await html5QrCode.scanFile(file, true);
+    onQrSuccess(result);
+  } catch(err) {
+    toast("QR কোড পড়া যায়নি — অন্য ছবি চেষ্টা করুন");
+  }
+  e.target.value = "";
+};
+
+/* ===== Import JSON Backup ===== */
+document.getElementById("importBtn").onclick = () => {
+  fabMenu.classList.remove("show");
+  document.getElementById("importFileInput").click();
+};
+
+document.getElementById("importFileInput").onchange = async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if(!Array.isArray(data)){ toast("ভুল JSON ফরম্যাট"); return; }
+    let added = 0;
+    data.forEach(item => {
+      if(!item || !item.secret) return;
+      const id = Date.now() + Math.floor(Math.random()*1000) + added;
+      accounts.push({
+        id,
+        label: item.label || "Imported",
+        issuer: item.issuer || "2FA",
+        secret: String(item.secret).toUpperCase(),
+        group: item.group || "",
+        note: item.note || "",
+        lastUsed: item.lastUsed || 0
+      });
+      added++;
+    });
+    if(added){
+      saveAccountsToFirebase();
+      render();
+      toast(added + "টি অ্যাকাউন্ট ইমপোর্ট হয়েছে");
+    } else {
+      toast("কোনো বৈধ অ্যাকাউন্ট পাওয়া যায়নি");
+    }
+  } catch(err) {
+    toast("ইমপোর্ট ব্যর্থ — ফাইল চেক করুন");
+  }
+  e.target.value = "";
+};
+
+/* ===== Offline Indicator ===== */
+function updateOnlineStatus(){
+  const bar = document.getElementById("offlineBar");
+  if(!bar) return;
+  if(!navigator.onLine){
+    bar.style.display = "block";
+  } else {
+    bar.style.display = "none";
+  }
+}
+window.addEventListener("online", updateOnlineStatus);
+window.addEventListener("offline", updateOnlineStatus);
+updateOnlineStatus();
+
 document.getElementById("searchInput").addEventListener("input", render);
 document.addEventListener("click", e => { if(!e.target.closest(".fab-wrap")) fabMenu.classList.remove("show"); });
 
-/* Boot */
-setTimeout(() => {
+/* Boot — skip splash if returning from ad (smooth back, no full loading feel) */
+function bootApp() {
   document.getElementById("splash").classList.add("hide");
+  // Apply saved theme so colors persist across reloads
+  applyTheme(themeIdx);
+  updateOnlineStatus();
+  const sess = getSession();
+  if (sess && sess.id) {
+    currentUser = sess;
+    show("app");
+  } else {
+    db.ref("users").limitToFirst(1).once("value").then(s => {
+      if (s.exists()) show("login");
+      else show("reg");
+    }).catch(() => show("reg"));
+  }
+}
+
+const fromAd = sessionStorage.getItem("mt_from_ad") === "1";
+if (fromAd) {
+  sessionStorage.removeItem("mt_from_ad");
+  // Instant resume — no splash delay
+  bootApp();
+} else {
   setTimeout(() => {
-    const sess = getSession();
-    if(sess && sess.id){
-      currentUser = sess;
-      show("app");
-    } else {
-      db.ref("users").limitToFirst(1).once("value").then(s => {
-        if(s.exists()) show("login");
-        else show("reg");
-      }).catch(() => show("reg"));
+    bootApp();
+  }, 1800);
+}
+
+
+/* ========== SETTINGS + MONEY (stable, no show() override) ========== */
+(function(){
+  "use strict";
+
+  function el(id){ return document.getElementById(id); }
+  function safe(fn){ try { fn(); } catch(e){ console.warn(e); } }
+
+  /* --- Nav tabs --- */
+  function switchView(viewId){
+    safe(function(){
+      document.querySelectorAll(".nav-tab").forEach(function(t){ t.classList.remove("active"); });
+      document.querySelectorAll(".view-panel").forEach(function(p){ p.classList.remove("active"); });
+      var tab = document.querySelector('.nav-tab[data-view="'+viewId+'"]');
+      if(tab) tab.classList.add("active");
+      var panel = el(viewId);
+      if(panel) panel.classList.add("active");
+      var fab = document.querySelector(".fab-wrap");
+      if(fab) fab.style.display = (viewId === "tfaView") ? "flex" : "none";
+      if(viewId === "moneyView"){ renderMoney("dash"); try{updateMoneyHint("dash");}catch(e){} }
+    });
+  }
+  var tabTfa = el("tabTfa");
+  var tabMoney = el("tabMoney");
+  if(tabTfa) tabTfa.onclick = function(){ switchView("tfaView"); };
+  if(tabMoney) tabMoney.onclick = function(){ switchView("moneyView"); };
+
+  /* --- Settings --- */
+  var settingsBtn = el("settingsBtn");
+  if(settingsBtn) settingsBtn.onclick = function(){
+    if(!currentUser){ toast("আগে লগইন করুন"); return; }
+    if(el("setNewEmail")) el("setNewEmail").value = currentUser.email || "";
+    if(el("setNewRecovery")) el("setNewRecovery").value = currentUser.recovery || "";
+    if(el("setNewPass")) el("setNewPass").value = "";
+    if(el("setNewPass2")) el("setNewPass2").value = "";
+    if(el("currencySelect")) el("currencySelect").value = localStorage.getItem("2fa_currency") || "৳";
+    renderGroups();
+    if(el("settingsModal")) el("settingsModal").classList.add("active");
+  };
+  if(el("closeSettings")) el("closeSettings").onclick = function(){ el("settingsModal").classList.remove("active"); };
+
+  if(el("changePassBtn")) el("changePassBtn").onclick = async function(){
+    if(!currentUser) return;
+    var p1 = (el("setNewPass")||{}).value || "";
+    var p2 = (el("setNewPass2")||{}).value || "";
+    if(p1.length < 4){ toast("পাসওয়ার্ড কমপক্ষে ৪ অক্ষর"); return; }
+    if(p1 !== p2){ toast("পাসওয়ার্ড মিলছে না"); return; }
+    try {
+      await db.ref("users/"+currentUser.id+"/pass").set(p1);
+      currentUser.pass = p1;
+      setSession(currentUser);
+      toast("✅ পাসওয়ার্ড আপডেট");
+      if(el("setNewPass")) el("setNewPass").value = "";
+      if(el("setNewPass2")) el("setNewPass2").value = "";
+    } catch(e){ toast("সেভ ব্যর্থ"); }
+  };
+
+  if(el("changeEmailBtn")) el("changeEmailBtn").onclick = async function(){
+    if(!currentUser) return;
+    var newEmail = ((el("setNewEmail")||{}).value || "").trim().toLowerCase();
+    if(!newEmail || newEmail.indexOf("@") < 0){ toast("সঠিক ইমেইল দিন"); return; }
+    var newId = sanitize(newEmail);
+    if(newId === currentUser.id){ toast("একই ইমেইল"); return; }
+    try {
+      var exists = await db.ref("users/"+newId).once("value");
+      if(exists.exists()){ toast("ইমেইল ইতিমধ্যে ব্যবহৃত"); return; }
+      var oldSnap = await db.ref("users/"+currentUser.id).once("value");
+      var userData = oldSnap.val() || {};
+      userData.email = newEmail;
+      userData.id = newId;
+      await db.ref("users/"+newId).set(userData);
+      await db.ref("users/"+currentUser.id).remove();
+      currentUser = userData;
+      setSession(currentUser);
+      toast("✅ ইমেইল আপডেট");
+    } catch(e){ toast("ইমেইল পরিবর্তন ব্যর্থ"); }
+  };
+
+  if(el("changeRecoveryBtn")) el("changeRecoveryBtn").onclick = async function(){
+    if(!currentUser) return;
+    var rec = ((el("setNewRecovery")||{}).value || "").trim();
+    if(rec.length < 3){ toast("কমপক্ষে ৩ অক্ষর"); return; }
+    try {
+      var all = await db.ref("users").once("value");
+      var data = all.val() || {};
+      for(var k in data){
+        if(k !== currentUser.id && (data[k].recovery||"").toLowerCase() === rec.toLowerCase()){
+          toast("এই নেম ইতিমধ্যে ব্যবহৃত"); return;
+        }
+      }
+      await db.ref("users/"+currentUser.id+"/recovery").set(rec);
+      currentUser.recovery = rec;
+      setSession(currentUser);
+      toast("✅ পুনরুদ্ধার নেম আপডেট");
+    } catch(e){ toast("সেভ ব্যর্থ"); }
+  };
+
+  function renderGroups(){
+    var box = el("groupsList");
+    if(!box) return;
+    var groups = {};
+    (accounts||[]).forEach(function(a){
+      var g = (a.group||"").trim() || "Ungrouped";
+      if(!groups[g]) groups[g] = [];
+      groups[g].push(a);
+    });
+    var keys = Object.keys(groups).sort();
+    if(!keys.length){ box.innerHTML = '<p style="color:var(--muted);font-size:13px">কোনো গ্রুপ নেই</p>'; return; }
+    window._grp = groups;
+    box.innerHTML = keys.map(function(g){
+      return '<span class="group-chip" data-g="'+esc(g)+'">'+esc(g)+' ('+groups[g].length+')</span>';
+    }).join("");
+    box.querySelectorAll(".group-chip").forEach(function(chip){
+      chip.onclick = function(){
+        var g = chip.getAttribute("data-g");
+        var list = (window._grp||{})[g] || [];
+        if(el("groupDetailTitle")) el("groupDetailTitle").innerText = "📁 " + g;
+        if(el("groupAccountsBox")) el("groupAccountsBox").style.display = "block";
+        if(el("groupAccList")) el("groupAccList").innerHTML = list.map(function(a){
+          return '<div class="group-acc-item"><strong>'+esc(a.issuer||"2FA")+'</strong> — '+esc(a.label)+'</div>';
+        }).join("") || '<p style="color:var(--muted)">খালি</p>';
+      };
+    });
+  }
+
+  if(el("savePinBtn")) el("savePinBtn").onclick = function(){
+    var pin = ((el("setPinInput")||{}).value||"").trim();
+    if(!/^\d{4}$/.test(pin)){ toast("৪ ডিজিট PIN দিন"); return; }
+    localStorage.setItem("2fa_pin_"+(currentUser?currentUser.id:"g"), pin);
+    toast("✅ PIN সেভ");
+    if(el("setPinInput")) el("setPinInput").value = "";
+  };
+  if(el("clearPinBtn")) el("clearPinBtn").onclick = function(){
+    localStorage.removeItem("2fa_pin_"+(currentUser?currentUser.id:"g"));
+    toast("PIN মুছে ফেলা হয়েছে");
+  };
+  if(el("saveCurrencyBtn")) el("saveCurrencyBtn").onclick = function(){
+    if(el("currencySelect")) localStorage.setItem("2fa_currency", el("currencySelect").value);
+    toast("✅ Currency সেভ");
+  };
+
+  /* --- PIN unlock --- */
+  var pinBuffer = "";
+  function updatePinDots(){
+    var dots = document.querySelectorAll("#pinDots .pin-dot");
+    for(var i=0;i<dots.length;i++) dots[i].classList.toggle("filled", i < pinBuffer.length);
+  }
+  var pinPad = el("pinPad");
+  if(pinPad) pinPad.addEventListener("click", function(e){
+    var k = e.target.closest(".pin-key");
+    if(!k) return;
+    var v = k.getAttribute("data-k");
+    if(v === "c"){ pinBuffer = ""; updatePinDots(); return; }
+    if(v === "b"){ pinBuffer = pinBuffer.slice(0,-1); updatePinDots(); return; }
+    if(pinBuffer.length >= 4) return;
+    pinBuffer += v;
+    updatePinDots();
+    if(pinBuffer.length === 4){
+      var stored = localStorage.getItem("2fa_pin_"+(currentUser?currentUser.id:"g"));
+      if(pinBuffer === stored){
+        if(el("pinScreen")) el("pinScreen").classList.remove("active");
+        pinBuffer = "";
+        updatePinDots();
+      } else {
+        if(el("pinError")){ el("pinError").style.display="block"; el("pinError").innerText="ভুল PIN!"; }
+        pinBuffer = "";
+        setTimeout(function(){ if(el("pinError")) el("pinError").style.display="none"; updatePinDots(); }, 1000);
+      }
     }
-  }, 400);
-}, 1800);
+  });
+
+  function maybeShowPin(){
+    if(!currentUser) return;
+    var pin = localStorage.getItem("2fa_pin_"+currentUser.id);
+    if(pin && el("pinScreen")){
+      pinBuffer = "";
+      updatePinDots();
+      el("pinScreen").classList.add("active");
+    }
+  }
+
+  /* --- Money data --- */
+  var moneyData = {
+    transactions: [],
+    wallets: { Cash:0, bKash:0, Nagad:0, Rocket:0, "Bank Account":0, Card:0 },
+    budget: 0, goals: [], loans: [], bills: []
+  };
+  var moneySub = "dash";
+  var moneyBound = false;
+  var txFilter = "all";
+
+  function curSym(){ return localStorage.getItem("2fa_currency") || "৳"; }
+  function fmtM(n){ return curSym()+" "+(Number(n)||0).toLocaleString("en-BD"); }
+  function todayStr(){ return new Date().toISOString().slice(0,10); }
+  function isToday(d){ return d === todayStr(); }
+  function isThisWeek(d){
+    try {
+      var dt = new Date(d), now = new Date();
+      var start = new Date(now); start.setDate(now.getDate()-now.getDay()); start.setHours(0,0,0,0);
+      return dt >= start && dt <= now;
+    } catch(e){ return false; }
+  }
+  function isThisMonth(d){ return d && d.indexOf(new Date().toISOString().slice(0,7)) === 0; }
+
+  function bindMoney(){
+    if(!currentUser || moneyBound) return;
+    moneyBound = true;
+    db.ref("users/"+currentUser.id+"/money").on("value", function(snap){
+      try {
+        var v = snap.val();
+        if(v){
+          moneyData.transactions = Array.isArray(v.transactions) ? v.transactions : (v.transactions ? Object.values(v.transactions) : []);
+          moneyData.wallets = v.wallets || moneyData.wallets;
+          moneyData.budget = v.budget || 0;
+          moneyData.goals = Array.isArray(v.goals) ? v.goals : (v.goals ? Object.values(v.goals) : []);
+          moneyData.loans = Array.isArray(v.loans) ? v.loans : (v.loans ? Object.values(v.loans) : []);
+          moneyData.bills = Array.isArray(v.bills) ? v.bills : (v.bills ? Object.values(v.bills) : []);
+        }
+        if(el("moneyView") && el("moneyView").classList.contains("active")) renderMoney(moneySub);
+      } catch(e){ console.warn(e); }
+    });
+  }
+
+  function saveMoney(){
+    if(!currentUser) return;
+    try {
+      db.ref("users/"+currentUser.id+"/money").set({
+        transactions: moneyData.transactions,
+        wallets: moneyData.wallets,
+        budget: moneyData.budget,
+        goals: moneyData.goals,
+        loans: moneyData.loans,
+        bills: moneyData.bills,
+        updatedAt: Date.now()
+      });
+    } catch(e){ toast("সেভ ব্যর্থ"); }
+  }
+
+  function calc(){
+    var s = {todayInc:0,todayExp:0,weekInc:0,weekExp:0,monthInc:0,monthExp:0,lifeInc:0,lifeExp:0,balance:0,budget:moneyData.budget||0};
+    (moneyData.transactions||[]).forEach(function(t){
+      var a = Number(t.amount)||0;
+      if(t.type === "income"){
+        s.lifeInc += a;
+        if(isToday(t.date)) s.todayInc += a;
+        if(isThisWeek(t.date)) s.weekInc += a;
+        if(isThisMonth(t.date)) s.monthInc += a;
+      } else {
+        s.lifeExp += a;
+        if(isToday(t.date)) s.todayExp += a;
+        if(isThisWeek(t.date)) s.weekExp += a;
+        if(isThisMonth(t.date)) s.monthExp += a;
+      }
+    });
+    s.todayProfit = s.todayInc - s.todayExp;
+    s.monthProfit = s.monthInc - s.monthExp;
+    s.lifeProfit = s.lifeInc - s.lifeExp;
+    s.budgetUsed = s.monthExp;
+    Object.keys(moneyData.wallets||{}).forEach(function(k){ s.balance += Number(moneyData.wallets[k])||0; });
+    return s;
+  }
+
+  document.querySelectorAll(".money-sub-btn").forEach(function(btn){
+    btn.onclick = function(){
+      document.querySelectorAll(".money-sub-btn").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      renderMoney(btn.getAttribute("data-msub"));
+    };
+  });
+
+  window.renderMoney = function(sub){
+    moneySub = sub || "dash";
+    var box = el("moneySubContent");
+    if(!box) return;
+    var s = calc();
+    try {
+      if(moneySub === "dash"){
+        var pct = s.budget > 0 ? Math.min(100, (s.budgetUsed/s.budget)*100) : 0;
+        var _t = (typeof t === "function") ? t : function(k){ return k; };
+        box.innerHTML =
+          '<div class="money-actions">'+
+          '<button type="button" class="money-act-btn income" id="btnOpenInc"><span style="font-size:20px">➕</span>'+_t("addIncome")+'</button>'+
+          '<button type="button" class="money-act-btn expense" id="btnOpenExp"><span style="font-size:20px">➖</span>'+_t("addExpense")+'</button>'+
+          '</div>'+
+          '<div class="money-stat-grid">'+
+          '<div class="money-stat full"><div class="money-stat-label">'+_t("bal")+'</div><div class="money-stat-val">'+fmtM(s.balance)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("todayInc")+'</div><div class="money-stat-val green">'+fmtM(s.todayInc)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("todayExp")+'</div><div class="money-stat-val red">'+fmtM(s.todayExp)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("todayProfit")+'</div><div class="money-stat-val '+(s.todayProfit>=0?'green':'red')+'">'+fmtM(s.todayProfit)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("weekInc")+'</div><div class="money-stat-val green">'+fmtM(s.weekInc)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("weekExp")+'</div><div class="money-stat-val red">'+fmtM(s.weekExp)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("monthInc")+'</div><div class="money-stat-val green">'+fmtM(s.monthInc)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("monthExp")+'</div><div class="money-stat-val red">'+fmtM(s.monthExp)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("monthProfit")+'</div><div class="money-stat-val '+(s.monthProfit>=0?'green':'red')+'">'+fmtM(s.monthProfit)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("lifeInc")+'</div><div class="money-stat-val green">'+fmtM(s.lifeInc)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">'+_t("lifeExp")+'</div><div class="money-stat-val red">'+fmtM(s.lifeExp)+'</div></div>'+
+          '<div class="money-stat full"><div class="money-stat-label">'+_t("lifeProfit")+'</div><div class="money-stat-val '+(s.lifeProfit>=0?'green':'red')+'">'+fmtM(s.lifeProfit)+'</div></div>'+
+          '</div>'+
+          (s.budget>0 ? '<div class="money-stat" style="margin-top:10px"><div class="money-stat-label">Budget '+fmtM(s.budgetUsed)+' / '+fmtM(s.budget)+'</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct+'%"></div></div></div>' : '');
+        if(el("btnOpenInc")) el("btnOpenInc").onclick = openInc;
+        if(el("btnOpenExp")) el("btnOpenExp").onclick = openExp;
+      } else if(moneySub === "tx"){
+        var list = (moneyData.transactions||[]).slice().sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+        if(txFilter==="income") list = list.filter(function(t){ return t.type==="income"; });
+        if(txFilter==="expense") list = list.filter(function(t){ return t.type==="expense"; });
+        box.innerHTML =
+          '<div class="filter-row">'+
+          '<button type="button" class="filter-btn'+(txFilter==="all"?" active":"")+'" data-f="all">All</button>'+
+          '<button type="button" class="filter-btn'+(txFilter==="income"?" active":"")+'" data-f="income">Income</button>'+
+          '<button type="button" class="filter-btn'+(txFilter==="expense"?" active":"")+'" data-f="expense">Expense</button>'+
+          '</div>'+
+          (list.length ? list.map(function(t){
+            return '<div class="tx-item"><div><div class="tx-cat">'+esc(t.category)+' · '+esc(t.wallet)+'</div><div class="tx-note">'+esc(t.note||t.category)+'</div><div class="tx-meta">'+esc(t.date)+' '+esc(t.time||"")+'</div></div><div class="tx-amt '+(t.type==="income"?"inc":"exp")+'">'+(t.type==="income"?"+":"-")+fmtM(t.amount)+'</div></div>';
+          }).join("") : '<p style="color:var(--muted);text-align:center;padding:24px">কোনো ট্রানজেকশন নেই</p>');
+        box.querySelectorAll(".filter-btn").forEach(function(b){
+          b.onclick = function(){ txFilter = b.getAttribute("data-f"); renderMoney("tx"); };
+        });
+      } else if(moneySub === "wallets"){
+        var w = moneyData.wallets || {};
+        box.innerHTML = '<div class="money-stat full" style="margin-bottom:10px"><div class="money-stat-label">মোট</div><div class="money-stat-val">'+fmtM(s.balance)+'</div></div>' +
+          Object.keys(w).map(function(k){ return '<div class="wallet-row"><span class="wallet-name">'+esc(k)+'</span><span class="wallet-bal">'+fmtM(w[k])+'</span></div>'; }).join("");
+      } else if(moneySub === "budget"){
+        var pct2 = s.budget > 0 ? Math.min(100,(s.budgetUsed/s.budget)*100) : 0;
+        box.innerHTML = '<div class="money-stat" style="margin-bottom:12px"><div class="money-stat-label">Monthly Budget</div><div class="money-stat-val">'+fmtM(s.budget)+'</div><div style="font-size:12px;color:var(--muted);margin-top:6px">Used: '+fmtM(s.budgetUsed)+' | Left: '+fmtM(Math.max(0,s.budget-s.budgetUsed))+'</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+pct2+'%"></div></div></div><button type="button" class="btn btn-p" style="width:100%" id="btnEditBudget">Budget সেট</button>';
+        if(el("btnEditBudget")) el("btnEditBudget").onclick = function(){ if(el("budgetModal")) el("budgetModal").classList.add("active"); };
+      } else if(moneySub === "goals"){
+        var goals = moneyData.goals || [];
+        box.innerHTML = '<button type="button" class="btn btn-p" style="width:100%;margin-bottom:12px" id="btnAddGoal">+ Goal</button>' +
+          (goals.length ? goals.map(function(g,i){
+            var p = g.target>0 ? Math.min(100,(g.saved/g.target)*100) : 0;
+            return '<div class="goal-card"><div style="font-weight:700">'+esc(g.name)+'</div><div style="font-size:12px;color:var(--muted);margin-top:4px">'+fmtM(g.saved)+' / '+fmtM(g.target)+'</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+p+'%"></div></div><div style="margin-top:8px;display:flex;gap:6px"><button type="button" class="btn btn-s" style="font-size:11px;padding:6px 10px" data-add="'+i+'">+ Add</button><button type="button" class="btn btn-d" style="font-size:11px;padding:6px 10px" data-delg="'+i+'">Delete</button></div></div>';
+          }).join("") : '<p style="color:var(--muted);text-align:center;padding:20px">কোনো Goal নেই</p>');
+        if(el("btnAddGoal")) el("btnAddGoal").onclick = function(){ if(el("goalModal")) el("goalModal").classList.add("active"); };
+        box.querySelectorAll("[data-add]").forEach(function(b){ b.onclick = function(){ var i=+b.getAttribute("data-add"); var a=parseFloat(prompt("কত যোগ?","0")); if(a>0&&moneyData.goals[i]){ moneyData.goals[i].saved=(Number(moneyData.goals[i].saved)||0)+a; saveMoney(); renderMoney("goals"); } }; });
+        box.querySelectorAll("[data-delg]").forEach(function(b){ b.onclick = function(){ if(confirm("ডিলিট?")){ moneyData.goals.splice(+b.getAttribute("data-delg"),1); saveMoney(); renderMoney("goals"); } }; });
+      } else if(moneySub === "loans"){
+        var loans = moneyData.loans || [];
+        box.innerHTML = '<button type="button" class="btn btn-p" style="width:100%;margin-bottom:12px" id="btnAddLoan">+ Loan</button>' +
+          (loans.length ? loans.map(function(l,i){
+            return '<div class="loan-card"><div style="font-weight:700">'+(l.type==="given"?"➡️ দিয়েছি":"⬅️ নিয়েছি")+': '+esc(l.person)+'</div><div style="font-size:14px;font-weight:700;margin-top:4px">'+fmtM(l.amount)+'</div><div style="font-size:12px;color:var(--muted)">Due: '+esc(l.due||"—")+' | '+(l.paid?"✅ Paid":"⏳ Unpaid")+'</div><div style="margin-top:8px;display:flex;gap:6px">'+(l.paid?"":'<button type="button" class="btn btn-s" style="font-size:11px;padding:6px 10px" data-pl="'+i+'">Paid</button>')+'<button type="button" class="btn btn-d" style="font-size:11px;padding:6px 10px" data-dl="'+i+'">Delete</button></div></div>';
+          }).join("") : '<p style="color:var(--muted);text-align:center;padding:20px">কোনো Loan নেই</p>');
+        if(el("btnAddLoan")) el("btnAddLoan").onclick = function(){ if(el("loanModal")) el("loanModal").classList.add("active"); };
+        box.querySelectorAll("[data-pl]").forEach(function(b){ b.onclick = function(){ moneyData.loans[+b.getAttribute("data-pl")].paid=true; saveMoney(); renderMoney("loans"); }; });
+        box.querySelectorAll("[data-dl]").forEach(function(b){ b.onclick = function(){ if(confirm("ডিলিট?")){ moneyData.loans.splice(+b.getAttribute("data-dl"),1); saveMoney(); renderMoney("loans"); } }; });
+      } else if(moneySub === "bills"){
+        var bills = moneyData.bills || [];
+        box.innerHTML = '<button type="button" class="btn btn-p" style="width:100%;margin-bottom:12px" id="btnAddBill">+ Bill</button>' +
+          (bills.length ? bills.map(function(b,i){
+            return '<div class="bill-card"><div style="font-weight:700">'+esc(b.name)+'</div><div style="font-size:14px;font-weight:700;margin-top:4px">'+fmtM(b.amount)+'</div><div style="font-size:12px;color:var(--muted)">Due: '+esc(b.due||"—")+' | '+(b.paid?"✅ Paid":"⏳ Pending")+'</div><div style="margin-top:8px;display:flex;gap:6px">'+(b.paid?"":'<button type="button" class="btn btn-s" style="font-size:11px;padding:6px 10px" data-pb="'+i+'">Paid</button>')+'<button type="button" class="btn btn-d" style="font-size:11px;padding:6px 10px" data-db="'+i+'">Delete</button></div></div>';
+          }).join("") : '<p style="color:var(--muted);text-align:center;padding:20px">কোনো Bill নেই</p>');
+        if(el("btnAddBill")) el("btnAddBill").onclick = function(){ if(el("billModal")) el("billModal").classList.add("active"); };
+        box.querySelectorAll("[data-pb]").forEach(function(b){ b.onclick = function(){ moneyData.bills[+b.getAttribute("data-pb")].paid=true; saveMoney(); renderMoney("bills"); }; });
+        box.querySelectorAll("[data-db]").forEach(function(b){ b.onclick = function(){ if(confirm("ডিলিট?")){ moneyData.bills.splice(+b.getAttribute("data-db"),1); saveMoney(); renderMoney("bills"); } }; });
+      } else if(moneySub === "ai"){
+        var insights = [];
+        var catMap = {};
+        (moneyData.transactions||[]).filter(function(t){ return t.type==="expense" && isThisMonth(t.date); }).forEach(function(t){ catMap[t.category]=(catMap[t.category]||0)+(Number(t.amount)||0); });
+        var top = Object.keys(catMap).sort(function(a,b){ return catMap[b]-catMap[a]; })[0];
+        if(top) insights.push("📊 সবচেয়ে বেশি খরচ: <strong>"+esc(top)+"</strong> — "+fmtM(catMap[top]));
+        else insights.push("📊 এই মাসে কোনো খরচ নেই");
+        if(s.budget>0){
+          var rem = s.budget - s.budgetUsed;
+          if(rem<0) insights.push("⚠️ বাজেট "+fmtM(Math.abs(rem))+" অতিক্রম!");
+          else insights.push("✅ বাজেট বাকি: "+fmtM(rem));
+        } else insights.push("💡 Monthly Budget সেট করুন");
+        var saved = s.monthInc - s.monthExp;
+        if(saved>0) insights.push("💰 এই মাসে "+fmtM(saved)+" সেভ");
+        else if(saved<0) insights.push("📉 খরচ ইনকামের চেয়ে "+fmtM(Math.abs(saved))+" বেশি");
+        insights.push("💡 নিয়মিত রেকর্ড করলে ইনসাইট ভালো হবে");
+        box.innerHTML = insights.map(function(i){ return '<div class="ai-insight">'+i+'</div>'; }).join("");
+      } else if(moneySub === "reports"){
+        var cmap = {};
+        (moneyData.transactions||[]).filter(function(t){ return t.type==="expense"; }).forEach(function(t){ cmap[t.category]=(cmap[t.category]||0)+(Number(t.amount)||0); });
+        var cats = Object.keys(cmap).sort(function(a,b){ return cmap[b]-cmap[a]; });
+        var maxC = cats[0] ? cmap[cats[0]] : 1;
+        box.innerHTML =
+          '<div class="money-stat-grid" style="margin-bottom:12px">'+
+          '<div class="money-stat"><div class="money-stat-label">Life Income</div><div class="money-stat-val green">'+fmtM(s.lifeInc)+'</div></div>'+
+          '<div class="money-stat"><div class="money-stat-label">Life Expense</div><div class="money-stat-val red">'+fmtM(s.lifeExp)+'</div></div></div>'+
+          '<div class="settings-section-title">Category Expense</div>'+
+          (cats.length ? cats.map(function(k){ return '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>'+esc(k)+'</span><span>'+fmtM(cmap[k])+'</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+((cmap[k]/maxC)*100)+'%"></div></div></div>'; }).join("") : '<p style="color:var(--muted)">ডেটা নেই</p>')+
+          '<button type="button" class="btn btn-s" style="width:100%;margin-top:12px" id="btnCsv">📥 Export CSV</button>';
+        if(el("btnCsv")) el("btnCsv").onclick = function(){
+          var rows = [["Type","Amount","Category","Wallet","Date","Time","Note"]];
+          (moneyData.transactions||[]).forEach(function(t){ rows.push([t.type,t.amount,t.category,t.wallet,t.date,t.time||"",(t.note||"").replace(/,/g,";")]); });
+          var blob = new Blob([rows.map(function(r){return r.join(",");}).join("\n")], {type:"text/csv"});
+          var a = document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="money.csv"; a.click();
+          toast("CSV ডাউনলোড");
+        };
+      }
+    } catch(e){ console.warn("renderMoney", e); box.innerHTML = '<p style="color:var(--muted);padding:20px;text-align:center">লোড সমস্যা</p>'; }
+  };
+
+  function openInc(){
+    var now = new Date();
+    if(el("incDate")) el("incDate").value = now.toISOString().slice(0,10);
+    if(el("incTime")) el("incTime").value = now.toTimeString().slice(0,5);
+    if(el("incAmount")) el("incAmount").value = "";
+    if(el("incNote")) el("incNote").value = "";
+    if(el("incomeModal")) el("incomeModal").classList.add("active");
+  }
+  function openExp(){
+    var now = new Date();
+    if(el("expDate")) el("expDate").value = now.toISOString().slice(0,10);
+    if(el("expTime")) el("expTime").value = now.toTimeString().slice(0,5);
+    if(el("expAmount")) el("expAmount").value = "";
+    if(el("expNote")) el("expNote").value = "";
+    if(el("expenseModal")) el("expenseModal").classList.add("active");
+  }
+
+  if(el("closeIncome")) el("closeIncome").onclick = function(){ el("incomeModal").classList.remove("active"); };
+  if(el("closeExpense")) el("closeExpense").onclick = function(){ el("expenseModal").classList.remove("active"); };
+  if(el("saveIncome")) el("saveIncome").onclick = function(){
+    var amount = parseFloat((el("incAmount")||{}).value);
+    if(!amount || amount<=0){ toast("সঠিক Amount দিন"); return; }
+    var cat = (el("incCategory")||{}).value || "Other";
+    var wallet = (el("incWallet")||{}).value || "Cash";
+    var date = (el("incDate")||{}).value || todayStr();
+    var time = (el("incTime")||{}).value || "";
+    var note = ((el("incNote")||{}).value||"").trim();
+    moneyData.transactions.push({id:Date.now(),type:"income",amount:amount,category:cat,wallet:wallet,date:date,time:time,note:note,ts:Date.now()});
+    moneyData.wallets[wallet] = (Number(moneyData.wallets[wallet])||0) + amount;
+    saveMoney();
+    el("incomeModal").classList.remove("active");
+    toast("✅ ইনকাম যোগ");
+    renderMoney(moneySub);
+  };
+  if(el("saveExpense")) el("saveExpense").onclick = function(){
+    var amount = parseFloat((el("expAmount")||{}).value);
+    if(!amount || amount<=0){ toast("সঠিক Amount দিন"); return; }
+    var cat = (el("expCategory")||{}).value || "অন্যান্য";
+    var wallet = (el("expWallet")||{}).value || "Cash";
+    var date = (el("expDate")||{}).value || todayStr();
+    var time = (el("expTime")||{}).value || "";
+    var note = ((el("expNote")||{}).value||"").trim();
+    moneyData.transactions.push({id:Date.now(),type:"expense",amount:amount,category:cat,wallet:wallet,date:date,time:time,note:note,ts:Date.now()});
+    moneyData.wallets[wallet] = (Number(moneyData.wallets[wallet])||0) - amount;
+    saveMoney();
+    el("expenseModal").classList.remove("active");
+    toast("✅ খরচ যোগ");
+    renderMoney(moneySub);
+  };
+
+  if(el("closeBudget")) el("closeBudget").onclick = function(){ el("budgetModal").classList.remove("active"); };
+  if(el("saveBudget")) el("saveBudget").onclick = function(){
+    var a = parseFloat((el("budgetAmount")||{}).value);
+    if(isNaN(a) || a<0){ toast("সঠিক Amount"); return; }
+    moneyData.budget = a; saveMoney();
+    el("budgetModal").classList.remove("active");
+    toast("✅ Budget সেভ"); renderMoney("budget");
+  };
+
+  if(el("closeGoal")) el("closeGoal").onclick = function(){ el("goalModal").classList.remove("active"); };
+  if(el("saveGoal")) el("saveGoal").onclick = function(){
+    var name = ((el("goalName")||{}).value||"").trim();
+    var target = parseFloat((el("goalTarget")||{}).value);
+    var saved = parseFloat((el("goalSaved")||{}).value)||0;
+    if(!name||!target){ toast("নাম ও Target দিন"); return; }
+    moneyData.goals.push({id:Date.now(),name:name,target:target,saved:saved});
+    saveMoney(); el("goalModal").classList.remove("active");
+    if(el("goalName")) el("goalName").value="";
+    if(el("goalTarget")) el("goalTarget").value="";
+    if(el("goalSaved")) el("goalSaved").value="0";
+    toast("✅ Goal যোগ"); renderMoney("goals");
+  };
+
+  if(el("closeLoan")) el("closeLoan").onclick = function(){ el("loanModal").classList.remove("active"); };
+  if(el("saveLoan")) el("saveLoan").onclick = function(){
+    var type = (el("loanType")||{}).value||"given";
+    var person = ((el("loanPerson")||{}).value||"").trim();
+    var amount = parseFloat((el("loanAmount")||{}).value);
+    var due = (el("loanDue")||{}).value||"";
+    var note = ((el("loanNote")||{}).value||"").trim();
+    if(!person||!amount){ toast("নাম ও Amount দিন"); return; }
+    moneyData.loans.push({id:Date.now(),type:type,person:person,amount:amount,due:due,note:note,paid:false});
+    saveMoney(); el("loanModal").classList.remove("active");
+    toast("✅ Loan যোগ"); renderMoney("loans");
+  };
+
+  if(el("closeBill")) el("closeBill").onclick = function(){ el("billModal").classList.remove("active"); };
+  if(el("saveBill")) el("saveBill").onclick = function(){
+    var name = (el("billType")||{}).value||"Custom";
+    if(name==="Custom") name = ((el("billCustom")||{}).value||"").trim()||"Custom";
+    var amount = parseFloat((el("billAmount")||{}).value)||0;
+    var due = (el("billDue")||{}).value||"";
+    if(!due){ toast("Due Date দিন"); return; }
+    moneyData.bills.push({id:Date.now(),name:name,amount:amount,due:due,paid:false});
+    saveMoney(); el("billModal").classList.remove("active");
+    toast("✅ Bill যোগ"); renderMoney("bills");
+  };
+
+  /* Hook into existing show without breaking it */
+  var _show = show;
+  show = function(screen){
+    _show(screen);
+    if(screen === "app" && currentUser){
+      moneyBound = false;
+      bindMoney();
+      setTimeout(maybeShowPin, 400);
+      setTimeout(function(){ try{ render(); }catch(e){} }, 200);
+    }
+    if(screen === "login" || screen === "reg"){
+      moneyBound = false;
+      var fab = document.querySelector(".fab-wrap");
+      if(fab) fab.style.display = "flex";
+    }
+  };
+
+  window.addEventListener("error", function(e){ console.warn("err", e.message); });
+  window.addEventListener("unhandledrejection", function(e){ console.warn("rej", e.reason); if(e.preventDefault) e.preventDefault(); });
+})();
+
+
+
+/* ========== i18n: Bangla / English / Hindi ========== */
+var LANG_KEY = "2fa_lang_v1";
+var currentLang = localStorage.getItem(LANG_KEY) || "bn";
+
+var I18N = {
+  bn: {
+    settings: "⚙️ সেটিংস", account: "🔐 অ্যাকাউন্ট", currency: "Currency", save: "সেভ", close: "বন্ধ",
+    language: "🌐 ভাষা / Language", langHint: "ভাষা বেছে নিন — পুরো অ্যাপ বদলে যাবে",
+    category: "ক্যাটাগরি", customCategory: "কাস্টম ক্যাটাগরি লিখুন",
+    dash: "ড্যাশবোর্ড", history: "হিস্টরি", wallets: "ওয়ালেট", budget: "বাজেট",
+    goals: "গোল", loans: "লোন", bills: "বিল", ai: "AI ইনসাইট", reports: "রিপোর্ট",
+    tipDash: "আজ/সপ্তাহ/মাস/লাইফটাইম — সব ইনকাম, খরচ ও লাভের সার্বিক হিসাব",
+    tipTx: "সব ইনকাম ও খরচের সম্পূর্ণ ইতিহাস — ফিল্টার ও সার্চ করা যায়",
+    tipWallets: "Cash, bKash, Nagad ইত্যাদি প্রতিটি ওয়ালেটের আলাদা ব্যালেন্স",
+    tipBudget: "মাসিক বাজেট সেট করুন এবং খরচ ট্র্যাক করুন",
+    tipGoals: "সঞ্চয়ের লক্ষ্য নির্ধারণ ও অগ্রগতি দেখুন",
+    tipLoans: "কার কাছে টাকা দিয়েছেন বা নিয়েছেন — হিসাব রাখুন",
+    tipBills: "বিদ্যুৎ/গ্যাস/ইন্টারনেট ইত্যাদি বিলের রিমাইন্ডার",
+    tipAi: "খরচ বিশ্লেষণ ও সঞ্চয়ের পরামর্শ",
+    tipReports: "ক্যাটাগরি অনুযায়ী রিপোর্ট ও CSV এক্সপোর্ট",
+    bal: "বর্তমান ব্যালেন্স", todayInc: "আজকের ইনকাম", todayExp: "আজকের খরচ", todayProfit: "আজকের লাভ",
+    weekInc: "এই সপ্তাহের ইনকাম", weekExp: "এই সপ্তাহের খরচ",
+    monthInc: "এই মাসের ইনকাম", monthExp: "এই মাসের খরচ", monthProfit: "এই মাসের লাভ",
+    lifeInc: "লাইফটাইম ইনকাম", lifeExp: "লাইফটাইম খরচ", lifeProfit: "লাইফটাইম লাভ",
+    addIncome: "ইনকাম যোগ", addExpense: "খরচ যোগ",
+    noTx: "কোনো ট্রানজেকশন নেই", noGoal: "কোনো Goal নেই", noLoan: "কোনো Loan নেই", noBill: "কোনো Bill নেই",
+    tab2fa: "🔐 2FA", tabMoney: "💰 Money",
+    searchPh: "অ্যাকাউন্ট খুঁজুন...",
+    langChanged: "✅ ভাষা পরিবর্তন হয়েছে"
+  },
+  en: {
+    settings: "⚙️ Settings", account: "🔐 Account", currency: "Currency", save: "Save", close: "Close",
+    language: "🌐 Language", langHint: "Choose language — entire app will switch",
+    category: "Category", customCategory: "Write custom category",
+    dash: "Dashboard", history: "History", wallets: "Wallets", budget: "Budget",
+    goals: "Goals", loans: "Loans", bills: "Bills", ai: "AI Insights", reports: "Reports",
+    tipDash: "Today/Week/Month/Lifetime — all income, expense & profit overview",
+    tipTx: "Full history of all income & expenses — filter and search",
+    tipWallets: "Separate balance for Cash, bKash, Nagad and more",
+    tipBudget: "Set monthly budget and track spending",
+    tipGoals: "Set savings goals and track progress",
+    tipLoans: "Track money you gave or borrowed",
+    tipBills: "Reminders for electricity, gas, internet bills",
+    tipAi: "Spending analysis and saving tips",
+    tipReports: "Category reports and CSV export",
+    bal: "Current Balance", todayInc: "Today's Income", todayExp: "Today's Expense", todayProfit: "Today's Profit",
+    weekInc: "This Week Income", weekExp: "This Week Expense",
+    monthInc: "This Month Income", monthExp: "This Month Expense", monthProfit: "This Month Profit",
+    lifeInc: "Lifetime Income", lifeExp: "Lifetime Expense", lifeProfit: "Lifetime Profit",
+    addIncome: "Add Income", addExpense: "Add Expense",
+    noTx: "No transactions", noGoal: "No goals yet", noLoan: "No loans yet", noBill: "No bills yet",
+    tab2fa: "🔐 2FA", tabMoney: "💰 Money",
+    searchPh: "Search accounts...",
+    langChanged: "✅ Language changed"
+  },
+  hi: {
+    settings: "⚙️ सेटिंग्स", account: "🔐 अकाउंट", currency: "मुद्रा", save: "सेव", close: "बंद",
+    language: "🌐 भाषा", langHint: "भाषा चुनें — पूरा ऐप बदल जाएगा",
+    category: "श्रेणी", customCategory: "कस्टम श्रेणी लिखें",
+    dash: "डैशबोर्ड", history: "हिस्ट्री", wallets: "वॉलेट", budget: "बजट",
+    goals: "गोल", loans: "लोन", bills: "बिल", ai: "AI इनसाइट", reports: "रिपोर्ट",
+    tipDash: "आज/सप्ताह/महीना/लाइफटाइम — आय, खर्च और लाभ का पूरा हिसाब",
+    tipTx: "सभी आय और खर्च का पूरा इतिहास — फ़िल्टर और सर्च",
+    tipWallets: "Cash, bKash, Nagad आदि हर वॉलेट का अलग बैलेंस",
+    tipBudget: "मासिक बजट सेट करें और खर्च ट्रैक करें",
+    tipGoals: "बचत के लक्ष्य सेट करें और प्रगति देखें",
+    tipLoans: "दिया/लिया गया पैसा ट्रैक करें",
+    tipBills: "बिजली/गैस/इंटरनेट बिल रिमाइंडर",
+    tipAi: "खर्च विश्लेषण और बचत सुझाव",
+    tipReports: "श्रेणी रिपोर्ट और CSV एक्सपोर्ट",
+    bal: "वर्तमान बैलेंस", todayInc: "आज की आय", todayExp: "आज का खर्च", todayProfit: "आज का लाभ",
+    weekInc: "इस सप्ताह आय", weekExp: "इस सप्ताह खर्च",
+    monthInc: "इस महीने आय", monthExp: "इस महीने खर्च", monthProfit: "इस महीने लाभ",
+    lifeInc: "लाइफटाइम आय", lifeExp: "लाइफटाइम खर्च", lifeProfit: "लाइफटाइम लाभ",
+    addIncome: "आय जोड़ें", addExpense: "खर्च जोड़ें",
+    noTx: "कोई लेनदेन नहीं", noGoal: "कोई गोल नहीं", noLoan: "कोई लोन नहीं", noBill: "कोई बिल नहीं",
+    tab2fa: "🔐 2FA", tabMoney: "💰 Money",
+    searchPh: "अकाउंट खोजें...",
+    langChanged: "✅ भाषा बदल गई"
+  }
+};
+
+function t(key){
+  var pack = I18N[currentLang] || I18N.bn;
+  return pack[key] || (I18N.en[key] || key);
+}
+
+function applyLanguage(lang){
+  if(!I18N[lang]) lang = "bn";
+  currentLang = lang;
+  localStorage.setItem(LANG_KEY, lang);
+  // data-i18n text
+  document.querySelectorAll("[data-i18n]").forEach(function(node){
+    var key = node.getAttribute("data-i18n");
+    if(key && t(key)) node.textContent = t(key);
+  });
+  // data-i18n-title
+  document.querySelectorAll("[data-i18n-title]").forEach(function(node){
+    var key = node.getAttribute("data-i18n-title");
+    if(key && t(key)) node.setAttribute("title", t(key));
+  });
+  // tabs
+  var tabTfa = document.getElementById("tabTfa");
+  var tabMoney = document.getElementById("tabMoney");
+  if(tabTfa) tabTfa.innerHTML = t("tab2fa");
+  if(tabMoney) tabMoney.innerHTML = t("tabMoney");
+  // search placeholder
+  var si = document.getElementById("searchInput");
+  if(si) si.placeholder = t("searchPh");
+  // settings title
+  var st = document.querySelector("#settingsModal .modal-title");
+  if(st) st.textContent = t("settings");
+  // lang button active state
+  document.querySelectorAll(".lang-btn").forEach(function(b){
+    var isOn = b.getAttribute("data-lang") === currentLang;
+    b.className = isOn ? "btn btn-p lang-btn" : "btn btn-s lang-btn";
+    b.style.flex = "1";
+    b.style.minWidth = "90px";
+  });
+  // refresh money view labels if open
+  try {
+    if(document.getElementById("moneyView") && document.getElementById("moneyView").classList.contains("active")){
+      if(typeof renderMoney === "function") renderMoney(typeof moneySub !== "undefined" ? moneySub : "dash");
+      updateMoneyHint(typeof moneySub !== "undefined" ? moneySub : "dash");
+    }
+  } catch(e){}
+}
+
+function updateMoneyHint(sub){
+  var hint = document.getElementById("moneySectionHint");
+  if(!hint) return;
+  var map = { dash:"tipDash", tx:"tipTx", wallets:"tipWallets", budget:"tipBudget", goals:"tipGoals", loans:"tipLoans", bills:"tipBills", ai:"tipAi", reports:"tipReports" };
+  hint.textContent = t(map[sub] || "tipDash");
+}
+
+// Language buttons
+document.querySelectorAll(".lang-btn").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    applyLanguage(btn.getAttribute("data-lang"));
+    try { toast(t("langChanged")); } catch(e){}
+  });
+});
+
+// Apply saved language on load
+try { applyLanguage(currentLang); } catch(e){}
+
+// Custom category toggle
+var incCat = document.getElementById("incCategory");
+if(incCat) incCat.addEventListener("change", function(){
+  var w = document.getElementById("incCustomCatWrap");
+  if(w) w.style.display = (incCat.value === "__custom__") ? "block" : "none";
+});
+var expCat = document.getElementById("expCategory");
+if(expCat) expCat.addEventListener("change", function(){
+  var w = document.getElementById("expCustomCatWrap");
+  if(w) w.style.display = (expCat.value === "__custom__") ? "block" : "none";
+});
+
+// Patch save income/expense to use custom category
+(function(){
+  var si = document.getElementById("saveIncome");
+  if(si){
+    var prev = si.onclick;
+    si.onclick = function(){
+      var catEl = document.getElementById("incCategory");
+      if(catEl && catEl.value === "__custom__"){
+        var custom = ((document.getElementById("incCustomCat")||{}).value||"").trim();
+        if(!custom){ try{toast("ক্যাটাগরি লিখুন / Write category");}catch(e){} return; }
+        // temporarily set a real value for the original handler path
+        var opt = document.createElement("option");
+        opt.value = custom; opt.textContent = custom; opt.selected = true;
+        catEl.appendChild(opt);
+        catEl.value = custom;
+      }
+      if(typeof prev === "function") return prev.apply(this, arguments);
+    };
+  }
+  var se = document.getElementById("saveExpense");
+  if(se){
+    var prevE = se.onclick;
+    se.onclick = function(){
+      var catEl = document.getElementById("expCategory");
+      if(catEl && catEl.value === "__custom__"){
+        var custom = ((document.getElementById("expCustomCat")||{}).value||"").trim();
+        if(!custom){ try{toast("ক্যাটাগরি লিখুন / Write category");}catch(e){} return; }
+        var opt = document.createElement("option");
+        opt.value = custom; opt.textContent = custom; opt.selected = true;
+        catEl.appendChild(opt);
+        catEl.value = custom;
+      }
+      if(typeof prevE === "function") return prevE.apply(this, arguments);
+    };
+  }
+})();
+
+// Update money section hint when sub-btn clicked
+document.querySelectorAll(".money-sub-btn").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    updateMoneyHint(btn.getAttribute("data-msub"));
+  });
+});
+
 
 setInterval(render, 1000);
 </script>
