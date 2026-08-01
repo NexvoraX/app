@@ -8,6 +8,39 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Apply saved theme BEFORE paint (no flash) -->
+    <script>
+    (function(){
+      var THEMES_EARLY = [
+        {p:'#d4af37',pd:'#b8962e',pl:'#f0d77b',d:'#0a0a0f',dc:'#12121a',de:'#1a1a26',bg:'linear-gradient(135deg,#1a0a2e,#16213e,#0f3460)',gg:'linear-gradient(135deg,#d4af37,#f0d77b,#d4af37)'},
+        {p:'#10b981',pd:'#059669',pl:'#34d399',d:'#0a0f0d',dc:'#0f1a16',de:'#15221c',bg:'linear-gradient(135deg,#0a1f1a,#0d2820,#0f3d2e)',gg:'linear-gradient(135deg,#10b981,#34d399,#10b981)'},
+        {p:'#a855f7',pd:'#9333ea',pl:'#c084fc',d:'#0c0a12',dc:'#14101f',de:'#1c1629',bg:'linear-gradient(135deg,#1a0a2e,#2e1065,#4c1d95)',gg:'linear-gradient(135deg,#a855f7,#c084fc,#a855f7)'},
+        {p:'#ef4444',pd:'#dc2626',pl:'#f87171',d:'#120a0a',dc:'#1a1010',de:'#241616',bg:'linear-gradient(135deg,#2a0a0a,#450a0a,#7f1d1d)',gg:'linear-gradient(135deg,#ef4444,#f87171,#ef4444)'},
+        {p:'#3b82f6',pd:'#2563eb',pl:'#60a5fa',d:'#0a0e14',dc:'#0f1520',de:'#161e2b',bg:'linear-gradient(135deg,#0a1628,#0c2340,#1e3a5f)',gg:'linear-gradient(135deg,#3b82f6,#60a5fa,#3b82f6)'},
+        {p:'#f43f5e',pd:'#e11d48',pl:'#fb7185',d:'#120a0e',dc:'#1a1014',de:'#24181c',bg:'linear-gradient(135deg,#2a0a14,#4a1028,#881337)',gg:'linear-gradient(135deg,#f43f5e,#fb7185,#f43f5e)'},
+        {p:'#f59e0b',pd:'#d97706',pl:'#fbbf24',d:'#100c08',dc:'#18120c',de:'#221a12',bg:'linear-gradient(135deg,#1f1408,#3d2a0a,#78350f)',gg:'linear-gradient(135deg,#f59e0b,#fbbf24,#f59e0b)'},
+        {p:'#06b6d4',pd:'#0891b2',pl:'#22d3ee',d:'#080f12',dc:'#0c161a',de:'#121e24',bg:'linear-gradient(135deg,#0a1c22,#0e2f38,#155e75)',gg:'linear-gradient(135deg,#06b6d4,#22d3ee,#06b6d4)'},
+        {p:'#84cc16',pd:'#65a30d',pl:'#a3e635',d:'#0a1008',dc:'#121a0e',de:'#1a2414',bg:'linear-gradient(135deg,#14200a,#1f320e,#3f6212)',gg:'linear-gradient(135deg,#84cc16,#a3e635,#84cc16)'},
+        {p:'#6366f1',pd:'#4f46e5',pl:'#818cf8',d:'#0a0a12',dc:'#10101c',de:'#181828',bg:'linear-gradient(135deg,#12122a,#1e1b4b,#312e81)',gg:'linear-gradient(135deg,#6366f1,#818cf8,#6366f1)'},
+        {p:'#14b8a6',pd:'#0d9488',pl:'#2dd4bf',d:'#080f0e',dc:'#0e1816',de:'#142220',bg:'linear-gradient(135deg,#0a1f1c,#0f3330,#115e59)',gg:'linear-gradient(135deg,#14b8a6,#2dd4bf,#14b8a6)'},
+        {p:'#d946ef',pd:'#c026d3',pl:'#e879f9',d:'#100a12',dc:'#18101c',de:'#221628',bg:'linear-gradient(135deg,#1f0a28,#3b0764,#701a75)',gg:'linear-gradient(135deg,#d946ef,#e879f9,#d946ef)'}
+      ];
+      var i = parseInt(localStorage.getItem('themeIndex') || '0', 10) % 12;
+      var t = THEMES_EARLY[i];
+      var r = document.documentElement.style;
+      r.setProperty('--primary', t.p);
+      r.setProperty('--primary-dark', t.pd);
+      r.setProperty('--primary-light', t.pl);
+      r.setProperty('--dark', t.d);
+      r.setProperty('--dark-card', t.dc);
+      r.setProperty('--dark-elevated', t.de);
+      r.setProperty('--bg-gradient', t.bg);
+      r.setProperty('--gold-gradient', t.gg);
+      r.setProperty('--shadow', '0 10px 40px ' + t.p + '22');
+      r.setProperty('--glow', '0 0 24px ' + t.p + '45');
+      document.documentElement.style.backgroundColor = t.d;
+    })();
+    </script>
     <!-- Firebase Compat SDK (same as Admin Panel) -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
@@ -925,30 +958,36 @@
         .leaderboard-table {
             background: var(--dark-card);
             border-radius: 18px;
-            overflow: hidden;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(212, 175, 55, 0.12);
+            border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
+            width: 100%;
         }
 
         .leaderboard-table table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 320px;
         }
 
         .leaderboard-table th {
-            background: linear-gradient(135deg, #1a0a2e, #16213e);
+            background: var(--dark-elevated);
             color: var(--primary);
-            padding: 16px 18px;
+            padding: 14px 12px;
             text-align: left;
             font-weight: 700;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+            font-size: 13px;
+            white-space: nowrap;
         }
 
         .leaderboard-table td {
-            padding: 16px 18px;
+            padding: 14px 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             color: var(--text);
+            font-size: 13px;
         }
 
         .leaderboard-table tr:hover {
@@ -1178,13 +1217,15 @@
         .referral-code {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             margin-top: 18px;
             background: rgba(0, 0, 0, 0.35);
-            padding: 16px 16px;
+            padding: 12px;
             border-radius: 14px;
-            backdrop-filter: blur(12px);
-            border: 1.5px solid rgba(255,255,255,0.15);
+            border: 1.5px solid color-mix(in srgb, var(--primary) 25%, transparent);
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .referral-code input {
@@ -1192,10 +1233,13 @@
             border: none;
             color: #fff;
             font-weight: 800;
-            font-size: 18px;
-            letter-spacing: 3px;
+            font-size: 15px;
+            letter-spacing: 1.5px;
             flex: 1;
+            min-width: 0;
             outline: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .referral-code input::placeholder {
@@ -1206,13 +1250,14 @@
             background: var(--gold-gradient);
             color: #1a1a1a;
             border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 800;
             transition: all 0.3s ease;
             white-space: nowrap;
-            font-size: 14px;
+            font-size: 13px;
+            flex-shrink: 0;
         }
 
         .btn-copy:hover {
@@ -1280,34 +1325,45 @@
             position: relative;
             cursor: pointer;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-            border: 3px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 30px color-mix(in srgb, var(--primary) 35%, transparent);
+            border: 3px solid color-mix(in srgb, var(--primary) 45%, transparent);
+            flex-shrink: 0;
         }
 
         .profile-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
+            pointer-events: none;
         }
 
         .avatar-upload {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             opacity: 0;
             cursor: pointer;
+            z-index: 5;
+            font-size: 0;
         }
 
-        .profile-avatar:hover::after {
-            content: '📷';
+        .profile-avatar .camera-badge {
             position: absolute;
-            font-size: 24px;
-            background: rgba(0, 0, 0, 0.5);
-            width: 100%;
-            height: 100%;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: rgba(0,0,0,0.55);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 14px;
+            color: #fff;
+            z-index: 3;
+            pointer-events: none;
         }
 
         .profile-info {
@@ -1823,10 +1879,9 @@
                     <thead>
                         <tr>
                             <th>Rank</th>
-                            <th>User Name</th>
-                            <th>Email</th>
+                            <th>User</th>
                             <th>Referrals</th>
-                            <th>Referral Income</th>
+                            <th>Income</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboardBody">
@@ -1999,8 +2054,9 @@
 
             <div class="profile-section">
                 <div class="profile-header">
-                    <div class="profile-avatar" id="profileAvatar">
-                        <i class="fas fa-user"></i>
+                    <div class="profile-avatar" id="profileAvatar" onclick="document.getElementById('avatarUpload').click()">
+                        <i class="fas fa-user" id="avatarPlaceholder"></i>
+                        <span class="camera-badge"><i class="fas fa-camera"></i></span>
                         <input type="file" class="avatar-upload" id="avatarUpload" accept="image/*">
                     </div>
                     <div class="profile-info">
@@ -2021,6 +2077,8 @@
                             <input type="email" id="profileEmailInput" placeholder="Your email" readonly>
                         </div>
                     </div>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">প্রোফাইল ছবি বদলাতে উপরের ছবিতে ক্লিক করুন</p>
+                    <button type="button" class="btn-auth" onclick="saveProfileName()" style="max-width:300px;">নাম সেভ করুন</button>
                 </div>
             </div>
 
@@ -2628,8 +2686,13 @@
         if (refIn) refIn.value = user.referralCode || '';
         if (refProf) refProf.value = user.referralCode || '';
 
-        const av = user.avatar || defaultAvatar(user.name);
-        document.getElementById('profileAvatar').innerHTML = '<img src="' + av + '" alt="Profile">';
+        var av = user.avatar || defaultAvatar(user.name);
+        if (typeof setProfileAvatarUI === 'function') {
+            setProfileAvatarUI(av);
+        } else {
+            var box = document.getElementById('profileAvatar');
+            if (box) box.innerHTML = '<img src="' + av + '" alt="Profile"><span class="camera-badge"><i class="fas fa-camera"></i></span><input type="file" class="avatar-upload" id="avatarUpload" accept="image/*">';
+        }
 
         updateReferralStats();
     }
@@ -3082,60 +3145,53 @@
     // ======================== LEADERBOARD ========================
 
     function loadLeaderboard() {
-        const users = getAllUsers();
-        const tbody = document.getElementById('leaderboardBody');
+        var users = getAllUsers();
+        var tbody = document.getElementById('leaderboardBody');
+        if (!tbody) return;
         tbody.innerHTML = '';
 
-        // Only show users who have at least 1 referral
-        const sorted = users
-            .map(u => ({
-                ...u,
-                referralCount: u.referrals.length,
-                totalReferralIncome: u.referralIncome
-            }))
-            .filter(u => u.referralCount > 0)
-            .sort((a, b) => b.referralCount - a.referralCount || b.totalReferralIncome - a.totalReferralIncome)
-            .slice(0, 10);
+        // All users who have at least 1 referral (no top-10 limit)
+        var sorted = users
+            .map(function(u) {
+                return {
+                    name: u.name,
+                    avatar: u.avatar,
+                    referralCount: (u.referrals || []).length,
+                    totalReferralIncome: Number(u.referralIncome || 0)
+                };
+            })
+            .filter(function(u) { return u.referralCount > 0; })
+            .sort(function(a, b) {
+                return b.referralCount - a.referralCount || b.totalReferralIncome - a.totalReferralIncome;
+            });
 
         if (sorted.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--text-muted);">এখনো কোনো রেফারেল নেই। রেফার করুন এবং লিডারবোর্ডে জায়গা করে নিন!</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--text-muted);">এখনো কোনো রেফারেল নেই</td></tr>';
             return;
         }
 
-        // Add summary row at top
-        const totalRefs = sorted.reduce((s, u) => s + u.referralCount, 0);
-        const totalIncome = sorted.reduce((s, u) => s + u.totalReferralIncome, 0);
-        const summaryRow = document.createElement('tr');
-        summaryRow.innerHTML = `
-            <td colspan="5" style="background: rgba(212,175,55,0.08); padding: 14px 18px; font-size: 13px; color: var(--text);">
-                <strong style="color: var(--primary);">Top ${sorted.length} Referrers</strong> &nbsp;•&nbsp;
-                মোট রেফারেল: <strong>${totalRefs}</strong> &nbsp;•&nbsp;
-                মোট আয়: <strong style="color: var(--primary);">৳ ${totalIncome.toFixed(2)}</strong>
-                <br><span style="font-size:12px; color: var(--text-muted);">প্রতিটি রেফারেল থেকে ১০% কমিশন পাওয়া যায়</span>
-            </td>
-        `;
+        var totalRefs = sorted.reduce(function(s, u) { return s + u.referralCount; }, 0);
+        var totalIncome = sorted.reduce(function(s, u) { return s + u.totalReferralIncome; }, 0);
+        var summaryRow = document.createElement('tr');
+        summaryRow.innerHTML =
+            '<td colspan="4" style="background:color-mix(in srgb, var(--primary) 10%, transparent);padding:12px;font-size:12px;color:var(--text);">' +
+            '<strong style="color:var(--primary);">' + sorted.length + ' জন রেফারার</strong> • ' +
+            'মোট রেফার: <strong>' + totalRefs + '</strong> • ' +
+            'মোট আয়: <strong style="color:var(--primary);">৳ ' + totalIncome.toFixed(2) + '</strong>' +
+            '<br><span style="font-size:11px;color:var(--text-muted);">প্রতি রেফারেল থেকে ১০% কমিশন</span></td>';
         tbody.appendChild(summaryRow);
 
-        sorted.forEach((user, index) => {
-            const row = document.createElement('tr');
-            let badgeClass = '';
-            if (index === 0) badgeClass = 'gold';
-            else if (index === 1) badgeClass = 'silver';
-            else if (index === 2) badgeClass = 'bronze';
-            const av = user.avatar || defaultAvatar(user.name);
-
-            row.innerHTML = `
-                <td><div class="rank-badge ${badgeClass}">${index + 1}</div></td>
-                <td>
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <img src="${av}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);">
-                        <strong>${user.name}</strong>
-                    </div>
-                </td>
-                <td style="color: var(--text-muted); font-size:13px;">${user.email}</td>
-                <td><strong style="color: var(--primary);">${user.referralCount}</strong> জন</td>
-                <td><strong style="color: var(--success);">৳ ${user.totalReferralIncome.toFixed(2)}</strong></td>
-            `;
+        sorted.forEach(function(user, index) {
+            var row = document.createElement('tr');
+            var badgeClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+            var av = user.avatar || defaultAvatar(user.name);
+            row.innerHTML =
+                '<td><div class="rank-badge ' + badgeClass + '">' + (index + 1) + '</div></td>' +
+                '<td><div style="display:flex;align-items:center;gap:8px;">' +
+                '<img src="' + av + '" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);flex-shrink:0;">' +
+                '<strong style="font-size:13px;">' + (user.name || '-') + '</strong></div></td>' +
+                '<td><strong style="color:var(--primary);">' + user.referralCount + '</strong></td>' +
+                '<td><strong style="color:var(--success);">৳ ' + user.totalReferralIncome.toFixed(2) + '</strong></td>';
             tbody.appendChild(row);
         });
     }
@@ -3566,20 +3622,62 @@
 
     // ======================== PROFILE ========================
 
-    document.getElementById('avatarUpload').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const user = getCurrentUser();
-                user.avatar = event.target.result;
+    function setProfileAvatarUI(src) {
+        var box = document.getElementById('profileAvatar');
+        if (!box) return;
+        box.innerHTML =
+            (src ? '<img src="' + src + '" alt="Profile">' : '<i class="fas fa-user" id="avatarPlaceholder"></i>') +
+            '<span class="camera-badge"><i class="fas fa-camera"></i></span>' +
+            '<input type="file" class="avatar-upload" id="avatarUpload" accept="image/*">';
+        box.onclick = function() {
+            var inp = document.getElementById('avatarUpload');
+            if (inp) inp.click();
+        };
+        bindAvatarUpload();
+    }
+
+    function bindAvatarUpload() {
+        var el = document.getElementById('avatarUpload');
+        if (!el) return;
+        el.onclick = function(e) { e.stopPropagation(); };
+        el.onchange = function(e) {
+            var file = e.target.files && e.target.files[0];
+            if (!file) return;
+            if (!file.type || file.type.indexOf('image/') !== 0) {
+                showSuccess('শুধু ছবি সিলেক্ট করুন', 'error');
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var user = getCurrentUser();
+                if (!user) return;
+                user.avatar = ev.target.result;
                 updateCurrentUser(user);
-                document.getElementById('profileAvatar').innerHTML = `<img src="${user.avatar}" alt="Profile">`;
-                showSuccess('Profile photo updated!');
+                setProfileAvatarUI(user.avatar);
+                showSuccess('প্রোফাইল ছবি সেট হয়েছে!', 'success');
             };
             reader.readAsDataURL(file);
+        };
+    }
+    bindAvatarUpload();
+
+    function saveProfileName() {
+        var user = getCurrentUser();
+        if (!user) return;
+        var name = (document.getElementById('profileFullName').value || '').trim();
+        if (!name) {
+            showSuccess('নাম লিখুন', 'error');
+            return;
         }
-    });
+        user.name = name;
+        if (!user.avatar || (user.avatar && user.avatar.indexOf('ui-avatars.com') !== -1)) {
+            user.avatar = defaultAvatar(name);
+        }
+        updateCurrentUser(user);
+        document.getElementById('profileName').textContent = name;
+        setProfileAvatarUI(user.avatar || defaultAvatar(name));
+        showSuccess('নাম সেভ হয়েছে!', 'success');
+    }
 
     function changePassword() {
         const user = getCurrentUser();
