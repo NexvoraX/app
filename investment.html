@@ -1,0 +1,3603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium User Panel - Investment Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase Compat SDK (same as Admin Panel) -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script>
+      (function() {
+        var firebaseConfig = {
+          apiKey: "AIzaSyCcV4Xtg2s_XOWfHw6WPjfs80faWHsXulw",
+          authDomain: "telegram-mini-app-1b599.firebaseapp.com",
+          projectId: "telegram-mini-app-1b599",
+          storageBucket: "telegram-mini-app-1b599.firebasestorage.app",
+          messagingSenderId: "903784856566",
+          appId: "1:903784856566:web:853670770de2289057e5d7",
+          measurementId: "G-H80ZBE2G5F",
+          databaseURL: "https://telegram-mini-app-1b599-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        window.fbDB = firebase.database();
+        window.fbReady = true;
+        console.log('🔥 Firebase RTDB connected (compat)');
+      })();
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #d4af37;
+            --primary-dark: #b8962e;
+            --primary-light: #f0d77b;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0a0a0f;
+            --dark-card: #12121a;
+            --dark-elevated: #1a1a26;
+            --light: #f3f4f6;
+            --text: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border: #2a2a3a;
+            --bg-gradient: linear-gradient(135deg, #1a0a2e 0%, #16213e 40%, #0f3460 100%);
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f0d77b 50%, #d4af37 100%);
+            --shadow: 0 10px 40px rgba(212, 175, 55, 0.12);
+            --glow: 0 0 20px rgba(212, 175, 55, 0.25);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(ellipse at 20% 20%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
+            min-height: 100vh;
+            touch-action: manipulation;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* Theme Switcher Button */
+        .theme-switcher-btn {
+            position: fixed;
+            top: 70px;
+            right: 14px;
+            z-index: 6000;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: var(--dark-card);
+            color: var(--primary);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), var(--glow);
+            transition: all 0.3s ease;
+        }
+        .theme-switcher-btn:hover {
+            transform: scale(1.1) rotate(30deg);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.5), 0 0 25px var(--primary);
+        }
+        /* On auth pages theme button goes higher */
+        body:has(.auth-container.active) .theme-switcher-btn {
+            top: 16px;
+        }
+
+        /* Bottom action area for forms/cards */
+        .bottom-actions {
+            margin-top: auto;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .bottom-actions .btn-auth,
+        .bottom-actions .btn-buy,
+        .bottom-actions .btn-claim,
+        .bottom-actions .btn-secondary {
+            width: 100%;
+            margin-top: 0;
+        }
+
+        /* =============== AUTH PAGES =============== */
+        .auth-container {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            background: var(--bg-gradient);
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 5000;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
+            animation: ambientPulse 12s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes ambientPulse {
+            from { transform: scale(1) rotate(0deg); opacity: 0.7; }
+            to { transform: scale(1.1) rotate(5deg); opacity: 1; }
+        }
+
+        .auth-container.active {
+            display: flex;
+        }
+
+        /* When any auth page is open, force hide the entire panel */
+        body:has(.auth-container.active) .panel-container {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        .auth-box {
+            background: rgba(18, 18, 26, 0.97);
+            border-radius: 24px;
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.65), var(--glow);
+            animation: slideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(212, 175, 55, 0.28);
+            backdrop-filter: blur(20px);
+            position: relative;
+            z-index: 1;
+            margin: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-header h2 {
+            font-size: 30px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--dark-elevated);
+            color: var(--text);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15), var(--glow);
+        }
+
+        .form-group input::placeholder {
+            color: #6b7280;
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle i {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+
+        .password-toggle i:hover {
+            color: var(--primary);
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold-gradient);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.45);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .auth-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .auth-link a:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid var(--success);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid var(--danger);
+        }
+
+        /* =============== MAIN PANEL =============== */
+        .panel-container {
+            display: none !important;
+            min-height: 100vh;
+            background-color: var(--dark);
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .panel-container.active {
+            display: flex !important;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: var(--dark-card);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 200;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        .top-logo {
+            font-size: 18px;
+            font-weight: 800;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+        .top-logout-btn {
+            background: linear-gradient(135deg, #7f1d1d, #991b1b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-logout-btn:hover {
+            background: linear-gradient(135deg, #991b1b, #b91c1c);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 68px;
+            background: var(--dark-card);
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 200;
+            padding: 0 4px;
+            box-shadow: 0 -4px 25px rgba(0,0,0,0.4);
+            overflow-x: auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: var(--text-muted);
+            text-decoration: none;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 12px;
+            min-width: 56px;
+            transition: all 0.25s ease;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .nav-item i {
+            font-size: 18px;
+        }
+        .nav-item:hover {
+            color: var(--primary-light);
+            background: rgba(212,175,55,0.08);
+        }
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(212,175,55,0.12);
+        }
+        .nav-item.active i {
+            text-shadow: 0 0 12px var(--primary);
+        }
+
+        .main-content {
+            margin-left: 0;
+            margin-top: 56px;
+            margin-bottom: 68px;
+            padding: 20px 16px 30px;
+            flex: 1;
+            min-height: calc(100vh - 124px);
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Keep old classes for compatibility (hidden) */
+        .sidebar, .sidebar-header, .sidebar-menu, .menu-item, .menu-link, .logout-btn, .logo, .user-info {
+            display: none !important;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        /* =============== DASHBOARD =============== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 22px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--dark-card);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gold-gradient);
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35), var(--glow);
+            border-color: var(--primary);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .card-icon.primary {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+
+        .card-icon.success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .card-icon.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .card-icon.secondary {
+            background: rgba(236, 72, 153, 0.15);
+            color: var(--secondary);
+        }
+
+        .card-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+
+        .card-subtext {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 8px;
+        }
+
+        /* =============== PLANS =============== */
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 26px;
+        }
+
+        .plan-card {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 32px 28px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gold-gradient);
+        }
+
+        .plan-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(212, 175, 55, 0.2);
+        }
+
+        .plan-price {
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .plan-currency {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .plan-details {
+            list-style: none;
+            margin: 20px 0;
+            flex: 1;
+        }
+
+        .plan-details li {
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .plan-details li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-details .label {
+            color: var(--text-muted);
+        }
+
+        .plan-details .value {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .plan-description {
+            background: rgba(212, 175, 55, 0.06);
+            border-left: 3px solid var(--primary);
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--text);
+            margin: 16px 0 20px;
+            line-height: 1.65;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold-gradient);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: auto;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 18px rgba(212, 175, 55, 0.25);
+        }
+
+        .btn-buy:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-buy:disabled {
+            background: #3a3a4a;
+            color: #6b7280;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* =============== MY PLANS =============== */
+        .my-plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 26px;
+        }
+
+        .active-plan {
+            background: var(--dark-card);
+            border-radius: 18px;
+            padding: 26px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .plan-status {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-status.expired {
+            background: var(--danger);
+        }
+
+        .plan-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 18px 0;
+            padding: 18px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .plan-info-item {
+            text-align: center;
+        }
+
+        .plan-info-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 5px;
+        }
+
+        .plan-info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold-gradient);
+            transition: width 0.4s ease;
+            border-radius: 10px;
+        }
+
+        .btn-claim {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: auto;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-claim:hover:not(:disabled) {
+            background: linear-gradient(135deg, #047857, #059669);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-claim:disabled {
+            background: #3a3a4a;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        /* =============== LEADERBOARD =============== */
+        .leaderboard-table {
+            background: var(--dark-card);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(212, 175, 55, 0.12);
+        }
+
+        .leaderboard-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table th {
+            background: linear-gradient(135deg, #1a0a2e, #16213e);
+            color: var(--primary);
+            padding: 16px 18px;
+            text-align: left;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .leaderboard-table td {
+            padding: 16px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text);
+        }
+
+        .leaderboard-table tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #1a1a1a;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .rank-badge.gold {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .rank-badge.silver {
+            background: linear-gradient(135deg, #e5e7eb, #9ca3af);
+            color: #1f2937;
+        }
+
+        .rank-badge.bronze {
+            background: linear-gradient(135deg, #fed7aa, #fb923c);
+        }
+
+        /* =============== DEPOSIT/WITHDRAW =============== */
+        .transaction-form {
+            background: var(--dark-card);
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            max-width: 520px;
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-method-group {
+            margin: 22px 0;
+        }
+
+        .payment-method-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .payment-option {
+            display: block;
+        }
+
+        .payment-option input {
+            display: none;
+        }
+
+        .payment-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+            margin: 0;
+            background: var(--dark-elevated);
+            color: var(--text-muted);
+            gap: 8px;
+        }
+
+        .payment-option input:checked + label {
+            border-color: var(--primary);
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+        }
+
+        .payment-option label:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .transaction-history {
+            background: var(--dark-card);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .history-item {
+            padding: 20px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .history-item:hover {
+            background: rgba(212, 175, 55, 0.04);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .history-method {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .history-date {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+        .status-approved {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        /* =============== REFERRAL =============== */
+        .referral-box {
+            background: var(--bg-gradient);
+            color: white;
+            border-radius: 22px;
+            padding: 28px 22px;
+            margin-bottom: 28px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.45), var(--glow);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .referral-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .referral-code {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 18px;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 16px 16px;
+            border-radius: 14px;
+            backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255,255,255,0.15);
+        }
+
+        .referral-code input {
+            background: none;
+            border: none;
+            color: #fff;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 3px;
+            flex: 1;
+            outline: none;
+        }
+
+        .referral-code input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-copy {
+            background: var(--gold-gradient);
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 800;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .referral-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .referral-stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px 10px;
+            border-radius: 14px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .referral-stat-label {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .referral-stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* =============== PROFILE =============== */
+        .profile-section {
+            background: var(--dark-card);
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin-bottom: 30px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gold-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-size: 40px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            border: 3px solid rgba(212, 175, 55, 0.4);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-upload {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .profile-avatar:hover::after {
+            content: '📷';
+            position: absolute;
+            font-size: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h2 {
+            font-size: 24px;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .btn-secondary {
+            padding: 13px 26px;
+            background: linear-gradient(135deg, #be185d, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #9d174d, #db2777);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.35);
+        }
+
+        /* =============== MODALS =============== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(6px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--dark-card);
+            border-radius: 22px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), var(--glow);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .modal-header h3 {
+            font-size: 22px;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--primary);
+        }
+
+        /* =============== RESPONSIVE =============== */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px 12px 28px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .plans-container {
+                grid-template-columns: 1fr;
+            }
+
+            .my-plans-container {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+            .auth-container {
+                padding: 16px 12px;
+                align-items: flex-start;
+                padding-top: 30px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .auth-box {
+                padding: 28px 20px;
+                max-width: 100%;
+                border-radius: 20px;
+                margin-bottom: 40px;
+            }
+
+            .leaderboard-table {
+                font-size: 13px;
+            }
+
+            .leaderboard-table td,
+            .leaderboard-table th {
+                padding: 10px;
+            }
+
+            .nav-item {
+                min-width: 48px;
+                padding: 6px 4px;
+                font-size: 9px;
+            }
+            .nav-item i {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 14px 10px 24px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .plan-card {
+                padding: 20px;
+            }
+
+            .auth-container {
+                padding: 12px 10px;
+                padding-top: 24px;
+            }
+
+            .auth-box {
+                padding: 24px 16px;
+                border-radius: 18px;
+            }
+
+            .auth-header h2 {
+                font-size: 22px;
+            }
+
+            .auth-header {
+                margin-bottom: 20px;
+            }
+
+            .btn-auth {
+                padding: 14px;
+                font-size: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-form {
+                padding: 18px 14px;
+            }
+
+            .bottom-nav {
+                height: 64px;
+            }
+            .nav-item span {
+                font-size: 9px;
+            }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--dark-card);
+            padding: 16px 22px;
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            border-left: 4px solid var(--success);
+            color: var(--text);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(420px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 70px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 52px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* Extra polish for sequential feel */
+        .dashboard-grid .card:nth-child(1) { animation: fadeInUp 0.4s ease 0.05s both; }
+        .dashboard-grid .card:nth-child(2) { animation: fadeInUp 0.4s ease 0.1s both; }
+        .dashboard-grid .card:nth-child(3) { animation: fadeInUp 0.4s ease 0.15s both; }
+        .dashboard-grid .card:nth-child(4) { animation: fadeInUp 0.4s ease 0.2s both; }
+        .dashboard-grid .card:nth-child(5) { animation: fadeInUp 0.4s ease 0.25s both; }
+        .dashboard-grid .card:nth-child(6) { animation: fadeInUp 0.4s ease 0.3s both; }
+
+        .plans-container .plan-card:nth-child(1) { animation: fadeInUp 0.45s ease 0.05s both; }
+        .plans-container .plan-card:nth-child(2) { animation: fadeInUp 0.45s ease 0.12s both; }
+        .plans-container .plan-card:nth-child(3) { animation: fadeInUp 0.45s ease 0.19s both; }
+        .plans-container .plan-card:nth-child(4) { animation: fadeInUp 0.45s ease 0.26s both; }
+        .plans-container .plan-card:nth-child(5) { animation: fadeInUp 0.45s ease 0.33s both; }
+    </style>
+</head>
+<body>
+
+<!-- Theme Switcher Button -->
+<button type="button" class="theme-switcher-btn" id="themeSwitcherBtn" title="Change Theme">
+    <i class="fas fa-palette"></i>
+</button>
+
+<!-- ======================== AUTH PAGES ======================== -->
+
+<!-- Login Page -->
+<div id="loginPage" class="auth-container active">
+    <div class="auth-box">
+        <div class="auth-header">
+            <h2>💰 PremiumPanel</h2>
+            <p>Log in to your account</p>
+        </div>
+        <div id="loginError" class="error-message" style="display: none;"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="loginEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="password-toggle">
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <i class="fas fa-eye" onclick="togglePassword('loginPassword')"></i>
+                </div>
+            </div>
+            <button type="submit" class="btn-auth">Log In</button>
+        </form>
+        <div class="auth-link">
+            Don't have an account? <a onclick="goToSignUp()">Sign Up</a>
+        </div>
+        <div class="auth-link">
+            Forgot password? <a onclick="goToForgotPassword()">Reset here</a>
+        </div>
+    </div>
+</div>
+
+<!-- Sign Up Page -->
+<div id="signupPage" class="auth-container">
+    <div class="auth-box">
+        <div class="auth-header">
+            <h2>💰 PremiumPanel</h2>
+            <p>Create a new account</p>
+        </div>
+        <div id="signupError" class="error-message" style="display: none;"></div>
+        <form id="signupForm">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="signupName" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="signupEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="password-toggle">
+                    <input type="password" id="signupPassword" placeholder="Create a password" required>
+                    <i class="fas fa-eye" onclick="togglePassword('signupPassword')"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Recovery Name (Security Question Answer)</label>
+                <input type="text" id="signupRecoveryName" placeholder="e.g., Your pet's name" required>
+            </div>
+            <div class="form-group">
+                <label>Referral Code (Optional)</label>
+                <input type="text" id="signupReferralCode" placeholder="Leave blank if none">
+            </div>
+            <button type="submit" class="btn-auth">Sign Up</button>
+        </form>
+        <div class="auth-link">
+            Already have an account? <a onclick="goToLogin()">Log In</a>
+        </div>
+    </div>
+</div>
+
+<!-- Forgot Password Page -->
+<div id="forgotPasswordPage" class="auth-container">
+    <div class="auth-box">
+        <div class="auth-header">
+            <h2>💰 PremiumPanel</h2>
+            <p>Reset your password</p>
+        </div>
+        <div id="forgotError" class="error-message" style="display: none;"></div>
+        <div id="resetSuccess" class="success-message" style="display: none;"></div>
+        <form id="forgotPasswordForm">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="forgotEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label>Recovery Name (Security Answer)</label>
+                <input type="text" id="forgotRecoveryName" placeholder="Enter your recovery answer" required>
+            </div>
+            <div id="newPasswordGroup" class="form-group" style="display: none;">
+                <label>New Password</label>
+                <div class="password-toggle">
+                    <input type="password" id="forgotNewPassword" placeholder="Create new password">
+                    <i class="fas fa-eye" onclick="togglePassword('forgotNewPassword')"></i>
+                </div>
+            </div>
+            <button type="submit" class="btn-auth">Verify & Reset</button>
+        </form>
+        <div class="auth-link">
+            Back to <a onclick="goToLogin()">Login</a>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== MAIN PANEL ======================== -->
+
+<div class="panel-container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-logo">💰 PremiumPanel</div>
+        <button type="button" class="top-logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard" class="page-section active">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p>Welcome back! Here's your investment overview</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-icon primary">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="card-label">Total Balance</div>
+                    <div class="card-value" id="totalBalance">৳ 0.00</div>
+                    <div class="card-subtext">Your current balance</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon success">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div class="card-label">Deposit Balance</div>
+                    <div class="card-value" id="depositBalance">৳ 0.00</div>
+                    <div class="card-subtext">Total deposited</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon warning">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="card-label">Plan Income</div>
+                    <div class="card-value" id="planIncome">৳ 0.00</div>
+                    <div class="card-subtext">From active plans</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon secondary">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="card-label">Referral Income</div>
+                    <div class="card-value" id="referralIncome">৳ 0.00</div>
+                    <div class="card-subtext">10% from referrals</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon primary">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="card-label">Total Profit</div>
+                    <div class="card-value" id="totalProfit">৳ 0.00</div>
+                    <div class="card-subtext">Income from all sources</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon success">
+                        <i class="fas fa-hourglass-start"></i>
+                    </div>
+                    <div class="card-label">Running Plans</div>
+                    <div class="card-value" id="runningPlans">0</div>
+                    <div class="card-subtext">Active investments</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLANS SECTION -->
+        <div id="plans" class="page-section">
+            <div class="page-header">
+                <h1>Investment Plans</h1>
+                <p>Choose the perfect plan for your investment goals</p>
+            </div>
+
+            <div class="plans-container" id="plansContainer"></div>
+        </div>
+
+        <!-- MY PLANS SECTION -->
+        <div id="myplans" class="page-section">
+            <div class="page-header">
+                <h1>My Active Plans</h1>
+                <p>Track your current investments and earnings</p>
+            </div>
+
+            <div id="myPlansContainer"></div>
+        </div>
+
+        <!-- LEADERBOARD SECTION -->
+        <div id="leaderboard" class="page-section">
+            <div class="page-header">
+                <h1>Referral Leaderboard</h1>
+                <p>Top earners from referrals</p>
+            </div>
+
+            <div class="leaderboard-table">
+                <table id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Referrals</th>
+                            <th>Referral Income</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REFERRAL SECTION -->
+        <div id="referral" class="page-section">
+            <div class="page-header">
+                <h1>Your Referral Program</h1>
+                <p>Earn 10% lifetime commission from your referrals</p>
+            </div>
+
+            <div class="referral-box">
+                <div style="text-align:center; margin-bottom:18px;">
+                    <div style="font-size:42px; margin-bottom:8px;">🎁</div>
+                    <h3 style="margin-bottom: 8px; font-size:22px; color:#fff;">Your Unique Referral Code</h3>
+                    <p style="opacity: 0.9; font-size: 14px;">বন্ধুদের সাথে শেয়ার করুন এবং তাদের ডিপোজিট থেকে <strong style="color:var(--primary-light);">১০% লাইফটাইম কমিশন</strong> নিন</p>
+                </div>
+                <div class="referral-code">
+                    <input type="text" id="referralCodeInput" readonly placeholder="Loading...">
+                    <button type="button" class="btn-copy" onclick="copyReferralCode()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+
+                <div class="referral-stats">
+                    <div class="referral-stat">
+                        <div class="referral-stat-label">Total Referrals</div>
+                        <div class="referral-stat-value" id="totalReferrals">0</div>
+                    </div>
+                    <div class="referral-stat">
+                        <div class="referral-stat-label">Active Referrals</div>
+                        <div class="referral-stat-value" id="activeReferrals">0</div>
+                    </div>
+                    <div class="referral-stat">
+                        <div class="referral-stat-label">Referral Income</div>
+                        <div class="referral-stat-value" id="referralIncomeValue">৳ 0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="referralListContainer"></div>
+        </div>
+
+        <!-- DEPOSIT SECTION -->
+        <div id="deposit" class="page-section">
+            <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                <div>
+                    <h1>Deposit Funds</h1>
+                    <p>অ্যাকাউন্টে টাকা যোগ করুন</p>
+                </div>
+                <button type="button" class="btn-auth" style="width:auto; padding:10px 18px; margin:0; font-size:13px;" onclick="showSection('withdraw')">
+                    <i class="fas fa-arrow-up"></i> Withdraw
+                </button>
+            </div>
+
+            <!-- Balance Cards -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+                <div class="card" style="padding:18px; text-align:center;">
+                    <div class="card-label">বর্তমান ব্যালেন্স</div>
+                    <div class="card-value" id="depositPageBalance" style="font-size:22px;">৳ 0.00</div>
+                </div>
+                <div class="card" style="padding:18px; text-align:center;">
+                    <div class="card-label">মোট ডিপোজিট</div>
+                    <div class="card-value" id="depositPageTotalDeposit" style="font-size:22px;">৳ 0.00</div>
+                </div>
+            </div>
+
+            <div class="transaction-form">
+                <h3 class="section-title">💰 ডিপোজিট করুন</h3>
+                <form id="depositForm">
+                    <div class="form-group">
+                        <label>পরিমাণ (টাকা)</label>
+                        <input type="number" id="depositAmount" placeholder="কত টাকা ডিপোজিট করবেন?" min="1" required>
+                    </div>
+
+                    <div class="payment-method-group">
+                        <label>Payment Method</label>
+                        <div class="payment-methods" id="depositMethods">
+                            <div class="payment-option">
+                                <input type="radio" id="bkash" name="paymentMethod" value="bKash" required>
+                                <label for="bkash">
+                                    <i class="fas fa-mobile"></i> bKash
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="nagad" name="paymentMethod" value="Nagad" required>
+                                <label for="nagad">
+                                    <i class="fas fa-phone"></i> Nagad
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="binance" name="paymentMethod" value="Binance" required>
+                                <label for="binance">
+                                    <i class="fas fa-bitcoin"></i> Binance
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Number Box (shown after method selected) -->
+                    <div id="adminNumberBox" style="display:none; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.3); border-radius:12px; padding:16px; margin:18px 0;">
+                        <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">এই নাম্বারে টাকা পাঠান:</div>
+                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                            <div id="adminNumberDisplay" style="font-size:22px; font-weight:800; color:var(--primary); letter-spacing:1px;"></div>
+                            <button type="button" class="btn-copy" style="padding:8px 14px; font-size:13px;" onclick="copyAdminNumber()">
+                                <i class="fas fa-copy"></i> কপি
+                            </button>
+                        </div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">নাম্বার কপি করে একই পরিমাণ টাকা পাঠান</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Transaction / TrxID</label>
+                        <input type="text" id="depositTrxId" placeholder="Enter Transaction ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Screenshot (Optional)</label>
+                        <input type="file" id="depositScreenshot" accept="image/*" style="padding:10px; background:var(--dark-elevated); border:1.5px solid var(--border); border-radius:12px; color:var(--text); width:100%;">
+                    </div>
+
+                    <div class="bottom-actions">
+                        <button type="submit" class="btn-auth">Confirm Deposit</button>
+                    </div>
+                </form>
+            </div>
+
+            <h3 class="section-title">Deposit History</h3>
+            <div class="transaction-history" id="depositHistory"></div>
+        </div>
+
+        <!-- WITHDRAW SECTION -->
+        <div id="withdraw" class="page-section">
+            <div class="page-header">
+                <h1>Withdraw Funds</h1>
+                <p>আপনার আয় উত্তোলন করুন</p>
+            </div>
+
+            <!-- Balance Card -->
+            <div class="card" style="padding:20px; text-align:center; margin-bottom:20px; border:1px solid var(--primary);">
+                <div class="card-label">উপলব্ধ ব্যালেন্স</div>
+                <div class="card-value" id="withdrawPageBalance" style="font-size:28px; color:var(--primary);">৳ 0.00</div>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">সর্বনিম্ন উইথড্র: ৳ ১০০</div>
+            </div>
+
+            <div class="transaction-form">
+                <h3 class="section-title">💸 উইথড্র রিকোয়েস্ট</h3>
+                <div id="withdrawError" class="error-message" style="display: none;"></div>
+                <form id="withdrawForm">
+                    <div class="form-group">
+                        <label>পরিমাণ (সর্বনিম্ন ৳ ১০০)</label>
+                        <input type="number" id="withdrawAmount" placeholder="কত টাকা উত্তোলন করবেন?" min="100" required>
+                    </div>
+
+                    <div class="payment-method-group">
+                        <label>Payment Method</label>
+                        <div class="payment-methods" id="withdrawMethods">
+                            <div class="payment-option">
+                                <input type="radio" id="wbkash" name="withdrawMethod" value="bKash" required>
+                                <label for="wbkash">
+                                    <i class="fas fa-mobile"></i> bKash
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="wnagad" name="withdrawMethod" value="Nagad" required>
+                                <label for="wnagad">
+                                    <i class="fas fa-phone"></i> Nagad
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="wbinance" name="withdrawMethod" value="Binance" required>
+                                <label for="wbinance">
+                                    <i class="fas fa-bitcoin"></i> Binance
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Your Number / Wallet Address</label>
+                        <input type="text" id="withdrawNumber" placeholder="Enter your bKash/Nagad/Binance number" required>
+                    </div>
+
+                    <div class="bottom-actions">
+                        <button type="submit" class="btn-auth">Request Withdrawal</button>
+                    </div>
+                </form>
+            </div>
+
+            <h3 class="section-title">Withdrawal History</h3>
+            <div class="transaction-history" id="withdrawHistory"></div>
+        </div>
+
+        <!-- PROFILE SECTION -->
+        <div id="profile" class="page-section">
+            <div class="page-header">
+                <h1>My Profile</h1>
+                <p>Manage your account settings</p>
+            </div>
+
+            <div class="profile-section">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">
+                        <i class="fas fa-user"></i>
+                        <input type="file" class="avatar-upload" id="avatarUpload" accept="image/*">
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="profileName">User Name</h2>
+                        <p id="profileEmail">user@email.com</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="section-title">Personal Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileFullName" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="profileEmailInput" placeholder="Your email" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3 class="section-title">Security</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <div class="password-toggle">
+                            <input type="password" id="currentPassword" placeholder="Enter current password">
+                            <i class="fas fa-eye" onclick="togglePassword('currentPassword')"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <div class="password-toggle">
+                            <input type="password" id="newPassword" placeholder="Enter new password">
+                            <i class="fas fa-eye" onclick="togglePassword('newPassword')"></i>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-auth" onclick="changePassword()" style="max-width: 300px;">Change Password</button>
+            </div>
+
+            <div class="profile-section">
+                <h3 class="section-title">Recovery Settings</h3>
+                <div class="form-group">
+                    <label>Recovery Name (Security Question Answer)</label>
+                    <input type="text" id="recoveryName" placeholder="e.g., Your pet's name">
+                </div>
+                <button type="button" class="btn-secondary" onclick="updateRecoveryName()" style="max-width: 300px;">Update Recovery Name</button>
+            </div>
+
+            <div class="profile-section">
+                <h3 class="section-title">Your Referral Code</h3>
+                <div class="referral-code">
+                    <input type="text" id="profileReferralCode" readonly>
+                    <button type="button" class="btn-copy" onclick="copyProfileReferralCode()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a class="nav-item active" onclick="showSection('dashboard')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a class="nav-item" onclick="showSection('plans')">
+            <i class="fas fa-crown"></i>
+            <span>Plans</span>
+        </a>
+        <a class="nav-item" onclick="showSection('myplans')">
+            <i class="fas fa-wallet"></i>
+            <span>My Plans</span>
+        </a>
+        <a class="nav-item" onclick="showSection('deposit')">
+            <i class="fas fa-plus-circle"></i>
+            <span>Deposit</span>
+        </a>
+        <a class="nav-item" onclick="showSection('withdraw')">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Withdraw</span>
+        </a>
+        <a class="nav-item" onclick="showSection('referral')">
+            <i class="fas fa-users"></i>
+            <span>Referral</span>
+        </a>
+        <a class="nav-item" onclick="showSection('leaderboard')">
+            <i class="fas fa-trophy"></i>
+            <span>Rank</span>
+        </a>
+        <a class="nav-item" onclick="showSection('profile')">
+            <i class="fas fa-user-circle"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</div>
+
+<!-- ======================== MODALS ======================== -->
+
+<div id="planModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Purchase</h3>
+            <button type="button" class="modal-close" onclick="closePlanModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="planModalBody"></div>
+    </div>
+</div>
+
+<script>
+    // ======================== DATA MANAGEMENT (Firebase Realtime Database) ========================
+    
+    const PLANS_DATA = [
+        { id: 1, price: 100, duration: 30, dailyIncome: 5, currency: '৳' },
+        { id: 2, price: 200, duration: 30, dailyIncome: 10, currency: '৳' },
+        { id: 3, price: 300, duration: 30, dailyIncome: 15, currency: '৳' },
+        { id: 4, price: 500, duration: 30, dailyIncome: 25, currency: '৳' },
+        { id: 5, price: 1000, duration: 30, dailyIncome: 50, currency: '৳' }
+    ];
+
+    const REFERRAL_BONUS = 0.10; // 10%
+
+    // Firebase path prefix — ONLY this app (isolated from other apps)
+    const FB_ROOT = 'premiumpanel';
+
+    // In-memory cache (synced with Firebase)
+    let _usersCache = [];
+    let _currentUserId = localStorage.getItem('pp_currentUserId') || null;
+    let _firebaseReady = false;
+
+    function generateReferralCode() {
+        return 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase();
+    }
+
+    // One device = one account
+    function getDeviceId() {
+        let id = localStorage.getItem('pp_deviceId');
+        if (!id) {
+            id = 'DEV_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 10).toUpperCase();
+            localStorage.setItem('pp_deviceId', id);
+        }
+        return id;
+    }
+
+    function defaultAvatar(name) {
+        const n = encodeURIComponent((name || 'U').substring(0, 2).toUpperCase());
+        const colors = ['d4af37', '10b981', '3b82f6', 'a855f7', 'ef4444', 'f59e0b', '06b6d4', 'ec4899'];
+        const bg = colors[((name || 'A').charCodeAt(0)) % colors.length];
+        return 'https://ui-avatars.com/api/?name=' + n + '&background=' + bg + '&color=fff&size=128&bold=true';
+    }
+
+    function waitForFirebase(maxMs) {
+        maxMs = maxMs || 8000;
+        return new Promise(function(resolve) {
+            if (window.fbDB || (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length)) {
+                if (!window.fbDB && typeof firebase !== 'undefined') {
+                    window.fbDB = firebase.database();
+                }
+                _firebaseReady = true;
+                resolve(true);
+                return;
+            }
+            var start = Date.now();
+            var t = setInterval(function() {
+                if (window.fbDB || (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length)) {
+                    if (!window.fbDB) window.fbDB = firebase.database();
+                    clearInterval(t);
+                    _firebaseReady = true;
+                    resolve(true);
+                } else if (Date.now() - start > maxMs) {
+                    clearInterval(t);
+                    resolve(false);
+                }
+            }, 100);
+        });
+    }
+
+    function fbRef(path) {
+        return window.fbDB.ref(FB_ROOT + '/' + path);
+    }
+
+    async function loadAllUsersFromFirebase() {
+        try {
+            var ok = await waitForFirebase();
+            if (!ok || !window.fbDB) {
+                console.warn('Firebase not ready');
+                return _usersCache;
+            }
+            var snap = await fbRef('users').once('value');
+            if (snap.exists()) {
+                var data = snap.val();
+                _usersCache = Object.keys(data).map(function(k) {
+                    var u = data[k];
+                    u.referrals = u.referrals || [];
+                    u.plans = u.plans || [];
+                    u.transactions = u.transactions || [];
+                    return u;
+                });
+            } else {
+                _usersCache = [];
+            }
+            return _usersCache;
+        } catch (e) {
+            console.error('Load users error:', e);
+            return _usersCache;
+        }
+    }
+
+    function getAllUsers() {
+        return _usersCache;
+    }
+
+    function getCurrentUser() {
+        if (!_currentUserId) {
+            _currentUserId = localStorage.getItem('pp_currentUserId') || null;
+        }
+        if (!_currentUserId) return null;
+        var fromCache = _usersCache.find(function(u) { return u.id === _currentUserId; });
+        if (fromCache) {
+            try { localStorage.setItem('pp_currentUserData', JSON.stringify(fromCache)); } catch(e) {}
+            return fromCache;
+        }
+        try {
+            var saved = localStorage.getItem('pp_currentUserData');
+            if (saved) {
+                var parsed = JSON.parse(saved);
+                if (parsed && parsed.id === _currentUserId) return parsed;
+            }
+        } catch(e) {}
+        return null;
+    }
+
+    async function updateCurrentUser(userData) {
+        var index = _usersCache.findIndex(function(u) { return u.id === userData.id; });
+        if (index !== -1) {
+            _usersCache[index] = userData;
+        } else {
+            _usersCache.push(userData);
+        }
+        try {
+            if (_currentUserId && userData.id === _currentUserId) {
+                localStorage.setItem('pp_currentUserData', JSON.stringify(userData));
+            }
+        } catch(e) {}
+        try {
+            await waitForFirebase();
+            if (window.fbDB) {
+                await fbRef('users/' + userData.id).set(userData);
+            }
+        } catch (e) {
+            console.error('Update user Firebase error:', e);
+        }
+    }
+
+    async function saveNewUser(userData) {
+        _usersCache.push(userData);
+        try {
+            await waitForFirebase();
+            if (window.fbDB) {
+                await fbRef('users/' + userData.id).set(userData);
+            }
+        } catch (e) {
+            console.error('Save new user error:', e);
+        }
+    }
+
+    function setCurrentUserId(id) {
+        _currentUserId = id;
+        if (id) {
+            localStorage.setItem('pp_currentUserId', id);
+        } else {
+            localStorage.removeItem('pp_currentUserId');
+            localStorage.removeItem('pp_currentUserData');
+        }
+    }
+
+    // ======================== AUTHENTICATION ========================
+
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = event.target;
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.add('fa-eye');
+            icon.classList.remove('fa-eye-slash');
+        }
+    }
+
+    function showError(elementId, message) {
+        const element = document.getElementById(elementId);
+        element.textContent = message;
+        element.style.display = 'block';
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 5000);
+    }
+
+    function showSuccess(message, type) {
+        type = type || 'success';
+        const colors = {
+            success: { bg: 'linear-gradient(135deg,#059669,#10b981)', icon: 'fa-check-circle' },
+            error: { bg: 'linear-gradient(135deg,#dc2626,#ef4444)', icon: 'fa-times-circle' },
+            info: { bg: 'linear-gradient(135deg,#2563eb,#3b82f6)', icon: 'fa-info-circle' },
+            copy: { bg: 'linear-gradient(135deg,#7c3aed,#a855f7)', icon: 'fa-copy' },
+            theme: { bg: 'var(--gold-gradient)', icon: 'fa-palette', textDark: true }
+        };
+        const c = colors[type] || colors.success;
+        const toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-120px);z-index:99999;min-width:280px;max-width:90vw;background:' + c.bg + ';color:' + (c.textDark ? '#1a1a1a' : '#fff') + ';padding:14px 22px;border-radius:14px;font-weight:600;font-size:14px;box-shadow:0 12px 40px rgba(0,0,0,0.35);display:flex;align-items:center;gap:10px;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);justify-content:center;';
+        toast.innerHTML = '<i class="fas ' + c.icon + '"></i> <span>' + message + '</span>';
+        document.body.appendChild(toast);
+        requestAnimationFrame(function() { toast.style.transform = 'translateX(-50%) translateY(0)'; });
+        setTimeout(function() {
+            toast.style.transform = 'translateX(-50%) translateY(-120px)';
+            setTimeout(function() { toast.remove(); }, 400);
+        }, 2800);
+    }
+
+    function showReferralPopup(currentActive) {
+        // Remove existing popup if any
+        const old = document.getElementById('referralRequirementPopup');
+        if (old) old.remove();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'referralRequirementPopup';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);';
+        overlay.innerHTML = `
+            <div style="background:var(--dark-card);border-radius:22px;padding:32px 24px;max-width:380px;width:100%;text-align:center;border:1px solid rgba(255,255,255,0.1);box-shadow:0 25px 60px rgba(0,0,0,0.5),var(--glow);">
+                <div style="font-size:48px;margin-bottom:12px;">🔒</div>
+                <h3 style="color:var(--primary);font-size:20px;margin-bottom:12px;">উইথড্র করার শর্ত</h3>
+                <p style="color:var(--text);font-size:15px;line-height:1.7;margin-bottom:8px;">
+                    উইথড্র করতে হলে আপনার <strong style="color:var(--primary);">কমপক্ষে ২ জন অ্যাক্টিভ রেফার</strong> থাকতে হবে।
+                </p>
+                <p style="color:var(--text-muted);font-size:13px;line-height:1.6;margin-bottom:18px;">
+                    অ্যাক্টিভ রেফার মানে — যারা আপনার রেফারে <strong>জয়েন</strong> করেছে এবং আমাদের <strong>যেকোনো একটি প্ল্যান কিনেছে</strong>।
+                </p>
+                <div style="background:rgba(239,68,68,0.12);border-radius:12px;padding:12px;margin-bottom:20px;border:1px solid rgba(239,68,68,0.25);">
+                    <span style="color:#f87171;font-size:14px;">আপনার বর্তমান অ্যাক্টিভ রেফার: <strong>${currentActive}</strong> জন</span>
+                </div>
+                <button onclick="document.getElementById('referralRequirementPopup').remove()" class="btn-auth" style="margin:0;">
+                    বুঝেছি
+                </button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) overlay.remove();
+        });
+    }
+
+    // LOGIN
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        await loadAllUsersFromFirebase();
+        const users = getAllUsers();
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (!user) {
+            showError('loginError', 'ইমেইল বা পাসওয়ার্ড ভুল');
+            return;
+        }
+
+        setCurrentUserId(user.id);
+        try { localStorage.setItem('pp_currentUserData', JSON.stringify(user)); } catch(e) {}
+        showSuccess('লগইন সফল!', 'success');
+        setTimeout(function() {
+            showPanel();
+        }, 400);
+    });
+
+    // SIGNUP
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const recoveryName = document.getElementById('signupRecoveryName').value.trim();
+        const referralCodeInput = document.getElementById('signupReferralCode').value.trim();
+
+        await loadAllUsersFromFirebase();
+        const users = getAllUsers();
+        const deviceId = getDeviceId();
+
+        // One device = one account security
+        if (users.some(u => u.deviceId === deviceId)) {
+            showError('signupError', 'এই ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট আছে। অন্য অ্যাকাউন্ট তৈরি করা যাবে না।');
+            return;
+        }
+
+        if (users.some(u => u.email === email)) {
+            showError('signupError', 'এই ইমেইল আগেই রেজিস্টার করা আছে');
+            return;
+        }
+
+        let referredById = null;
+        if (referralCodeInput) {
+            const referrer = users.find(u => u.referralCode === referralCodeInput);
+            if (!referrer) {
+                showError('signupError', 'রেফার কোড সঠিক নয়');
+                return;
+            }
+            referredById = referrer.id;
+        }
+
+        const newUser = {
+            id: Date.now().toString(),
+            name: name,
+            email: email,
+            password: password,
+            recoveryName: recoveryName,
+            referralCode: generateReferralCode(),
+            balance: 0,
+            deposits: 0,
+            planIncome: 0,
+            referralIncome: 0,
+            avatar: defaultAvatar(name),
+            deviceId: deviceId,
+            referrals: [],
+            referredBy: referredById,
+            plans: [],
+            transactions: [],
+            createdAt: new Date().toISOString()
+        };
+
+        await saveNewUser(newUser);
+
+        // Add to referrer's list
+        if (referredById) {
+            const referrer = users.find(u => u.id === referredById);
+            if (referrer) {
+                referrer.referrals = referrer.referrals || [];
+                if (!referrer.referrals.includes(newUser.id)) {
+                    referrer.referrals.push(newUser.id);
+                    await updateCurrentUser(referrer);
+                }
+            }
+        }
+
+        showSuccess('অ্যাকাউন্ট তৈরি হয়েছে! এখন লগইন করুন।');
+        document.getElementById('signupForm').reset();
+        goToLogin();
+    });
+
+    // FORGOT PASSWORD
+    let verifyStep = false;
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('forgotEmail').value.trim();
+        const recoveryName = document.getElementById('forgotRecoveryName').value.trim();
+
+        const users = getAllUsers();
+        const user = users.find(u => u.email === email);
+
+        if (!user) {
+            showError('forgotError', 'Email not found');
+            return;
+        }
+
+        if (user.recoveryName !== recoveryName) {
+            showError('forgotError', 'Recovery answer is incorrect');
+            return;
+        }
+
+        if (!verifyStep) {
+            verifyStep = true;
+            document.getElementById('resetSuccess').style.display = 'block';
+            document.getElementById('resetSuccess').textContent = 'Verification successful! Please enter your new password.';
+            document.getElementById('newPasswordGroup').style.display = 'block';
+            document.querySelector('#forgotPasswordForm button').textContent = 'Reset Password';
+        } else {
+            const newPassword = document.getElementById('forgotNewPassword').value;
+            if (!newPassword) {
+                showError('forgotError', 'Please enter new password');
+                return;
+            }
+
+            user.password = newPassword;
+            updateCurrentUser(user);
+
+            showSuccess('Password reset successfully! Please log in.');
+            verifyStep = false;
+            document.getElementById('forgotPasswordForm').reset();
+            document.getElementById('newPasswordGroup').style.display = 'none';
+            document.getElementById('resetSuccess').style.display = 'none';
+            document.querySelector('#forgotPasswordForm button').textContent = 'Verify & Reset';
+            goToLogin();
+        }
+    });
+
+    // NAVIGATION
+    function goToLogin() {
+        document.getElementById('loginPage').classList.add('active');
+        document.getElementById('signupPage').classList.remove('active');
+        document.getElementById('forgotPasswordPage').classList.remove('active');
+        document.querySelector('.panel-container').classList.remove('active');
+    }
+
+    function goToSignUp() {
+        document.getElementById('signupPage').classList.add('active');
+        document.getElementById('loginPage').classList.remove('active');
+        document.getElementById('forgotPasswordPage').classList.remove('active');
+        document.querySelector('.panel-container').classList.remove('active');
+    }
+
+    function goToForgotPassword() {
+        document.getElementById('forgotPasswordPage').classList.add('active');
+        document.getElementById('loginPage').classList.remove('active');
+        document.getElementById('signupPage').classList.remove('active');
+        document.querySelector('.panel-container').classList.remove('active');
+        // Reset forgot password step
+        verifyStep = false;
+        const newPassGroup = document.getElementById('newPasswordGroup');
+        if (newPassGroup) newPassGroup.style.display = 'none';
+        const resetSuccess = document.getElementById('resetSuccess');
+        if (resetSuccess) resetSuccess.style.display = 'none';
+        const forgotBtn = document.querySelector('#forgotPasswordForm button');
+        if (forgotBtn) forgotBtn.textContent = 'Verify & Reset';
+    }
+
+    function showPanel() {
+        document.getElementById('loginPage').classList.remove('active');
+        document.getElementById('signupPage').classList.remove('active');
+        document.getElementById('forgotPasswordPage').classList.remove('active');
+        document.querySelector('.panel-container').classList.add('active');
+        updateDashboard();
+        loadPlans();
+    }
+
+    function logout() {
+        if (confirm('আপনি কি লগআউট করতে চান?')) {
+            setCurrentUserId(null);
+            document.querySelector('.panel-container').classList.remove('active');
+            document.getElementById('loginForm').reset();
+            verifyStep = false;
+            goToLogin();
+        }
+    }
+
+    // ======================== PANEL FUNCTIONALITY ========================
+
+    function showSection(sectionId) {
+        document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+        const section = document.getElementById(sectionId);
+        if (section) section.classList.add('active');
+
+        // Update bottom nav active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + sectionId + "'")) {
+                item.classList.add('active');
+            }
+        });
+
+        if (sectionId === 'myplans') {
+            loadMyPlans();
+        } else if (sectionId === 'leaderboard') {
+            loadLeaderboard();
+        } else if (sectionId === 'referral') {
+            loadReferral();
+        } else if (sectionId === 'deposit') {
+            updateDashboard();
+            loadDepositHistory();
+        } else if (sectionId === 'withdraw') {
+            updateDashboard();
+            loadWithdrawHistory();
+        } else if (sectionId === 'dashboard') {
+            updateDashboard();
+        }
+
+        // Scroll to top of content
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ======================== DASHBOARD ========================
+
+    function updateDashboard() {
+        const user = getCurrentUser();
+        if (!user) return;
+
+        const totalProfit = user.planIncome + user.referralIncome;
+
+        document.getElementById('totalBalance').textContent = `৳ ${(user.balance || 0).toFixed(2)}`;
+        document.getElementById('depositBalance').textContent = `৳ ${(user.deposits || 0).toFixed(2)}`;
+        document.getElementById('planIncome').textContent = `৳ ${(user.planIncome || 0).toFixed(2)}`;
+        document.getElementById('referralIncome').textContent = `৳ ${(user.referralIncome || 0).toFixed(2)}`;
+        document.getElementById('totalProfit').textContent = `৳ ${totalProfit.toFixed(2)}`;
+        
+        const runningPlans = (user.plans || []).filter(p => !p.completed).length;
+        document.getElementById('runningPlans').textContent = runningPlans;
+
+        // Deposit & Withdraw page balances
+        const depBal = document.getElementById('depositPageBalance');
+        const depTotal = document.getElementById('depositPageTotalDeposit');
+        const witBal = document.getElementById('withdrawPageBalance');
+        if (depBal) depBal.textContent = `৳ ${(user.balance || 0).toFixed(2)}`;
+        if (depTotal) depTotal.textContent = `৳ ${(user.deposits || 0).toFixed(2)}`;
+        if (witBal) witBal.textContent = `৳ ${(user.balance || 0).toFixed(2)}`;
+
+        document.getElementById('profileName').textContent = user.name;
+        document.getElementById('profileEmail').textContent = user.email;
+        document.getElementById('profileFullName').value = user.name;
+        document.getElementById('profileEmailInput').value = user.email;
+        document.getElementById('recoveryName').value = user.recoveryName || '';
+        const refIn = document.getElementById('referralCodeInput');
+        const refProf = document.getElementById('profileReferralCode');
+        if (refIn) refIn.value = user.referralCode || '';
+        if (refProf) refProf.value = user.referralCode || '';
+
+        const av = user.avatar || defaultAvatar(user.name);
+        document.getElementById('profileAvatar').innerHTML = '<img src="' + av + '" alt="Profile">';
+
+        updateReferralStats();
+    }
+
+    // ======================== PLANS ========================
+
+    let _plansCache = null;
+
+    async function fetchPlansFromFirebase() {
+        try {
+            await waitForFirebase();
+            if (!window.fbDB) return PLANS_DATA;
+            var snap = await fbRef('plans').once('value');
+            if (snap.exists()) {
+                var data = snap.val();
+                return Object.keys(data).map(function(k) { return data[k]; }).sort(function(a,b) { return a.price - b.price; });
+            }
+        } catch(e) { console.error('Plans load:', e); }
+        return PLANS_DATA;
+    }
+
+    async function loadPlans() {
+        const container = document.getElementById('plansContainer');
+        const user = getCurrentUser();
+        if (!container || !user) return;
+        container.innerHTML = '';
+
+        _plansCache = await fetchPlansFromFirebase();
+        const plans = _plansCache || PLANS_DATA;
+
+        plans.forEach(function(plan) {
+            var totalProfit = plan.dailyIncome * plan.duration;
+            var bal = Number(user.balance || 0);
+            var price = Number(plan.price || 0);
+            var canBuy = bal >= price;
+            var card = document.createElement('div');
+            card.className = 'plan-card';
+            card.innerHTML =
+                '<div class="plan-price">' + (plan.currency || '৳') + ' ' + plan.price + '</div>' +
+                '<div class="plan-currency">Investment Amount</div>' +
+                '<ul class="plan-details">' +
+                    '<li><span class="label">Duration</span><span class="value">' + plan.duration + ' Days</span></li>' +
+                    '<li><span class="label">Daily Income</span><span class="value">' + (plan.currency || '৳') + ' ' + plan.dailyIncome + '</span></li>' +
+                    '<li><span class="label">Total Profit</span><span class="value">' + (plan.currency || '৳') + ' ' + totalProfit + '</span></li>' +
+                    '<li><span class="label">আপনার ব্যালেন্স</span><span class="value">৳ ' + bal.toFixed(2) + '</span></li>' +
+                '</ul>' +
+                '<div class="plan-description"><strong>Plan Details:</strong><br>' +
+                    'এই প্ল্যান কিনলে ' + plan.duration + ' দিনে মোট ৳ ' + totalProfit + ' পাবেন। প্রতিদিন ৳ ' + plan.dailyIncome + ' করে Claim করতে পারবেন।</div>' +
+                '<button class="btn-buy" onclick="buyPlan(' + plan.id + ')" ' +
+                    (canBuy ? '' : 'disabled') +
+                    ' style="' + (canBuy ? '' : 'opacity:0.5;cursor:not-allowed;') + '">' +
+                    (canBuy ? 'প্ল্যান কিনুন' : 'ব্যালেন্স নেই') +
+                '</button>';
+            container.appendChild(card);
+        });
+    }
+
+    function buyPlan(planId) {
+        const plan = (_plansCache || PLANS_DATA).find(p => p.id === planId);
+        const user = getCurrentUser();
+        if (!plan || !user) return;
+
+        const bal = Number(user.balance || 0);
+        const price = Number(plan.price || 0);
+
+        if (bal < price) {
+            showSuccess('পর্যাপ্ত ব্যালেন্স নেই! প্রথমে ডিপোজিট করুন। প্রয়োজন: ৳' + price + ' | আপনার: ৳' + bal.toFixed(2), 'error');
+            return;
+        }
+
+        const modal = document.getElementById('planModal');
+        const totalProfit = plan.dailyIncome * plan.duration;
+        const modalBody = document.getElementById('planModalBody');
+        
+        modalBody.innerHTML = `
+            <p style="margin-bottom: 20px; color: #9ca3af;">আপনি কি এই প্ল্যান কিনতে চান?</p>
+            <div class="plan-details" style="margin-bottom: 20px;">
+                <li>
+                    <span class="label">Amount</span>
+                    <span class="value">${plan.currency} ${plan.price}</span>
+                </li>
+                <li>
+                    <span class="label">Daily Income</span>
+                    <span class="value">${plan.currency} ${plan.dailyIncome}</span>
+                </li>
+                <li>
+                    <span class="label">Duration</span>
+                    <span class="value">${plan.duration} Days</span>
+                </li>
+                <li>
+                    <span class="label">Total Profit</span>
+                    <span class="value">${plan.currency} ${totalProfit}</span>
+                </li>
+                <li>
+                    <span class="label">আপনার ব্যালেন্স</span>
+                    <span class="value">৳ ${bal.toFixed(2)}</span>
+                </li>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-auth" onclick="confirmBuyPlan(${planId})" style="flex: 1;">কনফার্ম</button>
+                <button class="btn-auth" onclick="closePlanModal()" style="flex: 1; background: #3a3a4a; color: #9ca3af; box-shadow: none;">বাতিল</button>
+            </div>
+        `;
+        
+        modal.classList.add('active');
+    }
+
+    function confirmBuyPlan(planId) {
+        const plan = (_plansCache || PLANS_DATA).find(p => p.id === planId);
+        const user = getCurrentUser();
+        if (!plan || !user) return;
+
+        const bal = Number(user.balance || 0);
+        const price = Number(plan.price || 0);
+        if (bal < price) {
+            showSuccess('পর্যাপ্ত ব্যালেন্স নেই!', 'error');
+            closePlanModal();
+            return;
+        }
+
+        user.balance = bal - price;
+
+        const newPlan = {
+            id: Date.now().toString(),
+            planId: plan.id,
+            price: plan.price,
+            buyDate: new Date().toISOString(),
+            expireDate: new Date(Date.now() + plan.duration * 24 * 60 * 60 * 1000).toISOString(),
+            dailyIncome: plan.dailyIncome,
+            totalProfit: plan.dailyIncome * plan.duration,
+            claimedAmount: 0,
+            lastClaimDate: null,
+            completed: false,
+            duration: plan.duration,
+            daysCompleted: 0
+        };
+
+        user.plans = user.plans || [];
+        user.plans.push(newPlan);
+        updateCurrentUser(user);
+
+        showSuccess('প্ল্যান সফলভাবে কেনা হয়েছে! ৳' + price, 'success');
+        closePlanModal();
+        updateDashboard();
+        loadPlans();
+        if (typeof loadMyPlans === 'function') loadMyPlans();
+    }
+
+    function closePlanModal() {
+        document.getElementById('planModal').classList.remove('active');
+    }
+
+    // ======================== MY PLANS ========================
+
+    function loadMyPlans() {
+        const container = document.getElementById('myPlansContainer');
+        const user = getCurrentUser();
+
+        if (user.plans.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>No Active Plans</h3>
+                    <p>Start investing today to see your plans here</p>
+                    <button class="btn-auth" onclick="showSection('plans')" style="max-width: 200px;">Browse Plans</button>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '';
+        user.plans.forEach(plan => {
+            const buyDate = new Date(plan.buyDate);
+            const expireDate = new Date(plan.expireDate);
+            const today = new Date();
+            const remainingDays = Math.max(0, Math.ceil((expireDate - today) / (24 * 60 * 60 * 1000)));
+            const remainingAmount = plan.totalProfit - plan.claimedAmount;
+            const progressPercent = (plan.daysCompleted / plan.duration) * 100;
+
+            const card = document.createElement('div');
+            card.className = 'active-plan';
+            card.innerHTML = `
+                <div class="plan-status ${remainingDays === 0 ? 'expired' : ''}">
+                    ${remainingDays === 0 ? 'Completed' : 'Active'}
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div>
+                        <div style="font-size: 12px; color: #9ca3af;">Investment Amount</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--primary);">৳ ${plan.price}</div>
+                    </div>
+                </div>
+
+                <div class="plan-info">
+                    <div class="plan-info-item">
+                        <div class="plan-info-label">Buy Date</div>
+                        <div class="plan-info-value">${buyDate.toLocaleDateString()}</div>
+                    </div>
+                    <div class="plan-info-item">
+                        <div class="plan-info-label">Expire Date</div>
+                        <div class="plan-info-value">${expireDate.toLocaleDateString()}</div>
+                    </div>
+                    <div class="plan-info-item">
+                        <div class="plan-info-label">Remaining Days</div>
+                        <div class="plan-info-value">${remainingDays}</div>
+                    </div>
+                    <div class="plan-info-item">
+                        <div class="plan-info-label">Daily Income</div>
+                        <div class="plan-info-value">৳ ${plan.dailyIncome}</div>
+                    </div>
+                </div>
+
+                <div style="padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);">
+                    <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px;">Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #9ca3af; margin-top: 8px;">
+                        <span>${plan.daysCompleted} / ${plan.duration} Days</span>
+                        <span>${progressPercent.toFixed(0)}%</span>
+                    </div>
+                </div>
+
+                <div class="plan-info">
+                    <div class="plan-info-item">
+                        <div class="plan-info-label">Claimed</div>
+                        <div class="plan-info-value">৳ ${plan.claimedAmount}</div>
+                    </div>
+                    <div class="plan-info-item">
+                        <div class="plan-info-label">Remaining</div>
+                        <div class="plan-info-value">৳ ${remainingAmount}</div>
+                    </div>
+                </div>
+
+                <button class="btn-claim" 
+                    onclick="claimDailyIncome('${plan.id}')"
+                    ${plan.completed || !canClaimToday(plan) ? 'disabled' : ''}>
+                    ${plan.completed ? 'প্ল্যান শেষ' : !canClaimToday(plan) ? 'আজকের বোনাস নেওয়া হয়েছে' : 'দৈনিক বোনাস ক্লেইম'}
+                </button>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function canClaimToday(plan) {
+        if (!plan || !plan.lastClaimDate) return true;
+        var lastClaim = new Date(plan.lastClaimDate);
+        var today = new Date();
+        // Same calendar day = already claimed
+        return lastClaim.toDateString() !== today.toDateString();
+    }
+
+    var AD_LINK = 'https://omg10.com/4/11460540';
+    var AD_WAIT_SEC = 60;
+    var _adTimerInterval = null;
+
+    function savePendingClaim(planId, startTime) {
+        localStorage.setItem('pp_pendingClaim', JSON.stringify({
+            planId: planId,
+            startTime: startTime,
+            userId: localStorage.getItem('pp_currentUserId')
+        }));
+    }
+    function getPendingClaim() {
+        try {
+            var raw = localStorage.getItem('pp_pendingClaim');
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) { return null; }
+    }
+    function clearPendingClaim() {
+        localStorage.removeItem('pp_pendingClaim');
+    }
+
+    function claimDailyIncome(planId) {
+        var user = getCurrentUser();
+        if (!user) return;
+        var plan = (user.plans || []).find(function(p) { return p.id === planId; });
+
+        if (!plan || plan.completed) {
+            showSuccess('এই প্ল্যান থেকে ক্লেইম করা যাবে না', 'error');
+            return;
+        }
+        if (!canClaimToday(plan)) {
+            showSuccess('আজকের বোনাস ইতিমধ্যে নেওয়া হয়েছে! আগামীকাল আবার চেষ্টা করুন।', 'info');
+            return;
+        }
+
+        // Already have a pending ad timer for this plan?
+        var pending = getPendingClaim();
+        if (pending && pending.planId === planId && pending.startTime) {
+            var waited = (Date.now() - pending.startTime) / 1000;
+            if (waited >= AD_WAIT_SEC) {
+                clearPendingClaim();
+                completeClaim(planId);
+                return;
+            }
+            // Resume timer UI
+            showAdPopup(planId, pending.startTime, true);
+            return;
+        }
+
+        showAdPopup(planId, null, false);
+    }
+
+    function showAdPopup(planId, existingStart, resumed) {
+        var old = document.getElementById('adClaimPopup');
+        if (old) old.remove();
+
+        var overlay = document.createElement('div');
+        overlay.id = 'adClaimPopup';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);';
+        overlay.innerHTML =
+            '<div style="background:var(--dark-card);border-radius:22px;padding:28px 22px;max-width:400px;width:100%;text-align:center;border:1px solid rgba(255,255,255,0.12);box-shadow:0 25px 60px rgba(0,0,0,0.5);">' +
+            '<div style="font-size:42px;margin-bottom:10px;">📺</div>' +
+            '<h3 style="color:var(--primary);font-size:18px;margin-bottom:10px;">ক্লেইম করতে বিজ্ঞাপন দেখুন</h3>' +
+            '<p style="color:var(--text);font-size:14px;line-height:1.7;margin-bottom:8px;">বিজ্ঞাপন খুলুন। <strong style="color:var(--primary);">৬০ সেকেন্ড</strong> পর অ্যাপে ফিরলে <strong>অটোমেটিক</strong> বোনাস পাবেন। অ্যাপ ছেড়ে গেলেও টাইমার চলবে।</p>' +
+            '<div id="adTimerDisplay" style="font-size:32px;font-weight:800;color:var(--primary);margin:16px 0;' + (resumed ? '' : 'display:none;') + '">০০:৬০</div>' +
+            '<p id="adStatusText" style="color:var(--text-muted);font-size:12px;margin-bottom:18px;">' + (resumed ? 'টাইমার চলছে...' : 'বিজ্ঞাপন খুলুন') + '</p>' +
+            '<button id="openAdBtn" class="btn-auth" style="margin-bottom:12px;' + (resumed ? 'display:none;' : '') + '"><i class="fas fa-external-link-alt"></i> বিজ্ঞাপন দেখুন</button>' +
+            '<button type="button" id="cancelAdBtn" style="margin-top:8px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;">বাতিল</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+
+        document.getElementById('cancelAdBtn').onclick = function() {
+            if (_adTimerInterval) clearInterval(_adTimerInterval);
+            // Don't clear pending if timer already started — user can come back
+            var pop = document.getElementById('adClaimPopup');
+            if (pop) pop.remove();
+        };
+
+        function startTimerUI(startTime) {
+            if (_adTimerInterval) clearInterval(_adTimerInterval);
+            var disp = document.getElementById('adTimerDisplay');
+            var st = document.getElementById('adStatusText');
+            if (disp) disp.style.display = 'block';
+            _adTimerInterval = setInterval(function() {
+                var left = Math.max(0, AD_WAIT_SEC - Math.floor((Date.now() - startTime) / 1000));
+                var mm = String(Math.floor(left / 60)).padStart(2, '0');
+                var ss = String(left % 60).padStart(2, '0');
+                if (disp) disp.textContent = mm + ':' + ss;
+                if (left <= 0) {
+                    clearInterval(_adTimerInterval);
+                    if (st) st.textContent = 'সময় শেষ! বোনাস ক্লেইম হচ্ছে...';
+                    // Auto complete when timer hits 0 while still on page
+                    tryCompletePendingClaim();
+                }
+            }, 400);
+        }
+
+        if (resumed && existingStart) {
+            startTimerUI(existingStart);
+        }
+
+        var openBtn = document.getElementById('openAdBtn');
+        if (openBtn) {
+            openBtn.onclick = function() {
+                window.open(AD_LINK, '_blank');
+                var startTime = Date.now();
+                savePendingClaim(planId, startTime);
+                showSuccess('বিজ্ঞাপন খুলেছে — ৬০ সেকেন্ড পর ফিরলে অটো বোনাস!', 'info');
+                openBtn.style.display = 'none';
+                var st = document.getElementById('adStatusText');
+                if (st) st.textContent = 'অ্যাপ ছেড়ে গেলেও টাইমার চলবে...';
+                startTimerUI(startTime);
+            };
+        }
+    }
+
+    // Called when user returns to app — timer kept in localStorage
+    function tryCompletePendingClaim() {
+        var pending = getPendingClaim();
+        if (!pending || !pending.planId || !pending.startTime) return false;
+
+        var waited = (Date.now() - pending.startTime) / 1000;
+        if (waited < AD_WAIT_SEC) {
+            var left = Math.ceil(AD_WAIT_SEC - waited);
+            showSuccess('আরও ' + left + ' সেকেন্ড অপেক্ষা করুন', 'info');
+            return false;
+        }
+
+        var user = getCurrentUser();
+        if (!user) return false;
+        // Must be same user
+        if (pending.userId && pending.userId !== user.id) {
+            clearPendingClaim();
+            return false;
+        }
+
+        var plan = (user.plans || []).find(function(p) { return p.id === pending.planId; });
+        if (!plan) {
+            clearPendingClaim();
+            return false;
+        }
+        if (!canClaimToday(plan)) {
+            clearPendingClaim();
+            showSuccess('আজকের বোনাস ইতিমধ্যে নেওয়া হয়েছে', 'info');
+            return false;
+        }
+
+        clearPendingClaim();
+        if (_adTimerInterval) clearInterval(_adTimerInterval);
+        var pop = document.getElementById('adClaimPopup');
+        if (pop) pop.remove();
+        completeClaim(pending.planId);
+        return true;
+    }
+
+    // Listen when user comes back to app
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            tryCompletePendingClaim();
+        }
+    });
+    window.addEventListener('focus', function() {
+        tryCompletePendingClaim();
+    });
+
+    function completeClaim(planId) {
+        var user = getCurrentUser();
+        if (!user) return;
+        var plan = (user.plans || []).find(function(p) { return p.id === planId; });
+        if (!plan || plan.completed) return;
+
+        // Strict once-per-day check
+        if (!canClaimToday(plan)) {
+            showSuccess('আজকের বোনাস ইতিমধ্যে নেওয়া হয়েছে! আগামীকাল আবার আসুন।', 'info');
+            clearPendingClaim();
+            return;
+        }
+
+        var amount = Number(plan.dailyIncome || 0);
+        plan.claimedAmount = (plan.claimedAmount || 0) + amount;
+        plan.lastClaimDate = new Date().toISOString();
+        plan.daysCompleted = (plan.daysCompleted || 0) + 1;
+        user.balance = (user.balance || 0) + amount;
+        user.planIncome = (user.planIncome || 0) + amount;
+
+        if (plan.daysCompleted >= plan.duration) {
+            plan.completed = true;
+        }
+
+        updateCurrentUser(user);
+        clearPendingClaim();
+
+        // Beautiful top notification
+        showSuccess('🎉 আপনার বোনাস ক্লেইম হয়েছে! ৳ ' + amount + ' পেয়েছেন', 'success');
+        updateDashboard();
+        if (typeof loadMyPlans === 'function') loadMyPlans();
+    }
+
+    // ======================== LEADERBOARD ========================
+
+    function loadLeaderboard() {
+        const users = getAllUsers();
+        const tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = '';
+
+        // Only show users who have at least 1 referral
+        const sorted = users
+            .map(u => ({
+                ...u,
+                referralCount: u.referrals.length,
+                totalReferralIncome: u.referralIncome
+            }))
+            .filter(u => u.referralCount > 0)
+            .sort((a, b) => b.referralCount - a.referralCount || b.totalReferralIncome - a.totalReferralIncome)
+            .slice(0, 10);
+
+        if (sorted.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--text-muted);">এখনো কোনো রেফারেল নেই। রেফার করুন এবং লিডারবোর্ডে জায়গা করে নিন!</td></tr>';
+            return;
+        }
+
+        // Add summary row at top
+        const totalRefs = sorted.reduce((s, u) => s + u.referralCount, 0);
+        const totalIncome = sorted.reduce((s, u) => s + u.totalReferralIncome, 0);
+        const summaryRow = document.createElement('tr');
+        summaryRow.innerHTML = `
+            <td colspan="5" style="background: rgba(212,175,55,0.08); padding: 14px 18px; font-size: 13px; color: var(--text);">
+                <strong style="color: var(--primary);">Top ${sorted.length} Referrers</strong> &nbsp;•&nbsp;
+                মোট রেফারেল: <strong>${totalRefs}</strong> &nbsp;•&nbsp;
+                মোট আয়: <strong style="color: var(--primary);">৳ ${totalIncome.toFixed(2)}</strong>
+                <br><span style="font-size:12px; color: var(--text-muted);">প্রতিটি রেফারেল থেকে ১০% কমিশন পাওয়া যায়</span>
+            </td>
+        `;
+        tbody.appendChild(summaryRow);
+
+        sorted.forEach((user, index) => {
+            const row = document.createElement('tr');
+            let badgeClass = '';
+            if (index === 0) badgeClass = 'gold';
+            else if (index === 1) badgeClass = 'silver';
+            else if (index === 2) badgeClass = 'bronze';
+            const av = user.avatar || defaultAvatar(user.name);
+
+            row.innerHTML = `
+                <td><div class="rank-badge ${badgeClass}">${index + 1}</div></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <img src="${av}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);">
+                        <strong>${user.name}</strong>
+                    </div>
+                </td>
+                <td style="color: var(--text-muted); font-size:13px;">${user.email}</td>
+                <td><strong style="color: var(--primary);">${user.referralCount}</strong> জন</td>
+                <td><strong style="color: var(--success);">৳ ${user.totalReferralIncome.toFixed(2)}</strong></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // ======================== REFERRAL ========================
+
+    function loadReferral() {
+        const user = getCurrentUser();
+        if (!user) return;
+        const codeInput = document.getElementById('referralCodeInput');
+        if (codeInput) {
+            codeInput.value = user.referralCode || '';
+        }
+        const profileCode = document.getElementById('profileReferralCode');
+        if (profileCode) {
+            profileCode.value = user.referralCode || '';
+        }
+        updateReferralStats();
+        loadReferralList();
+        // Optional Firebase sync
+        syncUserToFirebase(user);
+    }
+
+    function updateReferralStats() {
+        const user = getCurrentUser();
+        if (!user) return;
+        const allUsers = getAllUsers();
+
+        const totalReferrals = (user.referrals || []).length;
+        const activeReferrals = (user.referrals || []).filter(refId => {
+            const ref = allUsers.find(u => u.id === refId);
+            return ref && ref.deposits > 0;
+        }).length;
+
+        const elTotal = document.getElementById('totalReferrals');
+        const elActive = document.getElementById('activeReferrals');
+        const elIncome = document.getElementById('referralIncomeValue');
+        if (elTotal) elTotal.textContent = totalReferrals;
+        if (elActive) elActive.textContent = activeReferrals;
+        if (elIncome) elIncome.textContent = `৳ ${(user.referralIncome || 0).toFixed(2)}`;
+    }
+
+    // Full user already saved via updateCurrentUser / saveNewUser to Firebase
+    function syncUserToFirebase(user) {
+        // Kept for compatibility – main write is in updateCurrentUser
+        if (user) updateCurrentUser(user);
+    }
+
+    function loadReferralList() {
+        const user = getCurrentUser();
+        const allUsers = getAllUsers();
+        const container = document.getElementById('referralListContainer');
+
+        if (user.referrals.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔗</div>
+                    <h3>No Referrals Yet</h3>
+                    <p>Share your referral code to start earning 10% commission</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '<h3 class="section-title" style="margin-top: 30px;">Your Referrals</h3>';
+        const list = document.createElement('div');
+        list.style.display = 'grid';
+        list.style.gap = '15px';
+
+        user.referrals.forEach(refId => {
+            const ref = allUsers.find(u => u.id === refId);
+            if (ref) {
+                const isActive = ref.deposits > 0;
+                const card = document.createElement('div');
+                card.style.cssText = 'background: var(--dark-card); padding: 16px; border-radius: 12px; border-left: 4px solid ' + (isActive ? 'var(--success)' : '#3a3a4a') + '; border: 1px solid rgba(255,255,255,0.06);';
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text);">${ref.name}</div>
+                            <div style="font-size: 12px; color: #9ca3af;">${ref.email}</div>
+                            <div style="font-size: 12px; color: #9ca3af; margin-top: 5px;">
+                                Status: <span style="color: ${isActive ? 'var(--success)' : '#9ca3af'}">${isActive ? 'Active' : 'Inactive'}</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 12px; color: #9ca3af;">Referral Bonus</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--success);">৳ ${(ref.deposits * REFERRAL_BONUS).toFixed(2)}</div>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            }
+        });
+
+        container.appendChild(list);
+    }
+
+    function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showSuccess('কপি হয়েছে: ' + text, 'copy');
+            }).catch(() => {
+                fallbackCopy(text);
+            });
+        } else {
+            fallbackCopy(text);
+        }
+    }
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showSuccess('কপি হয়েছে: ' + text, 'copy');
+        } catch (e) {
+            showSuccess('কপি করতে পারেনি', 'error');
+        }
+        document.body.removeChild(ta);
+    }
+
+    function copyReferralCode() {
+        const code = document.getElementById('referralCodeInput').value;
+        if (code) copyText(code);
+    }
+
+    function copyProfileReferralCode() {
+        const code = document.getElementById('profileReferralCode').value;
+        if (code) copyText(code);
+    }
+
+    // ======================== DEPOSIT ========================
+
+    // Admin payment numbers (demo)
+    const ADMIN_NUMBERS = {
+        'bKash': '01700000000',
+        'Nagad': '01800000000',
+        'Binance': 'TXdemoBinanceWallet123'
+    };
+
+    function copyAdminNumber() {
+        const el = document.getElementById('adminNumberDisplay');
+        if (el && el.textContent) copyText(el.textContent.trim());
+    }
+
+    // Show admin number when payment method selected
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const box = document.getElementById('adminNumberBox');
+            const display = document.getElementById('adminNumberDisplay');
+            if (this.checked && ADMIN_NUMBERS[this.value]) {
+                display.textContent = ADMIN_NUMBERS[this.value];
+                box.style.display = 'block';
+            }
+        });
+    });
+
+    document.getElementById('depositForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const amount = parseFloat(document.getElementById('depositAmount').value);
+        const methodRadio = document.querySelector('input[name="paymentMethod"]:checked');
+        if (!methodRadio) {
+            showSuccess('Please select a payment method');
+            return;
+        }
+        const method = methodRadio.value;
+        const trxId = document.getElementById('depositTrxId').value.trim();
+        
+        if (amount < 1) {
+            showSuccess('Invalid amount');
+            return;
+        }
+        if (!trxId) {
+            showSuccess('Please enter Transaction ID');
+            return;
+        }
+
+        const user = getCurrentUser();
+
+        // Optional screenshot
+        let screenshotData = null;
+        const fileInput = document.getElementById('depositScreenshot');
+        if (fileInput.files && fileInput.files[0]) {
+            // Store filename only for demo (real app would upload)
+            screenshotData = fileInput.files[0].name;
+        }
+
+        // Check if this user has a referrer (still track)
+        if (user.referredBy) {
+            const referrer = getAllUsers().find(u => u.id === user.referredBy);
+            if (referrer && !referrer.referrals.includes(user.id)) {
+                referrer.referrals.push(user.id);
+                updateCurrentUser(referrer);
+            }
+        }
+
+        // Deposit goes to Pending - balance NOT added yet
+        const transaction = {
+            id: Date.now().toString(),
+            type: 'deposit',
+            amount: amount,
+            method: method,
+            trxId: trxId,
+            screenshot: screenshotData,
+            status: 'Pending',
+            date: new Date().toISOString()
+        };
+
+        user.transactions.push(transaction);
+        updateCurrentUser(user);
+
+        showSuccess('ডিপোজিট রিকোয়েস্ট সাবমিট হয়েছে! স্ট্যাটাস: Pending', 'success');
+        document.getElementById('depositForm').reset();
+        document.getElementById('adminNumberBox').style.display = 'none';
+        updateDashboard();
+        loadDepositHistory();
+    });
+
+    function loadDepositHistory() {
+        const user = getCurrentUser();
+        const container = document.getElementById('depositHistory');
+        const deposits = user.transactions.filter(t => t.type === 'deposit');
+
+        if (deposits.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📥</div>
+                    <h3>No Deposits Yet</h3>
+                    <p>Start by depositing funds to your account</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '';
+        deposits.reverse().forEach(tx => {
+            const date = new Date(tx.date);
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            const statusClass = tx.status === 'Pending' ? 'status-pending' : tx.status === 'Approved' ? 'status-approved' : 'status-cancelled';
+            item.innerHTML = `
+                <div class="history-info">
+                    <div class="history-amount">+ ৳ ${tx.amount.toFixed(2)}</div>
+                    <div class="history-method">${tx.method} ${tx.trxId ? '• Trx: ' + tx.trxId : ''}</div>
+                    <div class="history-date">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
+                </div>
+                <span class="status-badge ${statusClass}">${tx.status}</span>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    // ======================== WITHDRAW ========================
+
+    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const user = getCurrentUser();
+        const amount = parseFloat(document.getElementById('withdrawAmount').value);
+        const methodRadio = document.querySelector('input[name="withdrawMethod"]:checked');
+        const withdrawNumber = document.getElementById('withdrawNumber').value.trim();
+        const errorDiv = document.getElementById('withdrawError');
+
+        errorDiv.style.display = 'none';
+
+        if (!methodRadio) {
+            errorDiv.textContent = 'Please select a payment method';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        const method = methodRadio.value;
+
+        // Validation
+        if (amount < 100) {
+            errorDiv.textContent = 'Minimum withdrawal amount is ৳ 100';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        if (amount > user.balance) {
+            errorDiv.textContent = 'Insufficient balance';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        if (!withdrawNumber) {
+            errorDiv.textContent = 'Please enter your number / wallet address';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        const allUsers = getAllUsers();
+        // Active = referred user who has bought at least 1 plan
+        const activeReferrals = (user.referrals || []).filter(refId => {
+            const ref = allUsers.find(u => u.id === refId);
+            return ref && ref.plans && ref.plans.length > 0;
+        }).length;
+
+        if (activeReferrals < 2) {
+            showReferralPopup(activeReferrals);
+            return;
+        }
+
+        user.balance -= amount;
+
+        const transaction = {
+            id: Date.now().toString(),
+            type: 'withdraw',
+            amount: amount,
+            method: method,
+            number: withdrawNumber,
+            status: 'Pending',
+            date: new Date().toISOString()
+        };
+
+        user.transactions = user.transactions || [];
+        user.transactions.push(transaction);
+        updateCurrentUser(user);
+
+        showSuccess('উইথড্র রিকোয়েস্ট সাবমিট হয়েছে! স্ট্যাটাস: Pending', 'success');
+        document.getElementById('withdrawForm').reset();
+        updateDashboard();
+        loadWithdrawHistory();
+    });
+
+    function loadWithdrawHistory() {
+        const user = getCurrentUser();
+        const container = document.getElementById('withdrawHistory');
+        const withdrawals = user.transactions.filter(t => t.type === 'withdraw');
+
+        if (withdrawals.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📤</div>
+                    <h3>No Withdrawals Yet</h3>
+                    <p>Request a withdrawal to see your history here</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '';
+        withdrawals.reverse().forEach(tx => {
+            const date = new Date(tx.date);
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            const statusClass = tx.status === 'Pending' ? 'status-pending' : tx.status === 'Approved' ? 'status-approved' : 'status-cancelled';
+            item.innerHTML = `
+                <div class="history-info">
+                    <div class="history-amount">- ৳ ${tx.amount.toFixed(2)}</div>
+                    <div class="history-method">${tx.method} ${tx.number ? '• ' + tx.number : ''}</div>
+                    <div class="history-date">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
+                </div>
+                <span class="status-badge ${statusClass}">${tx.status}</span>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    // ======================== PROFILE ========================
+
+    document.getElementById('avatarUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const user = getCurrentUser();
+                user.avatar = event.target.result;
+                updateCurrentUser(user);
+                document.getElementById('profileAvatar').innerHTML = `<img src="${user.avatar}" alt="Profile">`;
+                showSuccess('Profile photo updated!');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function changePassword() {
+        const user = getCurrentUser();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+
+        if (!currentPassword || !newPassword) {
+            showError('profile', 'Please fill all fields');
+            return;
+        }
+
+        if (user.password !== currentPassword) {
+            showError('profile', 'Current password is incorrect');
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            showError('profile', 'New password must be at least 6 characters');
+            return;
+        }
+
+        user.password = newPassword;
+        updateCurrentUser(user);
+
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+
+        showSuccess('Password changed successfully!');
+    }
+
+    function updateRecoveryName() {
+        const user = getCurrentUser();
+        const recoveryName = document.getElementById('recoveryName').value.trim();
+
+        if (!recoveryName) {
+            showError('profile', 'Recovery name cannot be empty');
+            return;
+        }
+
+        user.recoveryName = recoveryName;
+        updateCurrentUser(user);
+
+        showSuccess('Recovery name updated!');
+    }
+
+    // ======================== THEME SWITCHER (12 Themes) ========================
+
+    const THEMES = [
+        { // 1 Gold Dark (default)
+            primary: '#d4af37', primaryDark: '#b8962e', primaryLight: '#f0d77b',
+            dark: '#0a0a0f', darkCard: '#12121a', darkElevated: '#1a1a26',
+            bgGradient: 'linear-gradient(135deg, #1a0a2e 0%, #16213e 40%, #0f3460 100%)',
+            goldGradient: 'linear-gradient(135deg, #d4af37 0%, #f0d77b 50%, #d4af37 100%)'
+        },
+        { // 2 Emerald
+            primary: '#10b981', primaryDark: '#059669', primaryLight: '#34d399',
+            dark: '#0a0f0d', darkCard: '#0f1a16', darkElevated: '#15221c',
+            bgGradient: 'linear-gradient(135deg, #0a1f1a 0%, #0d2820 40%, #0f3d2e 100%)',
+            goldGradient: 'linear-gradient(135deg, #10b981 0%, #34d399 50%, #10b981 100%)'
+        },
+        { // 3 Royal Purple
+            primary: '#a855f7', primaryDark: '#9333ea', primaryLight: '#c084fc',
+            dark: '#0c0a12', darkCard: '#14101f', darkElevated: '#1c1629',
+            bgGradient: 'linear-gradient(135deg, #1a0a2e 0%, #2e1065 40%, #4c1d95 100%)',
+            goldGradient: 'linear-gradient(135deg, #a855f7 0%, #c084fc 50%, #a855f7 100%)'
+        },
+        { // 4 Crimson
+            primary: '#ef4444', primaryDark: '#dc2626', primaryLight: '#f87171',
+            dark: '#120a0a', darkCard: '#1a1010', darkElevated: '#241616',
+            bgGradient: 'linear-gradient(135deg, #2a0a0a 0%, #450a0a 40%, #7f1d1d 100%)',
+            goldGradient: 'linear-gradient(135deg, #ef4444 0%, #f87171 50%, #ef4444 100%)'
+        },
+        { // 5 Ocean Blue
+            primary: '#3b82f6', primaryDark: '#2563eb', primaryLight: '#60a5fa',
+            dark: '#0a0e14', darkCard: '#0f1520', darkElevated: '#161e2b',
+            bgGradient: 'linear-gradient(135deg, #0a1628 0%, #0c2340 40%, #1e3a5f 100%)',
+            goldGradient: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #3b82f6 100%)'
+        },
+        { // 6 Rose Gold
+            primary: '#f43f5e', primaryDark: '#e11d48', primaryLight: '#fb7185',
+            dark: '#120a0e', darkCard: '#1a1014', darkElevated: '#24181c',
+            bgGradient: 'linear-gradient(135deg, #2a0a14 0%, #4a1028 40%, #881337 100%)',
+            goldGradient: 'linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #f43f5e 100%)'
+        },
+        { // 7 Amber
+            primary: '#f59e0b', primaryDark: '#d97706', primaryLight: '#fbbf24',
+            dark: '#100c08', darkCard: '#18120c', darkElevated: '#221a12',
+            bgGradient: 'linear-gradient(135deg, #1f1408 0%, #3d2a0a 40%, #78350f 100%)',
+            goldGradient: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%)'
+        },
+        { // 8 Cyan
+            primary: '#06b6d4', primaryDark: '#0891b2', primaryLight: '#22d3ee',
+            dark: '#080f12', darkCard: '#0c161a', darkElevated: '#121e24',
+            bgGradient: 'linear-gradient(135deg, #0a1c22 0%, #0e2f38 40%, #155e75 100%)',
+            goldGradient: 'linear-gradient(135deg, #06b6d4 0%, #22d3ee 50%, #06b6d4 100%)'
+        },
+        { // 9 Lime
+            primary: '#84cc16', primaryDark: '#65a30d', primaryLight: '#a3e635',
+            dark: '#0a1008', darkCard: '#121a0e', darkElevated: '#1a2414',
+            bgGradient: 'linear-gradient(135deg, #14200a 0%, #1f320e 40%, #3f6212 100%)',
+            goldGradient: 'linear-gradient(135deg, #84cc16 0%, #a3e635 50%, #84cc16 100%)'
+        },
+        { // 10 Indigo
+            primary: '#6366f1', primaryDark: '#4f46e5', primaryLight: '#818cf8',
+            dark: '#0a0a12', darkCard: '#10101c', darkElevated: '#181828',
+            bgGradient: 'linear-gradient(135deg, #12122a 0%, #1e1b4b 40%, #312e81 100%)',
+            goldGradient: 'linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #6366f1 100%)'
+        },
+        { // 11 Teal
+            primary: '#14b8a6', primaryDark: '#0d9488', primaryLight: '#2dd4bf',
+            dark: '#080f0e', darkCard: '#0e1816', darkElevated: '#142220',
+            bgGradient: 'linear-gradient(135deg, #0a1f1c 0%, #0f3330 40%, #115e59 100%)',
+            goldGradient: 'linear-gradient(135deg, #14b8a6 0%, #2dd4bf 50%, #14b8a6 100%)'
+        },
+        { // 12 Magenta
+            primary: '#d946ef', primaryDark: '#c026d3', primaryLight: '#e879f9',
+            dark: '#100a12', darkCard: '#18101c', darkElevated: '#221628',
+            bgGradient: 'linear-gradient(135deg, #1f0a28 0%, #3b0764 40%, #701a75 100%)',
+            goldGradient: 'linear-gradient(135deg, #d946ef 0%, #e879f9 50%, #d946ef 100%)'
+        }
+    ];
+
+    let currentThemeIndex = parseInt(localStorage.getItem('themeIndex') || '0', 10);
+
+    function applyTheme(index) {
+        const t = THEMES[index % THEMES.length];
+        const root = document.documentElement;
+        root.style.setProperty('--primary', t.primary);
+        root.style.setProperty('--primary-dark', t.primaryDark);
+        root.style.setProperty('--primary-light', t.primaryLight);
+        root.style.setProperty('--dark', t.dark);
+        root.style.setProperty('--dark-card', t.darkCard);
+        root.style.setProperty('--dark-elevated', t.darkElevated);
+        root.style.setProperty('--bg-gradient', t.bgGradient);
+        root.style.setProperty('--gold-gradient', t.goldGradient);
+        root.style.setProperty('--shadow', `0 10px 40px ${t.primary}20`);
+        root.style.setProperty('--glow', `0 0 20px ${t.primary}40`);
+        document.body.style.backgroundColor = t.dark;
+        localStorage.setItem('themeIndex', index);
+        currentThemeIndex = index;
+    }
+
+    document.getElementById('themeSwitcherBtn').addEventListener('click', function() {
+        currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
+        applyTheme(currentThemeIndex);
+        showSuccess('থিম ' + (currentThemeIndex + 1) + ' / 12 প্রয়োগ হয়েছে', 'theme');
+    });
+
+    // Broadcast sticky notification from Admin
+    function showBroadcastBanner(message, id) {
+        // Already permanently dismissed?
+        if (localStorage.getItem('pp_dismissed_bc_' + id) === '1') return;
+        if (document.getElementById('broadcastBanner_' + id)) return;
+        var ban = document.createElement('div');
+        ban.id = 'broadcastBanner_' + id;
+        ban.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99998;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:14px 48px 14px 18px;font-size:14px;font-weight:600;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+        ban.innerHTML = '<span>' + message + '</span><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.25);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;line-height:1;">×</button>';
+        document.body.appendChild(ban);
+        ban.querySelector('button').onclick = function() {
+            // Permanent dismiss — never show this broadcast again (even after refresh)
+            localStorage.setItem('pp_dismissed_bc_' + id, '1');
+            ban.remove();
+        };
+    }
+
+    function listenBroadcasts() {
+        if (!window.fbDB) {
+            setTimeout(listenBroadcasts, 1000);
+            return;
+        }
+        try {
+            fbRef('broadcasts').on('value', function(snap) {
+                if (!snap.exists()) return;
+                var data = snap.val();
+                var items = Object.keys(data).map(function(k) { return data[k]; }).filter(function(b) { return b.active; });
+                items.sort(function(a,b) { return new Date(b.createdAt) - new Date(a.createdAt); });
+                // Show only the latest broadcast that user has NOT dismissed
+                for (var i = 0; i < items.length; i++) {
+                    var bc = items[i];
+                    if (localStorage.getItem('pp_dismissed_bc_' + bc.id) !== '1') {
+                        showBroadcastBanner(bc.message, bc.id);
+                        break; // only one at a time
+                    }
+                }
+            });
+        } catch(e) { console.error('Broadcast listen:', e); }
+    }
+
+    // ======================== INITIALIZE ========================
+
+    window.addEventListener('load', async function() {
+        applyTheme(currentThemeIndex);
+
+        // Restore session immediately from localStorage (no logout on refresh)
+        _currentUserId = localStorage.getItem('pp_currentUserId') || null;
+        var cachedUser = getCurrentUser();
+        if (cachedUser) {
+            showPanel();
+        }
+
+        // Then sync with Firebase in background
+        try {
+            await loadAllUsersFromFirebase();
+            // Refresh UI with latest data if still logged in
+            if (_currentUserId && getCurrentUser()) {
+                if (typeof updateDashboard === 'function') updateDashboard();
+                // If ad timer finished while away — auto claim bonus
+                tryCompletePendingClaim();
+            }
+        } catch (e) {
+            console.log('Firebase sync later');
+        }
+        listenBroadcasts();
+    });
+</script>
+
+</body>
+</html>
