@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Premium User Panel - Investment Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Firebase Compat SDK (same as Admin Panel) -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -57,16 +60,23 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Outfit', 'Segoe UI', sans-serif;
             background-color: var(--dark);
             color: var(--text);
             line-height: 1.6;
             background-image: 
-                radial-gradient(ellipse at 20% 20%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
+                radial-gradient(ellipse at 20% 20%, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, color-mix(in srgb, var(--primary) 5%, transparent) 0%, transparent 50%);
             min-height: 100vh;
             touch-action: manipulation;
             -webkit-text-size-adjust: 100%;
+            letter-spacing: 0.01em;
+        }
+
+        h1, h2, h3, .auth-header h2, .page-header h1 {
+            font-family: 'Cinzel', 'Outfit', serif;
+            font-weight: 700;
+            letter-spacing: 0.04em;
         }
 
         /* Theme Switcher Button */
@@ -139,8 +149,8 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle at 30% 40%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
-                        radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
+            background: radial-gradient(circle at 30% 40%, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 40%),
+                        radial-gradient(circle at 70% 60%, color-mix(in srgb, var(--primary-light) 8%, transparent) 0%, transparent 40%);
             animation: ambientPulse 12s ease-in-out infinite alternate;
             pointer-events: none;
         }
@@ -162,95 +172,138 @@
         }
 
         .auth-box {
-            background: rgba(18, 18, 26, 0.97);
-            border-radius: 24px;
-            padding: 40px 32px;
+            background: var(--dark-card);
+            border-radius: 22px;
+            padding: 36px 28px;
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.65), var(--glow);
             animation: slideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid rgba(212, 175, 55, 0.28);
+            border: 1.5px solid color-mix(in srgb, var(--primary) 35%, transparent);
             backdrop-filter: blur(20px);
             position: relative;
             z-index: 1;
             margin: auto;
+            overflow: hidden;
+        }
+
+        /* Shimmer border effect */
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--primary) 18%, transparent), transparent);
+            animation: shimmerSweep 3.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes shimmerSweep {
+            0% { left: -100%; }
+            50% { left: 120%; }
+            100% { left: 120%; }
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(40px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .auth-header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
         }
 
         .auth-header h2 {
-            font-size: 30px;
+            font-size: 26px;
             color: var(--primary);
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 24px color-mix(in srgb, var(--primary) 50%, transparent);
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .auth-header p {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0.02em;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
             font-weight: 600;
             color: var(--text);
-            font-size: 14px;
+            font-size: 13px;
+            letter-spacing: 0.03em;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid var(--border);
+            padding: 13px 16px;
+            border: 1.5px solid color-mix(in srgb, var(--primary) 18%, #2a2a3a);
             border-radius: 12px;
             font-size: 14px;
+            font-family: 'Outfit', sans-serif;
             transition: all 0.3s ease;
             background: var(--dark-elevated);
             color: var(--text);
+            box-sizing: border-box;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15), var(--glow);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent), var(--glow);
         }
 
         .form-group input::placeholder {
             color: #6b7280;
+            font-weight: 400;
         }
 
         .password-toggle {
             position: relative;
         }
 
+        .password-toggle input {
+            padding-right: 44px;
+        }
+
         .password-toggle i {
             position: absolute;
-            right: 15px;
-            top: 42px;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
             color: #9ca3af;
             transition: color 0.2s;
+            font-size: 15px;
+            z-index: 2;
+        }
+
+        /* When label exists above input, center on input field */
+        .password-toggle > label + input + i,
+        .form-group.password-toggle i {
+            top: auto;
+            bottom: 14px;
+            transform: none;
         }
 
         .password-toggle i:hover {
@@ -261,28 +314,41 @@
             width: 100%;
             padding: 14px;
             background: var(--gold-gradient);
-            color: #1a1a1a;
+            background-size: 200% 100%;
+            color: #0a0a0f;
             border: none;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
+            font-family: 'Outfit', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 12px;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+            margin-top: 10px;
+            letter-spacing: 0.06em;
+            box-shadow: 0 4px 22px color-mix(in srgb, var(--primary) 35%, transparent);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            animation: gradientShift 4s ease infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .btn-auth:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.45);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px color-mix(in srgb, var(--primary) 50%, transparent);
         }
 
         .auth-link {
             text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 18px;
+            font-size: 13px;
             color: var(--text-muted);
+            position: relative;
+            z-index: 1;
+            line-height: 1.8;
         }
 
         .auth-link a {
@@ -495,11 +561,12 @@
             padding: 24px;
             box-shadow: var(--shadow);
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
             position: relative;
             overflow: hidden;
         }
 
+        /* Top gradient line */
         .card::before {
             content: '';
             position: absolute;
@@ -508,8 +575,34 @@
             right: 0;
             height: 3px;
             background: var(--gold-gradient);
-            opacity: 0.7;
-            transition: opacity 0.3s;
+            background-size: 200% 100%;
+            opacity: 0.85;
+            animation: gradientShift 4s ease infinite;
+            z-index: 2;
+        }
+
+        /* Inner shimmer sweep */
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 55%;
+            height: 100%;
+            background: linear-gradient(105deg,
+                transparent 0%,
+                color-mix(in srgb, var(--primary) 10%, transparent) 45%,
+                color-mix(in srgb, var(--primary-light) 18%, transparent) 50%,
+                color-mix(in srgb, var(--primary) 10%, transparent) 55%,
+                transparent 100%);
+            animation: innerShimmer 5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        @keyframes innerShimmer {
+            0% { left: -120%; }
+            40% { left: 130%; }
+            100% { left: 130%; }
         }
 
         .card:hover {
@@ -520,6 +613,11 @@
 
         .card:hover::before {
             opacity: 1;
+        }
+
+        .card > * {
+            position: relative;
+            z-index: 2;
         }
 
         .card-icon {
@@ -587,7 +685,7 @@
             background: var(--dark-card);
             border-radius: 20px;
             padding: 32px 28px;
-            border: 1px solid rgba(212, 175, 55, 0.15);
+            border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
@@ -603,12 +701,33 @@
             right: 0;
             height: 4px;
             background: var(--gold-gradient);
+            background-size: 200% 100%;
+            animation: gradientShift 4s ease infinite;
+            z-index: 2;
+        }
+
+        .plan-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(105deg, transparent, color-mix(in srgb, var(--primary) 14%, transparent) 50%, transparent);
+            animation: innerShimmer 4.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .plan-card:hover {
-            border-color: rgba(212, 175, 55, 0.4);
+            border-color: var(--primary);
             transform: translateY(-10px);
-            box-shadow: 0 25px 60px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 25px 60px color-mix(in srgb, var(--primary) 25%, transparent), var(--glow);
+        }
+
+        .plan-card > * {
+            position: relative;
+            z-index: 2;
         }
 
         .plan-price {
@@ -616,7 +735,7 @@
             font-weight: 800;
             color: var(--primary);
             margin-bottom: 4px;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            text-shadow: 0 0 20px color-mix(in srgb, var(--primary) 40%, transparent);
         }
 
         .plan-currency {
@@ -667,20 +786,25 @@
             width: 100%;
             padding: 14px;
             background: var(--gold-gradient);
-            color: #1a1a1a;
+            background-size: 200% 100%;
+            color: #0a0a0f;
             border: none;
             border-radius: 12px;
             font-weight: 700;
+            font-family: 'Outfit', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: auto;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 18px rgba(212, 175, 55, 0.25);
+            box-shadow: 0 4px 18px color-mix(in srgb, var(--primary) 30%, transparent);
+            animation: gradientShift 4s ease infinite;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-buy:hover:not(:disabled) {
             transform: translateY(-3px);
-            box-shadow: 0 8px 28px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 8px 28px color-mix(in srgb, var(--primary) 45%, transparent);
         }
 
         .btn-buy:disabled {
@@ -770,21 +894,24 @@
         .btn-claim {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #059669, #10b981);
-            color: white;
+            background: var(--gold-gradient);
+            background-size: 200% 100%;
+            color: #0a0a0f;
             border: none;
             border-radius: 12px;
             font-weight: 700;
+            font-family: 'Outfit', sans-serif;
             cursor: pointer;
             margin-top: auto;
             transition: all 0.3s ease;
             letter-spacing: 0.3px;
+            box-shadow: 0 4px 18px color-mix(in srgb, var(--primary) 30%, transparent);
+            animation: gradientShift 4s ease infinite;
         }
 
         .btn-claim:hover:not(:disabled) {
-            background: linear-gradient(135deg, #047857, #059669);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+            box-shadow: 0 6px 20px color-mix(in srgb, var(--primary) 45%, transparent);
         }
 
         .btn-claim:disabled {
@@ -858,14 +985,26 @@
         .transaction-form {
             background: var(--dark-card);
             border-radius: 18px;
-            padding: 32px;
+            padding: 28px 22px;
             box-shadow: var(--shadow);
             margin-bottom: 30px;
             max-width: 520px;
-            border: 1px solid rgba(212, 175, 55, 0.12);
+            border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow: hidden;
         }
+        .transaction-form::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -120%;
+            width: 50%; height: 100%;
+            background: linear-gradient(105deg, transparent, color-mix(in srgb, var(--primary) 12%, transparent) 50%, transparent);
+            animation: innerShimmer 5.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .transaction-form > * { position: relative; z-index: 1; }
 
         .payment-method-group {
             margin: 22px 0;
@@ -998,7 +1137,7 @@
             padding: 28px 22px;
             margin-bottom: 28px;
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.45), var(--glow);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
             position: relative;
             overflow: hidden;
         }
@@ -1010,9 +1149,20 @@
             right: -30%;
             width: 60%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, color-mix(in srgb, var(--primary-light) 15%, transparent) 0%, transparent 70%);
+            pointer-events: none;
+            animation: ambientPulse 8s ease-in-out infinite alternate;
+        }
+        .referral-box::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -120%;
+            width: 50%; height: 100%;
+            background: linear-gradient(105deg, transparent, rgba(255,255,255,0.12) 50%, transparent);
+            animation: innerShimmer 4s ease-in-out infinite;
             pointer-events: none;
         }
+        .referral-box > * { position: relative; z-index: 1; }
 
         .referral-code {
             display: flex;
@@ -3518,9 +3668,17 @@
         root.style.setProperty('--dark-elevated', t.darkElevated);
         root.style.setProperty('--bg-gradient', t.bgGradient);
         root.style.setProperty('--gold-gradient', t.goldGradient);
-        root.style.setProperty('--shadow', `0 10px 40px ${t.primary}20`);
-        root.style.setProperty('--glow', `0 0 20px ${t.primary}40`);
+        root.style.setProperty('--shadow', '0 10px 40px ' + t.primary + '22');
+        root.style.setProperty('--glow', '0 0 24px ' + t.primary + '45');
+        root.style.setProperty('--border', t.primary + '30');
         document.body.style.backgroundColor = t.dark;
+        document.body.style.backgroundImage =
+            'radial-gradient(ellipse at 20% 20%, ' + t.primary + '14 0%, transparent 50%),' +
+            'radial-gradient(ellipse at 80% 80%, ' + t.primaryLight + '10 0%, transparent 50%)';
+        // Match auth containers background
+        document.querySelectorAll('.auth-container').forEach(function(el) {
+            el.style.background = t.bgGradient;
+        });
         localStorage.setItem('themeIndex', index);
         currentThemeIndex = index;
     }
