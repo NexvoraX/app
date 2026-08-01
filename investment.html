@@ -1909,24 +1909,7 @@
                     <div class="payment-method-group">
                         <label>Payment Method</label>
                         <div class="payment-methods" id="depositMethods">
-                            <div class="payment-option">
-                                <input type="radio" id="bkash" name="paymentMethod" value="bKash" required>
-                                <label for="bkash">
-                                    <i class="fas fa-mobile"></i> bKash
-                                </label>
-                            </div>
-                            <div class="payment-option">
-                                <input type="radio" id="nagad" name="paymentMethod" value="Nagad" required>
-                                <label for="nagad">
-                                    <i class="fas fa-phone"></i> Nagad
-                                </label>
-                            </div>
-                            <div class="payment-option">
-                                <input type="radio" id="binance" name="paymentMethod" value="Binance" required>
-                                <label for="binance">
-                                    <i class="fas fa-bitcoin"></i> Binance
-                                </label>
-                            </div>
+                            <!-- Loaded from Firebase by Admin -->
                         </div>
                     </div>
 
@@ -1988,24 +1971,7 @@
                     <div class="payment-method-group">
                         <label>Payment Method</label>
                         <div class="payment-methods" id="withdrawMethods">
-                            <div class="payment-option">
-                                <input type="radio" id="wbkash" name="withdrawMethod" value="bKash" required>
-                                <label for="wbkash">
-                                    <i class="fas fa-mobile"></i> bKash
-                                </label>
-                            </div>
-                            <div class="payment-option">
-                                <input type="radio" id="wnagad" name="withdrawMethod" value="Nagad" required>
-                                <label for="wnagad">
-                                    <i class="fas fa-phone"></i> Nagad
-                                </label>
-                            </div>
-                            <div class="payment-option">
-                                <input type="radio" id="wbinance" name="withdrawMethod" value="Binance" required>
-                                <label for="wbinance">
-                                    <i class="fas fa-bitcoin"></i> Binance
-                                </label>
-                            </div>
+                            <!-- Loaded from Firebase by Admin -->
                         </div>
                     </div>
 
@@ -2613,9 +2579,11 @@
             loadReferral();
         } else if (sectionId === 'deposit') {
             updateDashboard();
+            loadDepositMethodsUI();
             loadDepositHistory();
         } else if (sectionId === 'withdraw') {
             updateDashboard();
+            loadWithdrawMethodsUI();
             loadWithdrawHistory();
         } else if (sectionId === 'dashboard') {
             updateDashboard();
@@ -3304,29 +3272,94 @@
 
     // ======================== DEPOSIT ========================
 
-    // Admin payment numbers (demo)
-    const ADMIN_NUMBERS = {
-        'bKash': '01700000000',
-        'Nagad': '01800000000',
-        'Binance': 'TXdemoBinanceWallet123'
-    };
+    var ADMIN_NUMBERS = {}; // name -> number, loaded from Firebase
+    var _depositMethodsCache = [];
+    var _withdrawMethodsCache = [];
 
     function copyAdminNumber() {
-        const el = document.getElementById('adminNumberDisplay');
+        var el = document.getElementById('adminNumberDisplay');
         if (el && el.textContent) copyText(el.textContent.trim());
     }
 
-    // Show admin number when payment method selected
-    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const box = document.getElementById('adminNumberBox');
-            const display = document.getElementById('adminNumberDisplay');
-            if (this.checked && ADMIN_NUMBERS[this.value]) {
-                display.textContent = ADMIN_NUMBERS[this.value];
-                box.style.display = 'block';
+    async function loadDepositMethodsUI() {
+        var container = document.getElementById('depositMethods');
+        if (!container) return;
+        try {
+            await waitForFirebase();
+            if (!window.fbDB) return;
+            var snap = await fbRef('depositMethods').once('value');
+            if (snap.exists()) {
+                var data = snap.val();
+                _depositMethodsCache = Object.keys(data).map(function(k) { return data[k]; });
+            } else {
+                _depositMethodsCache = [
+                    { id: 'bkash', name: 'bKash', number: '01700000000' },
+                    { id: 'nagad', name: 'Nagad', number: '01800000000' }
+                ];
             }
+        } catch (e) {
+            _depositMethodsCache = [
+                { id: 'bkash', name: 'bKash', number: '01700000000' },
+                { id: 'nagad', name: 'Nagad', number: '01800000000' }
+            ];
+        }
+        ADMIN_NUMBERS = {};
+        container.innerHTML = '';
+        _depositMethodsCache.forEach(function(m, i) {
+            var name = m.name || 'Method';
+            var num = m.number || '';
+            ADMIN_NUMBERS[name] = num;
+            var id = 'dep_' + (m.id || i);
+            container.innerHTML +=
+                '<div class="payment-option">' +
+                '<input type="radio" id="' + id + '" name="paymentMethod" value="' + name + '" ' + (i === 0 ? 'required' : '') + '>' +
+                '<label for="' + id + '"><i class="fas fa-wallet"></i> ' + name + '</label></div>';
         });
-    });
+        // Bind change to show number
+        container.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                var box = document.getElementById('adminNumberBox');
+                var display = document.getElementById('adminNumberDisplay');
+                if (this.checked && ADMIN_NUMBERS[this.value]) {
+                    display.textContent = ADMIN_NUMBERS[this.value];
+                    box.style.display = 'block';
+                }
+            });
+        });
+    }
+
+    async function loadWithdrawMethodsUI() {
+        var container = document.getElementById('withdrawMethods');
+        if (!container) return;
+        try {
+            await waitForFirebase();
+            if (!window.fbDB) return;
+            var snap = await fbRef('withdrawMethods').once('value');
+            if (snap.exists()) {
+                var data = snap.val();
+                _withdrawMethodsCache = Object.keys(data).map(function(k) { return data[k]; });
+            } else {
+                _withdrawMethodsCache = [
+                    { id: 'bkash', name: 'bKash' },
+                    { id: 'nagad', name: 'Nagad' }
+                ];
+            }
+        } catch (e) {
+            _withdrawMethodsCache = [
+                { id: 'bkash', name: 'bKash' },
+                { id: 'nagad', name: 'Nagad' }
+            ];
+        }
+        container.innerHTML = '';
+        _withdrawMethodsCache.forEach(function(m, i) {
+            var name = m.name || 'Method';
+            var id = 'wit_' + (m.id || i);
+            container.innerHTML +=
+                '<div class="payment-option">' +
+                '<input type="radio" id="' + id + '" name="withdrawMethod" value="' + name + '" ' + (i === 0 ? 'required' : '') + '>' +
+                '<label for="' + id + '"><i class="fas fa-wallet"></i> ' + name + '</label></div>';
+        });
+    }
 
     document.getElementById('depositForm').addEventListener('submit', function(e) {
         e.preventDefault();
