@@ -127,37 +127,36 @@
         /* =============== AUTH PAGES =============== */
         .auth-container {
             display: none;
-            min-height: 100vh;
+            height: 100%;
+            height: 100dvh;
             width: 100%;
             background: var(--bg-gradient);
             align-items: center;
             justify-content: center;
-            padding: 24px 16px;
+            padding: 20px 16px;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
+            overflow-x: hidden;
             overflow-y: auto;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
             z-index: 5000;
         }
 
+        /* Static soft glow — NO movement */
         .auth-container::before {
             content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 40%, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 40%),
-                        radial-gradient(circle at 70% 60%, color-mix(in srgb, var(--primary-light) 8%, transparent) 0%, transparent 40%);
-            animation: ambientPulse 12s ease-in-out infinite alternate;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 55%);
             pointer-events: none;
-        }
-
-        @keyframes ambientPulse {
-            from { transform: scale(1) rotate(0deg); opacity: 0.7; }
-            to { transform: scale(1.1) rotate(5deg); opacity: 1; }
+            z-index: 0;
         }
 
         .auth-container.active {
@@ -174,40 +173,42 @@
         .auth-box {
             background: var(--dark-card);
             border-radius: 22px;
-            padding: 36px 28px;
+            padding: 32px 24px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.65), var(--glow);
-            animation: slideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), var(--glow);
             border: 1.5px solid color-mix(in srgb, var(--primary) 35%, transparent);
-            backdrop-filter: blur(20px);
             position: relative;
             z-index: 1;
-            margin: auto;
+            margin: 0 auto;
+            flex-shrink: 0;
             overflow: hidden;
         }
 
-        /* Shimmer border effect */
-        .auth-box::before {
+        /* Continuous soft shimmer — theme color */
+        .auth-box::after {
             content: '';
             position: absolute;
-            top: 0; left: -100%;
-            width: 60%;
+            top: 0;
+            left: -100%;
+            width: 50%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--primary) 18%, transparent), transparent);
-            animation: shimmerSweep 3.5s ease-in-out infinite;
+            background: linear-gradient(105deg,
+                transparent 0%,
+                color-mix(in srgb, var(--primary) 8%, transparent) 40%,
+                color-mix(in srgb, var(--primary-light) 30%, transparent) 50%,
+                color-mix(in srgb, var(--primary) 8%, transparent) 60%,
+                transparent 100%);
+            animation: softShimmer 3.2s ease-in-out infinite;
             pointer-events: none;
-            z-index: 0;
+            z-index: 2;
         }
-        @keyframes shimmerSweep {
-            0% { left: -100%; }
-            50% { left: 120%; }
-            100% { left: 120%; }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes softShimmer {
+            0% { left: -100%; opacity: 0; }
+            12% { opacity: 1; }
+            45% { left: 130%; opacity: 1; }
+            46% { opacity: 0; }
+            100% { left: 130%; opacity: 0; }
         }
 
         .auth-header {
@@ -586,23 +587,18 @@
             content: '';
             position: absolute;
             top: 0;
-            left: -120%;
-            width: 55%;
+            left: -100%;
+            width: 50%;
             height: 100%;
             background: linear-gradient(105deg,
                 transparent 0%,
-                color-mix(in srgb, var(--primary) 10%, transparent) 45%,
-                color-mix(in srgb, var(--primary-light) 18%, transparent) 50%,
-                color-mix(in srgb, var(--primary) 10%, transparent) 55%,
+                color-mix(in srgb, var(--primary) 8%, transparent) 40%,
+                color-mix(in srgb, var(--primary-light) 26%, transparent) 50%,
+                color-mix(in srgb, var(--primary) 8%, transparent) 60%,
                 transparent 100%);
-            animation: innerShimmer 5s ease-in-out infinite;
+            animation: softShimmer 3.8s ease-in-out infinite;
             pointer-events: none;
             z-index: 1;
-        }
-        @keyframes innerShimmer {
-            0% { left: -120%; }
-            40% { left: 130%; }
-            100% { left: 130%; }
         }
 
         .card:hover {
@@ -710,11 +706,16 @@
             content: '';
             position: absolute;
             top: 0;
-            left: -120%;
+            left: -100%;
             width: 50%;
             height: 100%;
-            background: linear-gradient(105deg, transparent, color-mix(in srgb, var(--primary) 14%, transparent) 50%, transparent);
-            animation: innerShimmer 4.5s ease-in-out infinite;
+            background: linear-gradient(105deg,
+                transparent 0%,
+                color-mix(in srgb, var(--primary) 8%, transparent) 40%,
+                color-mix(in srgb, var(--primary-light) 26%, transparent) 50%,
+                color-mix(in srgb, var(--primary) 8%, transparent) 60%,
+                transparent 100%);
+            animation: softShimmer 3.5s ease-in-out infinite;
             pointer-events: none;
             z-index: 1;
         }
@@ -998,10 +999,15 @@
         .transaction-form::after {
             content: '';
             position: absolute;
-            top: 0; left: -120%;
+            top: 0; left: -100%;
             width: 50%; height: 100%;
-            background: linear-gradient(105deg, transparent, color-mix(in srgb, var(--primary) 12%, transparent) 50%, transparent);
-            animation: innerShimmer 5.5s ease-in-out infinite;
+            background: linear-gradient(105deg,
+                transparent 0%,
+                color-mix(in srgb, var(--primary) 8%, transparent) 40%,
+                color-mix(in srgb, var(--primary-light) 24%, transparent) 50%,
+                color-mix(in srgb, var(--primary) 8%, transparent) 60%,
+                transparent 100%);
+            animation: softShimmer 4s ease-in-out infinite;
             pointer-events: none;
         }
         .transaction-form > * { position: relative; z-index: 1; }
@@ -1156,10 +1162,15 @@
         .referral-box::after {
             content: '';
             position: absolute;
-            top: 0; left: -120%;
+            top: 0; left: -100%;
             width: 50%; height: 100%;
-            background: linear-gradient(105deg, transparent, rgba(255,255,255,0.12) 50%, transparent);
-            animation: innerShimmer 4s ease-in-out infinite;
+            background: linear-gradient(105deg,
+                transparent 0%,
+                rgba(255,255,255,0.06) 40%,
+                color-mix(in srgb, var(--primary-light) 30%, transparent) 50%,
+                rgba(255,255,255,0.06) 60%,
+                transparent 100%);
+            animation: softShimmer 3.6s ease-in-out infinite;
             pointer-events: none;
         }
         .referral-box > * { position: relative; z-index: 1; }
@@ -1433,10 +1444,11 @@
             }
 
             .auth-container {
-                padding: 16px 12px;
-                align-items: flex-start;
-                padding-top: 30px;
+                padding: 16px 14px;
+                align-items: center;
+                justify-content: center;
                 overflow-y: auto;
+                overscroll-behavior: none;
                 -webkit-overflow-scrolling: touch;
             }
 
@@ -1444,7 +1456,7 @@
                 padding: 28px 20px;
                 max-width: 100%;
                 border-radius: 20px;
-                margin-bottom: 40px;
+                margin: auto 0;
             }
 
             .leaderboard-table {
@@ -1480,13 +1492,15 @@
             }
 
             .auth-container {
-                padding: 12px 10px;
-                padding-top: 24px;
+                padding: 14px 12px;
+                align-items: center;
+                justify-content: center;
             }
 
             .auth-box {
-                padding: 24px 16px;
+                padding: 26px 18px;
                 border-radius: 18px;
+                width: 100%;
             }
 
             .auth-header h2 {
